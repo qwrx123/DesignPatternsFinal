@@ -1,4 +1,3 @@
-#include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <iostream>
 #include "WindowClass.h"
@@ -41,13 +40,7 @@ bool WindowClass::CreateWindow(int width, int height, const char* title)
     glfwSetWindowUserPointer(window, this);
     
     glfwMakeContextCurrent(window);
-    GLenum err = glewInit();
-	if (GLEW_OK != err)
-	{
-		std::cerr << "Error: " << glewGetErrorString(err) << std::endl;
-		glfwTerminate();
-		return false;
-	}
+
     return true;
 }
 
