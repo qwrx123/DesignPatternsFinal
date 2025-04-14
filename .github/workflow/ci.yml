@@ -1,0 +1,24 @@
+name: Build Project
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+
+    steps:
+      - name: Install dependencies
+        run: sudo apt-get update && sudo apt-get install -y libglfw3 libglfw3-dev
+
+      - name: Configure
+        run: cmake -DCMAKE_BUILD_TYPE=release -DBUILD_SHARED_LIBS=true -DCMAKE_GENERATOR_PLATFORM=x64 -B build
+
+      - name: Build
+        run: cmake --build build --config release
