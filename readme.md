@@ -22,7 +22,7 @@
     ```bash
     cmake --build build --config release
     ```
-6. From an administrator terminal, install the project:
+6. From an ***Administrator terminal***, install the project:
     ```bash
     cmake --install build
     ```
