@@ -87,14 +87,16 @@ void WindowClass::render()
     glClear(GL_COLOR_BUFFER_BIT);
 
     //Draw stroke
-    glLineWidth(5.0f); //medium thickness
-    glBegin(GL_LINE_STRIP);
-    for (auto& pt : strokePoints) {
-        float normX = (pt.first / width) * 2.0f - 1.0f;
-        float normY = 1.0f - (pt.second / height) * 2.0f;
-        glVertex2f(normX, normY);
+    glLineWidth(5.0f); //Medium thickness
+    for (const auto& stroke : strokes) {
+        glBegin(GL_LINE_STRIP);
+        for (const auto& pt : stroke) {
+            float normX = (pt.first / width) * 2.0f - 1.0f;
+            float normY = 1.0f - (pt.second / height) * 2.0f;
+            glVertex2f(normX, normY);
+        }
+        glEnd();
     }
-    glEnd();
 
     glfwSwapBuffers(window);
     glfwPollEvents();
@@ -120,8 +122,8 @@ void WindowClass::mouseButtonCallback(GLFWwindow* window, int button, int action
 
 void WindowClass::handleMouseMove(double xpos, double ypos)
 {
-    if (isDrawing) {
-        strokePoints.emplace_back(xpos, ypos);
+    if (isDrawing && currentStroke) {
+        currentStroke->emplace_back(xpos, ypos);
     }
 }
 
@@ -130,8 +132,11 @@ void WindowClass::handleMouseButton(int button, int action, int mods)
     if (button == GLFW_MOUSE_BUTTON_LEFT) {
         if (action == GLFW_PRESS) {
             isDrawing = true;
+            strokes.emplace_back();
+            currentStroke = &strokes.back();
         } else if (action == GLFW_RELEASE) {
             isDrawing = false;
+            currentStroke = nullptr;
         }
     }
 }

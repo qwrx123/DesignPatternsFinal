@@ -30,6 +30,7 @@ protected:
     void handleMouseMove(double xpos, double ypos);
     void handleMouseButton(int button, int action, int mods);
 
-    std::vector<std::pair<float, float>> strokePoints;
+    std::vector<std::vector<std::pair<float, float>>> strokes;
+    std::vector<std::pair<float, float>>* currentStroke = nullptr;
     bool isDrawing = false;
 };
