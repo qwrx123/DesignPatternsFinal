@@ -1,5 +1,5 @@
 #include <GLFW/glfw3.h>
-
+#include <vector>
 
 class WindowClass
 {
@@ -21,4 +21,16 @@ protected:
     int height;
     const char* title;
     GLFWwindow* window;
+
+//Basic brush stroke implementation
+protected:
+    static void cursorPositionCallback(GLFWwindow* window, double xpos, double ypos);
+    static void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
+
+    void handleMouseMove(double xpos, double ypos);
+    void handleMouseButton(int button, int action, int mods);
+
+    std::vector<std::vector<std::pair<float, float>>> strokes;
+    std::vector<std::pair<float, float>>* currentStroke = nullptr;
+    bool isDrawing = false;
 };
