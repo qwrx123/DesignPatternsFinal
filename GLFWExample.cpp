@@ -4,13 +4,14 @@
 
 int main(int argc, char** argv)
 {
-    WindowClass testWindow;
-    testWindow.CreateWindow(800, 600, "TestApp");
-    testWindow.initCallbacks();
+	WindowClass testWindow;
+	testWindow.CreateWindow(800, 600, "TestApp");
+	testWindow.initCallbacks();
 
-    while(testWindow.shouldClose() == false) {
-        testWindow.render();
-        testWindow.defaultEvent();
-    }
-    return 0;
+	while (testWindow.shouldClose() == false)
+	{
+		testWindow.render();
+		testWindow.defaultEvent();
+	}
+	return 0;
 }
