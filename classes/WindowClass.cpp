@@ -51,9 +51,9 @@ void WindowClass::defaultEvent()
 
 bool WindowClass::initCallbacks()
 {
-	glfwSetWindowSizeCallback(window, (GLFWwindowsizefun)(&windowSizeCallback));
-    glfwSetCursorPosCallback(window, &cursorPositionCallback);
-    glfwSetMouseButtonCallback(window, &mouseButtonCallback);
+	glfwSetWindowSizeCallback(window, (GLFWwindowsizefun) (&windowSizeCallback));
+	glfwSetCursorPosCallback(window, &cursorPositionCallback);
+	glfwSetMouseButtonCallback(window, &mouseButtonCallback);
 	return true;
 }
 
@@ -75,24 +75,26 @@ void WindowClass::handleWindowSize(int width, int height)
 }
 
 void WindowClass::render()
-{        
-    int width, height;
-    glfwGetFramebufferSize(window, &width, &height);
-    glViewport(0, 0, width, height);
+{
+	int width, height;
+	glfwGetFramebufferSize(window, &width, &height);
+	glViewport(0, 0, width, height);
 
-    glClear(GL_COLOR_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT);
 
-    //Draw stroke
-    glLineWidth(5.0f); //Medium thickness
-    for (const auto& stroke : strokes) {
-        glBegin(GL_LINE_STRIP);
-        for (const auto& pt : stroke) {
-            float normX = (pt.first / width) * 2.0f - 1.0f;
-            float normY = 1.0f - (pt.second / height) * 2.0f;
-            glVertex2f(normX, normY);
-        }
-        glEnd();
-    }
+	// Draw stroke
+	glLineWidth(5.0f);	// Medium thickness
+	for (const auto& stroke : strokes)
+	{
+		glBegin(GL_LINE_STRIP);
+		for (const auto& pt : stroke)
+		{
+			float normX = (pt.first / width) * 2.0f - 1.0f;
+			float normY = 1.0f - (pt.second / height) * 2.0f;
+			glVertex2f(normX, normY);
+		}
+		glEnd();
+	}
 
 	glfwSwapBuffers(window);
 	glfwPollEvents();
@@ -100,39 +102,46 @@ void WindowClass::render()
 
 void WindowClass::cursorPositionCallback(GLFWwindow* window, double xpos, double ypos)
 {
-    WindowClass* myWindow = static_cast<WindowClass*>(glfwGetWindowUserPointer(window));
+	WindowClass* myWindow = static_cast<WindowClass*>(glfwGetWindowUserPointer(window));
 
-    if (myWindow) {
-        myWindow->handleMouseMove(xpos, ypos);
-    }
+	if (myWindow)
+	{
+		myWindow->handleMouseMove(xpos, ypos);
+	}
 }
 
 void WindowClass::mouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
 {
-    WindowClass* myWindow = static_cast<WindowClass*>(glfwGetWindowUserPointer(window));
+	WindowClass* myWindow = static_cast<WindowClass*>(glfwGetWindowUserPointer(window));
 
-    if (myWindow) {
-        myWindow->handleMouseButton(button, action, mods);
-    }
+	if (myWindow)
+	{
+		myWindow->handleMouseButton(button, action, mods);
+	}
 }
 
 void WindowClass::handleMouseMove(double xpos, double ypos)
 {
-    if (isDrawing && currentStroke) {
-        currentStroke->emplace_back(xpos, ypos);
-    }
+	if (isDrawing && currentStroke)
+	{
+		currentStroke->emplace_back(xpos, ypos);
+	}
 }
 
 void WindowClass::handleMouseButton(int button, int action, int mods)
 {
-    if (button == GLFW_MOUSE_BUTTON_LEFT) {
-        if (action == GLFW_PRESS) {
-            isDrawing = true;
-            strokes.emplace_back();
-            currentStroke = &strokes.back();
-        } else if (action == GLFW_RELEASE) {
-            isDrawing = false;
-            currentStroke = nullptr;
-        }
-    }
+	if (button == GLFW_MOUSE_BUTTON_LEFT)
+	{
+		if (action == GLFW_PRESS)
+		{
+			isDrawing = true;
+			strokes.emplace_back();
+			currentStroke = &strokes.back();
+		}
+		else if (action == GLFW_RELEASE)
+		{
+			isDrawing	  = false;
+			currentStroke = nullptr;
+		}
+	}
 }
