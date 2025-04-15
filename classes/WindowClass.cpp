@@ -1,56 +1,52 @@
+#include "WindowClass.h"
 #include <GLFW/glfw3.h>
 #include <iostream>
-#include "WindowClass.h"
 
-WindowClass::WindowClass() 
-    : width(0), height(0), title(nullptr), window(nullptr)
+WindowClass::WindowClass() : width(0), height(0), title(nullptr), window(nullptr) {}
+
+WindowClass::~WindowClass()
 {
-
-}
-
-WindowClass::~WindowClass() 
-{
-    if (window)
-    {
-        glfwDestroyWindow(window);
-    }
-    glfwTerminate();
+	if (window)
+	{
+		glfwDestroyWindow(window);
+	}
+	glfwTerminate();
 }
 
 bool WindowClass::CreateWindow(int width, int height, const char* title)
 {
-    this->width = width;
-    this->height = height;
-    this->title = title;
+	this->width	 = width;
+	this->height = height;
+	this->title	 = title;
 
-    if (!glfwInit())
-    {
-        return false;
-    }
+	if (!glfwInit())
+	{
+		return false;
+	}
 
+	window = glfwCreateWindow(width, height, title, nullptr, nullptr);
 
-    window = glfwCreateWindow(width, height, title, nullptr, nullptr);
+	if (!window)
+	{
+		std::cerr << "Failed to create window" << std::endl;
+		return false;
+	}
 
-    if (!window)
-    {
-        std::cerr << "Failed to create window" << std::endl;
-        return false;
-    }
+	glfwSetWindowUserPointer(window, this);
 
-    glfwSetWindowUserPointer(window, this);
-    
-    glfwMakeContextCurrent(window);
+	glfwMakeContextCurrent(window);
 
-    return true;
+	return true;
 }
 
-bool WindowClass::shouldClose() const {
-        return glfwWindowShouldClose(window);
+bool WindowClass::shouldClose() const
+{
+	return glfwWindowShouldClose(window);
 }
 
 void WindowClass::defaultEvent()
 {
-    glfwPollEvents();
+	glfwPollEvents();
 }
 
 bool WindowClass::initCallbacks()
@@ -61,7 +57,7 @@ bool WindowClass::initCallbacks()
 	return true;
 }
 
-void WindowClass::windowSizeCallback(GLFWwindow *window, int width, int height)
+void WindowClass::windowSizeCallback(GLFWwindow* window, int width, int height)
 {
 	WindowClass* myWindow = static_cast<WindowClass*>(glfwGetWindowUserPointer(window));
 
@@ -69,7 +65,7 @@ void WindowClass::windowSizeCallback(GLFWwindow *window, int width, int height)
 	{
 		myWindow->handleWindowSize(width, height);
 	}
-	
+
 	return;
 }
 
@@ -98,8 +94,8 @@ void WindowClass::render()
         glEnd();
     }
 
-    glfwSwapBuffers(window);
-    glfwPollEvents();
+	glfwSwapBuffers(window);
+	glfwPollEvents();
 }
 
 void WindowClass::cursorPositionCallback(GLFWwindow* window, double xpos, double ypos)
