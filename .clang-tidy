@@ -1,0 +1,16 @@
+Checks: >
+  bugprone-*,
+  -bugprone-easily-swappable-parameters,
+  cppcoreguidelines-*,
+  modernize-*,
+  -modernize-use-trailing-return-type,
+  performance-*,
+  readability-*,
+  -readability-identifier-length,
+  -clang-diagnostic-unknown-argument,
+  -clang-diagnostic-error,
+  -clang-diagnostic-ignored-optimization-argument
+
+HeaderFilterRegex: '.*'
+
+FormatStyle: 'Google'
