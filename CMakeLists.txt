@@ -21,7 +21,7 @@ message(STATUS "clang-tidy: ${CMAKE_CXX_CLANG_TIDY}")
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 #Add clang-format support
-find_program(CLANG_FORMAT clang-format REQUIRED)
+find_program(CLANG_FORMAT clang-format)
 
 # Second test dependencies
 find_package(glfw3 3.3 REQUIRED)
