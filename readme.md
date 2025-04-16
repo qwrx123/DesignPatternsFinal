@@ -1,6 +1,23 @@
-### Compiling Steps
+### Compiling Steps Windows
 
-#### 1. Installing GLFW
+#### 1. Installing LLVM
+
+1. Open a terminal.
+2. Install LLVM using Winget:
+    ```bash
+    winget install --id LLVM.LLVM
+    ```
+3. Add the LLVM executables to your system path:
+    - In Windows, search for **"Edit the system environment variables"**.
+    - Open the program.
+    - Click **Environment Variables**.
+    - Double-click **Path**.
+    - Click **New**.
+    - Add the path (default: `C:\Program Files\LLVM\bin`).
+    - Click **OK** for all windows.
+4. Restart your terminal.
+
+#### 2. Installing GLFW
 
 1. Clone the git repository:
     ```bash
@@ -35,4 +52,4 @@
     - Add the path (default: `C:\Program Files\GLFW\bin`).
     - Click **OK** for all windows
 
-8. Restart your IDE or terminal and build as normal.
+#### 3. Restart your IDE or terminal and build as normal.
