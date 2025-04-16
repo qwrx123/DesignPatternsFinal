@@ -8,7 +8,7 @@ set(CMAKE_VERBOSE_MAKEFILE ON)
 
 #include helpful modules
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
-include(helpfulfunctions)
+include(helpfulFunctions)
 
 # Enable clang-tidy
 find_program(CLANG_TIDY_EXE NAMES clang-tidy)
