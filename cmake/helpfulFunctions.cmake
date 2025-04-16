@@ -1,5 +1,5 @@
 function(registerFilesToFormat)
-cmake_parse_arguments(PARSE_ARGV 0 TARGET "" "" "FILES")
+	cmake_parse_arguments(PARSE_ARGV 0 TARGET "" "" "FILES")
 
 	if (NOT CLANG_FORMAT) #Make sure h file get included into clang-format
 		return()
