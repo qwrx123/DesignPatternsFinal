@@ -1,5 +1,7 @@
 #include <GLFW/glfw3.h>
 #include <iostream>
+#include <algorithm>
+#include <cmath>
 #include "WindowClass.h"
 
 WindowClass::WindowClass() 
@@ -44,7 +46,8 @@ bool WindowClass::CreateWindow(int width, int height, const char* title)
     return true;
 }
 
-bool WindowClass::shouldClose() const {
+bool WindowClass::shouldClose() const 
+{
         return glfwWindowShouldClose(window);
 }
 
@@ -79,34 +82,70 @@ void WindowClass::handleWindowSize(int width, int height)
 }
 
 void WindowClass::render()
-{        
+{
+    // Preps the widnow for rendering
+    // Sets the canvas of the window starting at the top left
     int width, height;
     glfwGetFramebufferSize(window, &width, &height);
     glViewport(0, 0, width, height);
-
     glClear(GL_COLOR_BUFFER_BIT);
 
-    //Draw stroke
-    glLineWidth(5.0f); //Medium thickness
-    for (const auto& stroke : strokes) {
+    // Sets up the coordinate system for canvas
+    // Origin at the center
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    glOrtho(-1, 1, -1, 1, -1, 1); // (left, right, bottom, top, near, far);
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+
+    // Brush tool
+    glLineWidth(5.0f);
+    for (const auto& stroke : strokes) 
+    {
         glBegin(GL_LINE_STRIP);
-        for (const auto& pt : stroke) {
-            float normX = (pt.first / width) * 2.0f - 1.0f;
-            float normY = 1.0f - (pt.second / height) * 2.0f;
+        glColor3f(1.0f, 1.0f, 1.0f); // White
+        for (const auto& pt : stroke) 
+        {
+            double normX = (pt.first / width) * 2.0f - 1.0f;
+            double normY = 1.0f - (pt.second / height) * 2.0f;
             glVertex2f(normX, normY);
         }
         glEnd();
     }
 
+    // Sets up coordinate system for UI
+    // Origin at top-left
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    glOrtho(0, width, height, 0, -1, 1);
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+
+    // Brush-Eraser toggle button
+    double buttonX = 10.0f;
+    double buttonY = 10.0f;
+    double buttonW = 100.0f;
+    double buttonH = 40.0f;
+    glBegin(GL_QUADS);
+        glColor3f(1.0f, 1.0f, 1.0f);
+        glVertex2f(buttonX, buttonY);
+        glVertex2f(buttonX + buttonW, buttonY);
+        glVertex2f(buttonX + buttonW, buttonY + buttonH);
+        glVertex2f(buttonX, buttonY + buttonH);
+    glEnd();
+
+    
     glfwSwapBuffers(window);
     glfwPollEvents();
 }
+
 
 void WindowClass::cursorPositionCallback(GLFWwindow* window, double xpos, double ypos)
 {
     WindowClass* myWindow = static_cast<WindowClass*>(glfwGetWindowUserPointer(window));
 
-    if (myWindow) {
+    if (myWindow) 
+    {
         myWindow->handleMouseMove(xpos, ypos);
     }
 }
@@ -115,28 +154,97 @@ void WindowClass::mouseButtonCallback(GLFWwindow* window, int button, int action
 {
     WindowClass* myWindow = static_cast<WindowClass*>(glfwGetWindowUserPointer(window));
 
-    if (myWindow) {
+    if (myWindow) 
+    {
         myWindow->handleMouseButton(button, action, mods);
     }
 }
 
 void WindowClass::handleMouseMove(double xpos, double ypos)
 {
-    if (isDrawing && currentStroke) {
+    if (currentTool == ToolType::Brush && isDrawing) 
+    {
         currentStroke->emplace_back(xpos, ypos);
+    }
+
+    if (currentTool == ToolType::Eraser && isErasing) 
+    {
+        eraseAtCursor(xpos, ypos);
     }
 }
 
 void WindowClass::handleMouseButton(int button, int action, int mods)
 {
-    if (button == GLFW_MOUSE_BUTTON_LEFT) {
-        if (action == GLFW_PRESS) {
-            isDrawing = true;
-            strokes.emplace_back();
-            currentStroke = &strokes.back();
-        } else if (action == GLFW_RELEASE) {
+    if (button == GLFW_MOUSE_BUTTON_LEFT) 
+    {
+        double xpos, ypos;
+        glfwGetCursorPos(window, &xpos, &ypos);
+        // Location of Eraser-Brush toggle button
+        double buttonX = 10.0f;
+        double buttonY = 10.0f;
+        double buttonW = 100.0f;
+        double buttonH = 40.0f;
+
+        bool clickOnButton = xpos >= buttonX && xpos <= buttonX + buttonW &&
+                             ypos >= buttonY && ypos <= buttonY + buttonH;
+
+        if (action == GLFW_PRESS) 
+        {
+            if (clickOnButton) 
+            {
+                currentTool = (currentTool == ToolType::Brush)
+                            ? ToolType::Eraser
+                            : ToolType::Brush;
+
+                std::cout << "Switched to "
+                          << (currentTool == ToolType::Brush ? "Brush" : "Eraser") << std::endl;
+                return;
+            }
+            if (currentTool == ToolType::Brush) 
+            {
+                isDrawing = true;
+                strokes.emplace_back();
+                currentStroke = &strokes.back();
+            } else if (currentTool == ToolType::Eraser) 
+            {
+                isErasing = true;
+            }
+        } else if (action == GLFW_RELEASE) 
+        {
             isDrawing = false;
+            isErasing = false;
             currentStroke = nullptr;
         }
     }
+}
+
+// Erases what is within the erasers radius and breaks up any required stroke vectors
+void WindowClass::eraseAtCursor(double xpos, double ypos)
+{
+    std::vector<std::vector<std::pair<double, double>>> newStrokes;
+
+    for (const auto& stroke : strokes) 
+    {
+        std::vector<std::pair<double, double>> currentSegment;
+
+        for (const auto& pt : stroke) 
+        {
+            double dx = pt.first - xpos;
+            double dy = pt.second - ypos;
+            bool isErased = std::sqrt(dx * dx + dy * dy) <= eraser_radius;
+
+            if (isErased) {
+                if (!currentSegment.empty()) 
+                {
+                    newStrokes.push_back(currentSegment);
+                    currentSegment.clear();
+                }
+            } else 
+            {
+                currentSegment.push_back(pt);
+            }
+        }
+        newStrokes.push_back(currentSegment);
+    }
+    strokes = std::move(newStrokes);
 }
