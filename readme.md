@@ -52,4 +52,4 @@
     - Add the path (default: `C:\Program Files\GLFW\bin`).
     - Click **OK** for all windows
 
-8. Restart your IDE or terminal and build as normal.
+#### 3. Restart your IDE or terminal and build as normal.
