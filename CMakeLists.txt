@@ -6,6 +6,10 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_VERBOSE_MAKEFILE ON)
 
+#include helpful modules
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+include(helpfulfunctions)
+
 # Enable clang-tidy
 find_program(CLANG_TIDY_EXE NAMES clang-tidy)
 message(STATUS "clang-tidy: ${CLANG_TIDY_EXE}")
