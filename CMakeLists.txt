@@ -33,7 +33,6 @@ find_package(OpenGL REQUIRED)
 
 add_executable(GlfwTestApp GLFWExample.cpp)
 
-#target_link_libraries(QtTestApp Qt6::Widgets)
 target_link_libraries(GlfwTestApp WindowClass glfw)
 
 target_include_directories(GlfwTestApp
@@ -41,15 +40,7 @@ target_include_directories(GlfwTestApp
     ${PROJECT_SOURCE_DIR}/include
 )
 
-if (CLANG_FORMAT) #Format file on build
-    add_custom_target(
-        clangformatmain
-        COMMAND ${CLANG_FORMAT} -i -style=file ${CMAKE_CURRENT_LIST_DIR}/GLFWExample.cpp
-        WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-    )
-
-    add_dependencies(GlfwTestApp clangformatmain)
-endif()
+registerFilesToFormat(GLFWExample.cpp)
 
 add_subdirectory(include)
 add_subdirectory(classes)
