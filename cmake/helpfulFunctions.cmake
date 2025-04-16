@@ -1,27 +1,35 @@
 function(registerFilesToFormat)
+cmake_parse_arguments(PARSE_ARGV 0 TARGET "" "" "FILES")
+
 	if (NOT CLANG_FORMAT) #Make sure h file get included into clang-format
 		return()
 	endif()
 
-	set(Code "Format")
-	set(Target "Target")
+	if (NOT TARGET_FILES)
+		message("Files list is empty")
+		reutrn()
+	endif()
 
-	string(APPEND Code ${ARGV0})
-	string(APPEND Target ${ARGV0})
+	foreach(file IN LISTS TARGET_FILES)
 
-	set(fullTargetPath ${CMAKE_CURRENT_LIST_DIR}/${ARGV0})
-	file(RELATIVE_PATH filePath ${CMAKE_SOURCE_DIR} ${fullTargetPath})
-	message(STATUS "Targeting ${filePath} for formatting")
-	
-	
-	add_custom_target(${Code} ALL
-		COMMAND ${CLANG_FORMAT} -i -style=file ${fullTargetPath}
-		WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-	)
+		set(Code "Format${file}")
+		set(Target "Target${file}")
 
-	add_custom_target(${Target} ALL
-		SOURCES ${ARGV0}
-	)
+		set(fullTargetPath ${CMAKE_CURRENT_LIST_DIR}/${file})
+		file(RELATIVE_PATH filePath ${CMAKE_SOURCE_DIR} ${fullTargetPath})
+		message(STATUS "Targeting ${filePath} for formatting")
+		
+		
+		add_custom_target(${Code} ALL
+			COMMAND ${CLANG_FORMAT} -i -style=file ${fullTargetPath}
+			WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+		)
 
-	add_dependencies(${Target} ${Code})
+		add_custom_target(${Target} ALL
+			SOURCES ${file}
+		)
+
+		add_dependencies(${Target} ${Code})
+
+	endforeach()
 endfunction()
