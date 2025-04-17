@@ -94,3 +94,33 @@
     ```bash
     cmake --build build
     ```
+
+---
+
+### Compiling Steps on macOS
+
+#### 1. Install Homebrew
+```bash
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+```
+
+#### 2. Install Dependencies
+```bash
+brew install llvm lld cmake glfw
+```
+
+#### 3. Verify Installation
+Ensure clang-tidy is in your path:
+```bash
+clang-tidy --version
+```
+
+#### 4. **Configure the project**
+```bash
+cmake -B build
+```
+
+#### 5. **Build the project**
+```bash
+cmake --build build
+```
