@@ -6,15 +6,21 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_VERBOSE_MAKEFILE ON)
 
+#include helpful modules
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+include(helpfulFunctions)
+
 # Enable clang-tidy
 find_program(CLANG_TIDY_EXE NAMES clang-tidy)
 message(STATUS "clang-tidy: ${CLANG_TIDY_EXE}")
 if(CLANG_TIDY_EXE)
-    if (WIN32)
-        set(CMAKE_CXX_CLANG_TIDY ${CLANG_TIDY_EXE})
-    else()
-        set(CMAKE_CXX_CLANG_TIDY "${PROJECT_SOURCE_DIR}/clang-tidy-wrapper.sh")
-    endif()
+
+if (WIN32)
+    set(CMAKE_CXX_CLANG_TIDY ${CLANG_TIDY_EXE})
+else()
+    set(CMAKE_CXX_CLANG_TIDY "${PROJECT_SOURCE_DIR}/clang-tidy-wrapper.sh")
+endif()
+
 endif()
 message(STATUS "clang-tidy: ${CMAKE_CXX_CLANG_TIDY}")
 
@@ -29,23 +35,14 @@ find_package(OpenGL REQUIRED)
 
 add_executable(GlfwTestApp GLFWExample.cpp)
 
-#target_link_libraries(QtTestApp Qt6::Widgets)
 target_link_libraries(GlfwTestApp WindowClass glfw)
 
 target_include_directories(GlfwTestApp
-    PUBLIC
-    ${PROJECT_SOURCE_DIR}/include
+	PUBLIC
+	${PROJECT_SOURCE_DIR}/include
 )
 
-if (CLANG_FORMAT) #Format file on build
-    add_custom_target(
-        clangformatmain
-        COMMAND ${CLANG_FORMAT} -i -style=file ${CMAKE_CURRENT_LIST_DIR}/GLFWExample.cpp
-        WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-    )
-
-    add_dependencies(GlfwTestApp clangformatmain)
-endif()
+registerFilesToFormat(FILES GLFWExample.cpp)
 
 add_subdirectory(include)
 add_subdirectory(classes)
