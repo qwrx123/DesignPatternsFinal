@@ -52,4 +52,75 @@
     - Add the path (default: `C:\Program Files\GLFW\bin`).
     - Click **OK** for all windows
 
-#### 3. Restart your IDE or terminal and build as normal.
+#### 3. Restart your IDE
+
+#### 4. Configure the project
+    ```bash
+    cmake -B build
+    ```
+
+#### 5. Build the project
+    ```bash
+    cmake --build build
+    ```
+
+---
+
+### Compiling steps on Linux
+
+#### 1. **Install dependencies**  
+
+- On **Debian/Ubuntu**:
+    ```bash
+    sudo apt install libglfw3 libglfw3-wayland libglfw3-dev clang-tidy clang-format cmake
+    ```
+
+- On **Arch**:
+    ```bash
+    pacman -S glfw clang cmake
+    ```
+
+- On **Gentoo**:
+    ```bash
+    emerge --ask dev-libs/glfw3 dev-libs/clang-tools dev-util/cmake
+    ```
+
+#### 2. **Configure the project**
+    ```bash
+    cmake -B build
+    ```
+
+#### 3. **Build the project**
+    ```bash
+    cmake --build build
+    ```
+
+---
+
+### Compiling Steps on macOS
+
+#### 1. Install Homebrew
+```bash
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+```
+
+#### 2. Install Dependencies
+```bash
+brew install llvm lld cmake glfw
+```
+
+#### 3. Verify Installation
+Ensure clang-tidy is in your path:
+```bash
+clang-tidy --version
+```
+
+#### 4. **Configure the project**
+```bash
+cmake -B build
+```
+
+#### 5. **Build the project**
+```bash
+cmake --build build
+```
