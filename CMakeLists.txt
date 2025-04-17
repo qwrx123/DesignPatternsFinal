@@ -14,11 +14,13 @@ include(helpfulFunctions)
 find_program(CLANG_TIDY_EXE NAMES clang-tidy)
 message(STATUS "clang-tidy: ${CLANG_TIDY_EXE}")
 if(CLANG_TIDY_EXE)
-	if (WIN32)
-		set(CMAKE_CXX_CLANG_TIDY "${PROJECT_SOURCE_DIR}/clang-tidy-wrapper.ps1")
-	else()
-		set(CMAKE_CXX_CLANG_TIDY "${PROJECT_SOURCE_DIR}/clang-tidy-wrapper.sh")
-	endif()
+
+if (WIN32)
+    set(CMAKE_CXX_CLANG_TIDY ${CLANG_TIDY_EXE})
+else()
+    set(CMAKE_CXX_CLANG_TIDY "${PROJECT_SOURCE_DIR}/clang-tidy-wrapper.sh")
+endif()
+
 endif()
 message(STATUS "clang-tidy: ${CMAKE_CXX_CLANG_TIDY}")
 
