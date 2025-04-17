@@ -1,3 +1,12 @@
+# General Dependencies
+
+1. **CMake**: Open source, cross-platform build system for C++.
+2. **GLFW**: Open source, cross-platform library for creating windows.
+3. **OpenGL**: Open source, cross-platform API for rendering.
+4. **clang-tidy**: Open source, cross-platform tool for static code analysis.
+5. **clang-format**: Open source, cross-platform code formatter for C++.
+
+
 ### Compiling Steps Windows
 
 #### 1. Installing LLVM
