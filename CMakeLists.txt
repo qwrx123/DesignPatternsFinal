@@ -10,6 +10,29 @@ set(CMAKE_VERBOSE_MAKEFILE ON)
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 include(helpfulFunctions)
 
+if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+	include(CTest)
+endif()
+
+
+# Make sure debug is set as default option on non multi-config build systems
+get_property(isMultiConfig GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
+if(NOT isMultiConfig)
+	set(CMAKE_BUILD_TYPE Debug CACHE STRING "Build type")
+endif()
+
+# Only modify config details if the top level project
+if(CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
+	if(NOT isMultiConfig)
+		set_property(CACHE CMAKE_BUILD_TYPE PROPERTY
+			STRINGS Debug Release Profile
+		)
+	elseif(NOT "Profile" IN_LIST CMAKE_CONFIGURATION_TYPES)
+		list(APPEND CMAKE_CONFIGURATION_TYPES Profile)
+	endif()
+	
+endif()
+
 # Enable clang-tidy
 find_program(CLANG_TIDY_EXE NAMES clang-tidy)
 message(STATUS "clang-tidy: ${CLANG_TIDY_EXE}")
@@ -44,4 +67,6 @@ registerFilesToFormat(FILES GLFWExample.cpp)
 
 add_subdirectory(include)
 add_subdirectory(classes)
-add_subdirectory(test)
+if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+	add_subdirectory(test)
+endif()
