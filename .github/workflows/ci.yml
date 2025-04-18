@@ -18,7 +18,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Install dependencies
-        run: sudo apt-get update && sudo apt-get install -y libglfw3 libglfw3-dev
+        run: sudo apt-get update && sudo apt-get install -y libglfw3 libglfw3-dev libgtest-dev libgmock-dev
 
       - name: Configure
         run: cmake -DCMAKE_BUILD_TYPE=Debug -DBUILD_SHARED_LIBS=true -B build
