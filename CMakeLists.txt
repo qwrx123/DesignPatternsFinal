@@ -10,10 +10,8 @@ set(CMAKE_VERBOSE_MAKEFILE ON)
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 include(helpfulFunctions)
 
-if (CMAKE_BUILD_TYPE STREQUAL "Debug")
-	include(CTest)
-endif()
-
+set(option BUILD_TESTING "Build testing" ON)
+include(CTest)
 
 # Make sure debug is set as default option on non multi-config build systems
 get_property(isMultiConfig GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
@@ -67,6 +65,6 @@ registerFilesToFormat(FILES GLFWExample.cpp)
 
 add_subdirectory(include)
 add_subdirectory(classes)
-if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+if (BUILD_TESTING)
 	add_subdirectory(test)
 endif()

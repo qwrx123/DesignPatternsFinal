@@ -43,7 +43,7 @@
 	```
 4. Configure the project:
 	```bash
-	cmake -DCMAKE_BUILD_TYPE=release -DBUILD_SHARED_LIBS=true -DCMAKE_GENERATOR_PLATFORM=x64 -B build
+	cmake -DCMAKE_BUILD_TYPE=release -DBUILD_SHARED_LIBS=ON -DCMAKE_GENERATOR_PLATFORM=x64 -B build
 	```
 5. Build the project:
 	```bash
