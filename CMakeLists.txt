@@ -1,4 +1,12 @@
 cmake_minimum_required(VERSION 3.29.5)
+
+if (DEFINED ENV{VCPKG_ROOT} AND NOT DEFINED CMAKE_TOOLCHAIN_FILE)
+	message(STATUS "VCPKG_ROOT: $ENV{VCPKG_ROOT}")
+	string(REPLACE "\\" "/" VCPKG_ROOT $ENV{VCPKG_ROOT})
+	set(CMAKE_TOOLCHAIN_FILE "${VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake" CACHE STRING "VCPKG toolchain file")
+	message(STATUS "CMAKE_TOOLCHAIN_FILE: ${CMAKE_TOOLCHAIN_FILE}")
+endif()
+
 project (SoftwareEngineeringTest VERSION 1.1 LANGUAGES CXX)
 
 # use C++20 language standard
