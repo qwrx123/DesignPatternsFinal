@@ -1,4 +1,5 @@
 add_library(WindowClass
+	SHARED
 	WindowClass.cpp
 )
 
@@ -18,3 +19,8 @@ target_include_directories(WindowClass
 	${PROJECT_SOURCE_DIR}/include
 	
 )
+
+install(TARGETS WindowClass
+		LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+		ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+	)

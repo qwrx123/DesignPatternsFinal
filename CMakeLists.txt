@@ -21,6 +21,17 @@ include(helpfulFunctions)
 set(option BUILD_TESTING "Build testing" ON)
 include(CTest)
 
+#Set up installing
+include(GNUInstallDirs)
+set(CMAKE_INSTALL_DOCDIR ${CMAKE_INSTALL_DATAROOTDIR}/doc/${PROJECT_NAME})
+
+file(RELATIVE_PATH relDir
+${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_INSTALL_BINDIR}
+${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR}
+)
+set(CMAKE_INSTALL_RPATH $ORIGIN $ORIGIN/${relDir})
+
+
 # Make sure debug is set as default option on non multi-config build systems
 get_property(isMultiConfig GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
 if(NOT isMultiConfig)
@@ -70,6 +81,11 @@ target_include_directories(GlfwTestApp
 )
 
 registerFilesToFormat(FILES GLFWExample.cpp)
+
+install(TARGETS GlfwTestApp
+DESTINATION ${CMAKE_INSTALL_BINDIR}
+)
+
 
 add_subdirectory(include)
 add_subdirectory(classes)
