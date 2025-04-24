@@ -8,6 +8,7 @@
 6. **Google-test**: Open source, cross-platform testing framwork for C++.
 7. **VCPKG**: Open source, cross-platform C++ package manager.
 
+---
 
 ### Compiling Steps Windows
 
