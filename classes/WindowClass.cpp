@@ -1,70 +1,66 @@
+#include "WindowClass.h"
 #include <GLFW/glfw3.h>
-#include <iostream>
 #include <algorithm>
 #include <cmath>
-#include "WindowClass.h"
+#include <iostream>
 
-WindowClass::WindowClass() 
-    : width(0), height(0), title(nullptr), window(nullptr)
+WindowClass::WindowClass() : width(0), height(0), title(nullptr), window(nullptr) {}
+
+WindowClass::~WindowClass()
 {
-
-}
-
-WindowClass::~WindowClass() 
-{
-    if (window)
-    {
-        glfwDestroyWindow(window);
-    }
-    glfwTerminate();
+	if (window)
+	{
+		glfwDestroyWindow(window);
+	}
+	glfwTerminate();
 }
 
 bool WindowClass::CreateWindow(int width, int height, const char* title)
 {
-    this->width = width;
-    this->height = height;
-    this->title = title;
+	this->width	 = width;
+	this->height = height;
+	this->title	 = title;
 
-    if (!glfwInit())
-    {
-        return false;
-    }
+	if (!glfwInit())
+	{
+		return false;
+	}
 
+	window = glfwCreateWindow(width, height, title, nullptr, nullptr);
 
-    window = glfwCreateWindow(width, height, title, nullptr, nullptr);
+	if (!window)
+	{
+		std::cerr << "Failed to create window" << std::endl;
+		return false;
+	}
 
-    if (!window)
-    {
-        std::cerr << "Failed to create window" << std::endl;
-        return false;
-    }
+	glfwSetWindowUserPointer(window, this);
 
-    glfwSetWindowUserPointer(window, this);
-    
-    glfwMakeContextCurrent(window);
+	glfwMakeContextCurrent(window);
 
-    return true;
+	return true;
 }
 
-bool WindowClass::shouldClose() const 
+bool WindowClass::shouldClose() const
 {
-        return glfwWindowShouldClose(window);
+	return glfwWindowShouldClose(window);
 }
 
 void WindowClass::defaultEvent()
 {
-    glfwPollEvents();
+	glfwPollEvents();
 }
 
 bool WindowClass::initCallbacks()
 {
-	glfwSetWindowSizeCallback(window, (GLFWwindowsizefun)(&windowSizeCallback));
-    glfwSetCursorPosCallback(window, &cursorPositionCallback);
-    glfwSetMouseButtonCallback(window, &mouseButtonCallback);
+	glfwSetWindowSizeCallback(window, (GLFWwindowsizefun) (&windowSizeCallback));
+	glfwSetCursorPosCallback(window, &cursorPositionCallback);
+	glfwSetMouseButtonCallback(window, &mouseButtonCallback);
+	glfwSetCharCallback(window, characterCallback);
 	return true;
 }
 
-void WindowClass::windowSizeCallback(GLFWwindow *window, int width, int height)
+void WindowClass::windowSizeCallback(GLFWwindow* window, int width, int height)
 {
 	WindowClass* myWindow = static_cast<WindowClass*>(glfwGetWindowUserPointer(window));
 
@@ -72,7 +68,7 @@ void WindowClass::windowSizeCallback(GLFWwindow *window, int width, int height)
 	{
 		myWindow->handleWindowSize(width, height);
 	}
-	
+
 	return;
 }
 
@@ -83,168 +79,189 @@ void WindowClass::handleWindowSize(int width, int height)
 
 void WindowClass::render()
 {
-    // Preps the widnow for rendering
-    // Sets the canvas of the window starting at the top left
-    int width, height;
-    glfwGetFramebufferSize(window, &width, &height);
-    glViewport(0, 0, width, height);
-    glClear(GL_COLOR_BUFFER_BIT);
+	// Preps the widnow for rendering
+	// Sets the canvas of the window starting at the top left
+	int width, height;
+	glfwGetFramebufferSize(window, &width, &height);
+	glViewport(0, 0, width, height);
+	glClear(GL_COLOR_BUFFER_BIT);
 
-    // Sets up the coordinate system for canvas
-    // Origin at the center
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    glOrtho(-1, 1, -1, 1, -1, 1); // (left, right, bottom, top, near, far);
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
+	// Sets up the coordinate system for canvas
+	// Origin at the center
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	glOrtho(-1, 1, -1, 1, -1, 1);  // (left, right, bottom, top, near, far);
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
 
-    // Brush tool
-    glLineWidth(5.0f);
-    for (const auto& stroke : strokes) 
-    {
-        glBegin(GL_LINE_STRIP);
-        glColor3f(1.0f, 1.0f, 1.0f); // White
-        for (const auto& pt : stroke) 
-        {
-            double normX = (pt.first / width) * 2.0f - 1.0f;
-            double normY = 1.0f - (pt.second / height) * 2.0f;
-            glVertex2f(normX, normY);
-        }
-        glEnd();
-    }
+	// Brush tool
+	glLineWidth(5.0f);
+	for (const auto& stroke : strokes)
+	{
+		glBegin(GL_LINE_STRIP);
+		glColor3f(1.0f, 1.0f, 1.0f);  // White
+		for (const auto& pt : stroke)
+		{
+			double normX = (pt.first / width) * 2.0f - 1.0f;
+			double normY = 1.0f - (pt.second / height) * 2.0f;
+			glVertex2f(normX, normY);
+		}
+		glEnd();
+	}
 
-    // Sets up coordinate system for UI
-    // Origin at top-left
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    glOrtho(0, width, height, 0, -1, 1);
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
+	// Sets up coordinate system for UI
+	// Origin at top-left
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	glOrtho(0, width, height, 0, -1, 1);
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
 
-    // Brush-Eraser toggle button
-    double buttonX = 10.0f;
-    double buttonY = 10.0f;
-    double buttonW = 100.0f;
-    double buttonH = 40.0f;
-    glBegin(GL_QUADS);
-        glColor3f(1.0f, 1.0f, 1.0f);
-        glVertex2f(buttonX, buttonY);
-        glVertex2f(buttonX + buttonW, buttonY);
-        glVertex2f(buttonX + buttonW, buttonY + buttonH);
-        glVertex2f(buttonX, buttonY + buttonH);
-    glEnd();
+	// Brush-Eraser toggle button
+	double buttonX = 10.0f;
+	double buttonY = 10.0f;
+	double buttonW = 100.0f;
+	double buttonH = 40.0f;
+	glBegin(GL_QUADS);
+	glColor3f(1.0f, 1.0f, 1.0f);
+	glVertex2f(buttonX, buttonY);
+	glVertex2f(buttonX + buttonW, buttonY);
+	glVertex2f(buttonX + buttonW, buttonY + buttonH);
+	glVertex2f(buttonX, buttonY + buttonH);
+	glEnd();
 
-    
-    glfwSwapBuffers(window);
-    glfwPollEvents();
+	glfwSwapBuffers(window);
+	glfwPollEvents();
 }
-
 
 void WindowClass::cursorPositionCallback(GLFWwindow* window, double xpos, double ypos)
 {
-    WindowClass* myWindow = static_cast<WindowClass*>(glfwGetWindowUserPointer(window));
+	WindowClass* myWindow = static_cast<WindowClass*>(glfwGetWindowUserPointer(window));
 
-    if (myWindow) 
-    {
-        myWindow->handleMouseMove(xpos, ypos);
-    }
+	if (myWindow)
+	{
+		myWindow->handleMouseMove(xpos, ypos);
+	}
 }
 
 void WindowClass::mouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
 {
-    WindowClass* myWindow = static_cast<WindowClass*>(glfwGetWindowUserPointer(window));
+	WindowClass* myWindow = static_cast<WindowClass*>(glfwGetWindowUserPointer(window));
 
-    if (myWindow) 
-    {
-        myWindow->handleMouseButton(button, action, mods);
-    }
+	if (myWindow)
+	{
+		myWindow->handleMouseButton(button, action, mods);
+	}
 }
 
 void WindowClass::handleMouseMove(double xpos, double ypos)
 {
-    if (currentTool == ToolType::Brush && isDrawing) 
-    {
-        currentStroke->emplace_back(xpos, ypos);
-    }
+	if (currentTool == ToolType::Brush && isDrawing)
+	{
+		currentStroke->emplace_back(xpos, ypos);
+	}
 
-    if (currentTool == ToolType::Eraser && isErasing) 
-    {
-        eraseAtCursor(xpos, ypos);
-    }
+	if (currentTool == ToolType::Eraser && isErasing)
+	{
+		eraseAtCursor(xpos, ypos);
+	}
 }
 
 void WindowClass::handleMouseButton(int button, int action, int mods)
 {
-    if (button == GLFW_MOUSE_BUTTON_LEFT) 
-    {
-        double xpos, ypos;
-        glfwGetCursorPos(window, &xpos, &ypos);
-        // Location of Eraser-Brush toggle button
-        double buttonX = 10.0f;
-        double buttonY = 10.0f;
-        double buttonW = 100.0f;
-        double buttonH = 40.0f;
+	if (button == GLFW_MOUSE_BUTTON_LEFT)
+	{
+		double xpos, ypos;
+		glfwGetCursorPos(window, &xpos, &ypos);
+		// Location of Eraser-Brush toggle button
+		double buttonX = 10.0f;
+		double buttonY = 10.0f;
+		double buttonW = 100.0f;
+		double buttonH = 40.0f;
 
-        bool clickOnButton = xpos >= buttonX && xpos <= buttonX + buttonW &&
-                             ypos >= buttonY && ypos <= buttonY + buttonH;
+		bool clickOnButton = xpos >= buttonX && xpos <= buttonX + buttonW && ypos >= buttonY &&
+							 ypos <= buttonY + buttonH;
 
-        if (action == GLFW_PRESS) 
-        {
-            if (clickOnButton) 
-            {
-                currentTool = (currentTool == ToolType::Brush)
-                            ? ToolType::Eraser
-                            : ToolType::Brush;
+		if (action == GLFW_PRESS)
+		{
+			if (clickOnButton)
+			{
+				currentTool = (currentTool == ToolType::Brush) ? ToolType::Eraser : ToolType::Brush;
 
-                std::cout << "Switched to "
-                          << (currentTool == ToolType::Brush ? "Brush" : "Eraser") << std::endl;
-                return;
-            }
-            if (currentTool == ToolType::Brush) 
-            {
-                isDrawing = true;
-                strokes.emplace_back();
-                currentStroke = &strokes.back();
-            } else if (currentTool == ToolType::Eraser) 
-            {
-                isErasing = true;
-            }
-        } else if (action == GLFW_RELEASE) 
-        {
-            isDrawing = false;
-            isErasing = false;
-            currentStroke = nullptr;
-        }
-    }
+				std::cout << "Switched to " << (currentTool == ToolType::Brush ? "Brush" : "Eraser")
+						  << std::endl;
+				return;
+			}
+			if (currentTool == ToolType::Brush)
+			{
+				isDrawing = true;
+				strokes.emplace_back();
+				currentStroke = &strokes.back();
+			}
+			else if (currentTool == ToolType::Eraser)
+			{
+				isErasing = true;
+			}
+		}
+		else if (action == GLFW_RELEASE)
+		{
+			isDrawing	  = false;
+			isErasing	  = false;
+			currentStroke = nullptr;
+		}
+	}
+}
+
+void WindowClass::characterCallback(GLFWwindow* window, unsigned int codepoint)
+{
+	WindowClass* myWindow = static_cast<WindowClass*>(glfwGetWindowUserPointer(window));
+
+	if (myWindow)
+	{
+		myWindow->handleCharacterInput(codepoint);
+	}
+}
+
+// TODO: Implement the character input handling function
+void WindowClass::handleCharacterInput(unsigned int codepoint)
+{
+	// codepoint = Unicode code points for key events for regular text input
+	// that generally behaves as a standard text field on that platform.
+	// codepoint is the decimal unicode value of the character.
+	char input = '\0';
+	input	   = static_cast<char>(codepoint);
+	std::cout << codepoint << " " << input << std::endl;
 }
 
 // Erases what is within the erasers radius and breaks up any required stroke vectors
 void WindowClass::eraseAtCursor(double xpos, double ypos)
 {
-    std::vector<std::vector<std::pair<double, double>>> newStrokes;
+	std::vector<std::vector<std::pair<double, double>>> newStrokes;
 
-    for (const auto& stroke : strokes) 
-    {
-        std::vector<std::pair<double, double>> currentSegment;
+	for (const auto& stroke : strokes)
+	{
+		std::vector<std::pair<double, double>> currentSegment;
 
-        for (const auto& pt : stroke) 
-        {
-            double dx = pt.first - xpos;
-            double dy = pt.second - ypos;
-            bool isErased = std::sqrt(dx * dx + dy * dy) <= eraser_radius;
+		for (const auto& pt : stroke)
+		{
+			double dx		= pt.first - xpos;
+			double dy		= pt.second - ypos;
+			bool   isErased = std::sqrt(dx * dx + dy * dy) <= eraser_radius;
 
-            if (isErased) {
-                if (!currentSegment.empty()) 
-                {
-                    newStrokes.push_back(currentSegment);
-                    currentSegment.clear();
-                }
-            } else 
-            {
-                currentSegment.push_back(pt);
-            }
-        }
-        newStrokes.push_back(currentSegment);
-    }
-    strokes = std::move(newStrokes);
+			if (isErased)
+			{
+				if (!currentSegment.empty())
+				{
+					newStrokes.push_back(currentSegment);
+					currentSegment.clear();
+				}
+			}
+			else
+			{
+				currentSegment.push_back(pt);
+			}
+		}
+		newStrokes.push_back(currentSegment);
+	}
+	strokes = std::move(newStrokes);
 }
