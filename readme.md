@@ -5,7 +5,8 @@
 3. **OpenGL**: Open source, cross-platform API for rendering.
 4. **clang-tidy**: Open source, cross-platform tool for static code analysis.
 5. **clang-format**: Open source, cross-platform code formatter for C++.
-6. **Google-test**: Open source, cross-platform testing framwork for c++
+6. **Google-test**: Open source, cross-platform testing framwork for C++.
+7. **VCPKG**: Open source, cross-platform C++ package manager.
 
 
 ### Compiling Steps Windows
@@ -62,16 +63,62 @@
 	- Add the path (default: `C:\Program Files\GLFW\bin`).
 	- Click **OK** for all windows
 
-#### 3. Restart your IDE
+#### 3. Install VCPKG
 
-#### 4. Configure the project
+1. Navigate to desired VCPKG location:
+	```bash
+	cd C:\
+	```
+
+2. Clone VCPKG repository:
+	```bash
+	git clone https://github.com/microsoft/vcpkg.git
+	```
+
+3. Enter VCPKG directory:
+	```bash
+	cd vcpkg
+	```
+
+4. Run bootstrapper:
+	```bash
+	.\bootstrap-vcpkg.bat
+	```
+
+5. Configure environment variables:
+	- In Windows, search for **"Edit the system environment variables"**
+	- Open the program
+	- Click **Environment Variables**
+	- Double-click **Path**
+	- Click **New**
+	- Add the path (default: `C:\vcpkg`)
+	- Click **OK**
+	- Click **New** again
+	- Add **VCPKG_ROOT** as key
+	- Set value to VCPKG path (default: `C:\vcpkg`)
+
+#### 4. Restart Terminal
+
+#### 5. install gtest
+```bash
+vcpkg install gtest
+```
+
+#### 6. Restart your IDE
+
+#### 7. Configure the project
 ```bash
 cmake -B build
 ```
 
-#### 5. Build the project
+#### 8. Build the project
 ```bash
 cmake --build build
+```
+
+#### 9. Test the project
+```bash
+ctest --test-dir build --output-on-failure
 ```
 
 ---
@@ -87,12 +134,12 @@ cmake --build build
 
 - On **Arch**:
 	```bash
-	pacman -S glfw clang cmake
+	pacman -S glfw clang cmake gtest
 	```
 
 - On **Gentoo**:
 	```bash
-	emerge --ask dev-libs/glfw3 dev-libs/clang-tools dev-util/cmake
+	emerge --ask dev-libs/glfw3 dev-libs/clang-tools dev-util/cmake dev-cpp/gtest
 	```
 
 #### 2. **Configure the project**
@@ -103,6 +150,11 @@ cmake -B build
 #### 3. **Build the project**
 ```bash
 cmake --build build
+```
+
+#### 4. Test the project
+```bash
+ctest --test-dir build --output-on-failure
 ```
 
 ---
@@ -116,7 +168,7 @@ cmake --build build
 
 #### 2. Install Dependencies
 ```bash
-brew install llvm lld cmake glfw
+brew install llvm lld cmake glfw googletest
 ```
 
 #### 3. Verify Installation
@@ -133,4 +185,9 @@ cmake -B build
 #### 5. **Build the project**
 ```bash
 cmake --build build
+```
+
+#### 6. Test the project
+```bash
+ctest --test-dir build --output-on-failure
 ```
