@@ -26,10 +26,17 @@ include(GNUInstallDirs)
 set(CMAKE_INSTALL_DOCDIR ${CMAKE_INSTALL_DATAROOTDIR}/doc/${PROJECT_NAME})
 
 file(RELATIVE_PATH relDir
-${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_INSTALL_BINDIR}
-${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR}
+	${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_INSTALL_BINDIR}
+	${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR}
 )
-set(CMAKE_INSTALL_RPATH $ORIGIN $ORIGIN/${relDir})
+
+if(APPLE)
+	set(base @loader_path)
+else()
+	set(base $ORIGIN)
+endif()
+
+set(CMAKE_INSTALL_RPATH ${base} ${base}/${relDir})
 
 
 # Make sure debug is set as default option on non multi-config build systems
