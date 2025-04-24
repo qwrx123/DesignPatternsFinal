@@ -5,6 +5,7 @@
 3. **OpenGL**: Open source, cross-platform API for rendering.
 4. **clang-tidy**: Open source, cross-platform tool for static code analysis.
 5. **clang-format**: Open source, cross-platform code formatter for C++.
+6. **Google-test**: Open source, cross-platform testing framwork for c++
 
 
 ### Compiling Steps Windows
@@ -13,65 +14,65 @@
 
 1. Open a terminal.
 2. Install LLVM using Winget:
-    ```bash
-    winget install --id LLVM.LLVM
-    ```
+	```bash
+	winget install --id LLVM.LLVM
+	```
 3. Add the LLVM executables to your system path:
-    - In Windows, search for **"Edit the system environment variables"**.
-    - Open the program.
-    - Click **Environment Variables**.
-    - Double-click **Path**.
-    - Click **New**.
-    - Add the path (default: `C:\Program Files\LLVM\bin`).
-    - Click **OK** for all windows.
+	- In Windows, search for **"Edit the system environment variables"**.
+	- Open the program.
+	- Click **Environment Variables**.
+	- Double-click **Path**.
+	- Click **New**.
+	- Add the path (default: `C:\Program Files\LLVM\bin`).
+	- Click **OK** for all windows.
 4. Restart your terminal.
 
 #### 2. Installing GLFW
 
 1. Clone the git repository:
-    ```bash
-    git clone https://github.com/glfw/glfw
-    ```
+	```bash
+	git clone https://github.com/glfw/glfw
+	```
 2. Change directory into the project:
-    ```bash
-    cd glfw
-    ```
+	```bash
+	cd glfw
+	```
 3. Create the build directory:
-    ```bash
-    mkdir build
-    ```
+	```bash
+	mkdir build
+	```
 4. Configure the project:
-    ```bash
-    cmake -DCMAKE_BUILD_TYPE=release -DBUILD_SHARED_LIBS=true -DCMAKE_GENERATOR_PLATFORM=x64 -B build
-    ```
+	```bash
+	cmake -DCMAKE_BUILD_TYPE=release -DBUILD_SHARED_LIBS=ON -DCMAKE_GENERATOR_PLATFORM=x64 -B build
+	```
 5. Build the project:
-    ```bash
-    cmake --build build --config release
-    ```
+	```bash
+	cmake --build build --config release
+	```
 6. From an ***Administrator terminal***, install the project:
-    ```bash
-    cmake --install build
-    ```
+	```bash
+	cmake --install build
+	```
 7. Add the DLL to the system path:
-    - In Windows, search for **"Edit the system environment variables"**.
-    - Open the program.
-    - Click **Environment Variables**.
-    - Double-click **Path**.
-    - Click **New**.
-    - Add the path (default: `C:\Program Files\GLFW\bin`).
-    - Click **OK** for all windows
+	- In Windows, search for **"Edit the system environment variables"**.
+	- Open the program.
+	- Click **Environment Variables**.
+	- Double-click **Path**.
+	- Click **New**.
+	- Add the path (default: `C:\Program Files\GLFW\bin`).
+	- Click **OK** for all windows
 
 #### 3. Restart your IDE
 
 #### 4. Configure the project
-    ```bash
-    cmake -B build
-    ```
+```bash
+cmake -B build
+```
 
 #### 5. Build the project
-    ```bash
-    cmake --build build
-    ```
+```bash
+cmake --build build
+```
 
 ---
 
@@ -80,29 +81,29 @@
 #### 1. **Install dependencies**  
 
 - On **Debian/Ubuntu**:
-    ```bash
-    sudo apt install libglfw3 libglfw3-wayland libglfw3-dev clang-tidy clang-format cmake
-    ```
+	```bash
+	sudo apt install libglfw3 libglfw3-wayland libglfw3-dev clang-tidy clang-format cmake libgtest-dev libgmock-dev
+	```
 
 - On **Arch**:
-    ```bash
-    pacman -S glfw clang cmake
-    ```
+	```bash
+	pacman -S glfw clang cmake
+	```
 
 - On **Gentoo**:
-    ```bash
-    emerge --ask dev-libs/glfw3 dev-libs/clang-tools dev-util/cmake
-    ```
+	```bash
+	emerge --ask dev-libs/glfw3 dev-libs/clang-tools dev-util/cmake
+	```
 
 #### 2. **Configure the project**
-    ```bash
-    cmake -B build
-    ```
+```bash
+cmake -B build
+```
 
 #### 3. **Build the project**
-    ```bash
-    cmake --build build
-    ```
+```bash
+cmake --build build
+```
 
 ---
 
