@@ -9,7 +9,7 @@ add_library(ButtonClass
 find_package(OpenGL REQUIRED)
 find_package(glfw3 3.3 REQUIRED)
 
-registerFilesToFormat(FILES WindowClass.cpp)
+registerFilesToFormat(FILES WindowClass.cpp ButtonClass.cpp)
 
 target_link_libraries(WindowClass
 	${GLEW_LIBRARIES}
@@ -23,8 +23,6 @@ target_include_directories(WindowClass
 	${PROJECT_SOURCE_DIR}/include
 	
 )
-
-registerFilesToFormat(FILES ButtonClass.cpp)
 
 target_link_libraries(ButtonClass
 	${GLEW_LIBRARIES}
