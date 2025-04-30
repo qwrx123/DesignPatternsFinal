@@ -147,7 +147,10 @@ ctest --test-dir build --output-on-failure
 ```bash
 cmake -B build
 ```
-
+Optionally you can add `-DENABLE_RELOCATABLE=TRUE` for easy portability:
+```bash
+cmake -B build -DENABLE_RELOCATABLE=TRUE
+```
 #### 3. **Build the project**
 ```bash
 cmake --build build
