@@ -59,12 +59,15 @@ find_program(CLANG_FORMAT clang-format)
 # Second test dependencies
 find_package(glfw3 3.3 REQUIRED)
 find_package(OpenGL REQUIRED)
+find_package(Freetype REQUIRED)
 
 add_executable(GlfwTestApp GLFWExample.cpp)
 
-target_link_libraries(GlfwTestApp WindowClass glfw)
+target_link_libraries(GlfwTestApp WindowClass glfw Freetype::Freetype ${FREETYPE_LIBRARIES} TextClass)
 
 target_include_directories(GlfwTestApp
+	PRIVATE
+	${FREETYPE_INCLUDE_DIRS}
 	PUBLIC
 	${PROJECT_SOURCE_DIR}/include
 )
