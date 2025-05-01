@@ -19,9 +19,10 @@ WindowClass::~WindowClass()
 
 bool WindowClass::CreateWindow(int width, int height, const char* title)
 {
-	this->width	 = width;
-	this->height = height;
-	this->title	 = title;
+	this->width			= width;
+	this->height		= height;
+	this->title			= title;
+	this->m_textHandler = new TextClass();
 
 	if (!glfwInit())
 	{

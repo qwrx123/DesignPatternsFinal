@@ -14,8 +14,14 @@ TextClass::TextClass()
 		return;
 	}
 
+	// Get Font pathname
+	std::string fontPath;
+	std::cout << "Enter the direcotry path of the font file you want to use: ";
+	std::cin >> fontPath;
+	std::cout << "Font Path: " << fontPath << std::endl;
+
 	// Load a font face
-	if (FT_New_Face(library, "path/to/font.ttf", 0, &face))
+	if (FT_New_Face(library, fontPath.c_str(), 0, &face) != 0)
 	{
 		std::cerr << "Could not load font" << std::endl;
 		return;
@@ -33,7 +39,8 @@ TextClass::~TextClass()
 void TextClass::textInput(unsigned int codepoint)
 {
 	// Convert codepoint to character and add to text string
-	char input = static_cast<char>(codepoint);
+	char input = '\0';
+	input	   = static_cast<char>(codepoint);
 	text += input;
 	std::cout << "Input: " << input << std::endl;
 	glyph_index = FT_Get_Char_Index(face, codepoint);
