@@ -45,6 +45,9 @@ elseif(CMAKE_HOST_SYSTEM_NAME MATCHES "Linux|FreeBSD|OpenBSD")
 	endif()
 endif()
 
+
+SET(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
+
 # Make sure debug is set as default option on non multi-config build systems
 get_property(isMultiConfig GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
 if(NOT isMultiConfig)
