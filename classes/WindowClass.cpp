@@ -4,7 +4,7 @@
 #include <cmath>
 #include <iostream>
 #include "ButtonClass.h"
-#include <iostream>
+#include "TextClass.h"
 
 WindowClass::WindowClass() : width(0), height(0), title(nullptr), window(nullptr) {}
 
@@ -27,7 +27,6 @@ bool WindowClass::CreateWindow(int width, int height, const char* title)
 	{
 		return false;
 	}
-
 
 	window = glfwCreateWindow(width, height, title, nullptr, nullptr);
 
@@ -220,9 +219,17 @@ void WindowClass::handleCharacterInput(unsigned int codepoint)
 	// codepoint = Unicode code points for key events for regular text input
 	// that generally behaves as a standard text field on that platform.
 	// codepoint is the decimal unicode value of the character.
-	char input = '\0';
-	input	   = static_cast<char>(codepoint);
-	std::cout << codepoint << " " << input << std::endl;
+	if (m_textHandler)
+	{  // assuming m_textHandler is a class member
+		m_textHandler->textInput(codepoint);
+	}
+	// TextClass* input = new TextClass();
+	// input->textInput(codepoint);
+
+	// char input = '\0';
+	// input	   = static_cast<char>(codepoint);
+	// std::cout << codepoint << " " << input << std::endl;
+	//  textInput(codepoint);
 }
 
 // Erases what is within the erasers radius and breaks up any required stroke vectors

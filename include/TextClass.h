@@ -1,24 +1,24 @@
+#ifndef TEXTCLASS_H
+#define TEXTCLASS_H
+
 #include <string>
-#include <ft2build.h> // FreeType2 header files
-#include FT_FREETYPE_H // FreeType2 header files
+#include <ft2build.h> 
+#include FT_FREETYPE_H
+
 // Use a .ttf font file for text rendering
 class TextClass
 {
     public:
-     TextClass() = default;
-     ~TextClass() = default;
-     FT_Library library;
-     FT_Face face;
-     error = FT_Init_FreeType(&library);
-     error = FT_New_Face(library, "path/to/font.ttf", 0, &face);
+     TextClass();
+     ~TextClass();
+     void textInput(unsigned int codepoint);
 
     protected:
+        FT_Library library;
+        FT_Face face;
         std::string text;
-        int		 x;
-        int		 y;
-        int		 size;
-        int		 color[3]; // RGB color
-
-
+        FT_UInt glyph_index;
     
 };
+
+#endif // TEXTCLASS_H
