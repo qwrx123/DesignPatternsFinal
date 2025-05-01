@@ -4,6 +4,7 @@ add_library(WindowClass
 )
 
 add_library(ButtonClass
+	SHARED
 	ButtonClass.cpp
 )
 
