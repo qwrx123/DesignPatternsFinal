@@ -1,6 +1,7 @@
 #include "TextClass.h"
 #include <GLFW/glfw3.h>
 #include <ft2build.h>  // FreeType2 header files
+#include <filesystem>  // For filesystem operations
 #include <iostream>
 #include <string>
 #include FT_FREETYPE_H	// FreeType2 header files
@@ -14,14 +15,17 @@ TextClass::TextClass()
 		return;
 	}
 
-	// Get Font pathname
-	std::string fontPath;
-	std::cout << "Enter the direcotry path of the font file you want to use: ";
-	std::cin >> fontPath;
-	std::cout << "Font Path: " << fontPath << std::endl;
+	// Load a font file
+	std::filesystem::path fontPath = "../include/Delius-Regular.ttf";
 
+	// Resolve the relative path to an absolute path
+	if (!std::filesystem::exists(fontPath))
+	{
+		std::cerr << "Font file not found: " << fontPath << std::endl;
+		return;
+	}
 	// Load a font face
-	if (FT_New_Face(library, fontPath.c_str(), 0, &face) != 0)
+	else if (FT_New_Face(library, fontPath.string().c_str(), 0, &face) != 0)
 	{
 		std::cerr << "Could not load font" << std::endl;
 		return;
