@@ -3,6 +3,8 @@
 #include <algorithm>
 #include <cmath>
 #include <iostream>
+#include "ButtonClass.h"
+#include <iostream>
 
 WindowClass::WindowClass() : width(0), height(0), title(nullptr), window(nullptr) {}
 
@@ -25,6 +27,7 @@ bool WindowClass::CreateWindow(int width, int height, const char* title)
 	{
 		return false;
 	}
+
 
 	window = glfwCreateWindow(width, height, title, nullptr, nullptr);
 
@@ -118,17 +121,8 @@ void WindowClass::render()
 	glLoadIdentity();
 
 	// Brush-Eraser toggle button
-	double buttonX = 10.0f;
-	double buttonY = 10.0f;
-	double buttonW = 100.0f;
-	double buttonH = 40.0f;
-	glBegin(GL_QUADS);
-	glColor3f(1.0f, 1.0f, 1.0f);
-	glVertex2f(buttonX, buttonY);
-	glVertex2f(buttonX + buttonW, buttonY);
-	glVertex2f(buttonX + buttonW, buttonY + buttonH);
-	glVertex2f(buttonX, buttonY + buttonH);
-	glEnd();
+	ButtonClass togglePenErase = ButtonClass(10, 10, 100, 40, 0, .5, .5);
+	togglePenErase.renderButton();
 
 	glfwSwapBuffers(window);
 	glfwPollEvents();
@@ -174,13 +168,11 @@ void WindowClass::handleMouseButton(int button, int action, int mods)
 		double xpos, ypos;
 		glfwGetCursorPos(window, &xpos, &ypos);
 		// Location of Eraser-Brush toggle button
-		double buttonX = 10.0f;
-		double buttonY = 10.0f;
-		double buttonW = 100.0f;
-		double buttonH = 40.0f;
+		ButtonClass togglePenErase = ButtonClass(10, 10, 100, 40, 0, .5, .5);
 
-		bool clickOnButton = xpos >= buttonX && xpos <= buttonX + buttonW && ypos >= buttonY &&
-							 ypos <= buttonY + buttonH;
+		bool clickOnButton = xpos >= togglePenErase.getLeft() &&
+							 xpos <= togglePenErase.getRight() && ypos >= togglePenErase.getTop() &&
+							 ypos <= togglePenErase.getBottom();
 
 		if (action == GLFW_PRESS)
 		{
