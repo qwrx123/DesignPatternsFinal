@@ -30,9 +30,6 @@ TextClass::TextClass()
 		std::cerr << "Could not load font" << std::endl;
 		return;
 	}
-
-	// Set the font size
-	FT_Set_Pixel_Sizes(face, 0, 48);  // Set font size to 48 pixels
 }
 TextClass::~TextClass()
 {
@@ -46,8 +43,45 @@ void TextClass::textInput(unsigned int codepoint)
 	char input = '\0';
 	input	   = static_cast<char>(codepoint);
 	text += input;
+
+	// If backspace remove the last character, ERROR not recognizing the backspace key
+
+	std::cout << "Text: " << text << std::endl;
 	std::cout << "Input: " << input << std::endl;
-	glyph_index = FT_Get_Char_Index(face, codepoint);
-	FT_Load_Glyph(face, glyph_index, FT_LOAD_DEFAULT);
-	FT_Render_Glyph(face->glyph, FT_RENDER_MODE_NORMAL);
+	std::cout << "Codepoint: " << codepoint << std::endl;
+}
+
+void TextClass::renderText()
+{
+	// Set the font size
+	FT_Set_Pixel_Sizes(face, 0, 48);
+
+	// Loop through each character in the text string
+	for (char c : text)
+	{
+		// Convert character to codepoint
+		unsigned int codepoint = static_cast<unsigned int>(c);
+
+		// Load the glyph for the character
+		glyph_index = FT_Get_Char_Index(face, codepoint);
+		if (FT_Load_Glyph(face, glyph_index, FT_LOAD_DEFAULT) != 0)
+		{
+			std::cerr << "Could not load glyph" << std::endl;
+			continue;
+		}
+		if (FT_Render_Glyph(face->glyph, FT_RENDER_MODE_NORMAL) != 0)
+		{
+			std::cerr << "Could not render glyph" << std::endl;
+			continue;
+		}
+
+		FT_Bitmap& bitmap = face->glyph->bitmap;
+
+		glColor3f(1.0f, 1.0f, 1.0f);  // White color for the character
+		glRasterPos2f(face->glyph->bitmap_left, face->glyph->bitmap_top);
+		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);	// Set pixel alignment to 1 byte
+		glDrawPixels(bitmap.width, bitmap.rows, GL_RED, GL_UNSIGNED_BYTE, bitmap.buffer);
+		// Advance the position for the next character
+		glRasterPos2f(face->glyph->advance.x, face->glyph->advance.y);
+	}
 }

@@ -124,6 +124,12 @@ void WindowClass::render()
 	ButtonClass togglePenErase = ButtonClass(10, 10, 100, 40, 0, .5, .5);
 	togglePenErase.renderButton();
 
+	// Text rendering
+	if (m_textHandler)
+	{
+		m_textHandler->renderText();
+	}
+
 	glfwSwapBuffers(window);
 	glfwPollEvents();
 }
@@ -217,20 +223,10 @@ void WindowClass::characterCallback(GLFWwindow* window, unsigned int codepoint)
 // TODO: Implement the character input handling function
 void WindowClass::handleCharacterInput(unsigned int codepoint)
 {
-	// codepoint = Unicode code points for key events for regular text input
-	// that generally behaves as a standard text field on that platform.
-	// codepoint is the decimal unicode value of the character.
 	if (m_textHandler)
-	{  // assuming m_textHandler is a class member
+	{
 		m_textHandler->textInput(codepoint);
 	}
-	// TextClass* input = new TextClass();
-	// input->textInput(codepoint);
-
-	// char input = '\0';
-	// input	   = static_cast<char>(codepoint);
-	// std::cout << codepoint << " " << input << std::endl;
-	//  textInput(codepoint);
 }
 
 // Erases what is within the erasers radius and breaks up any required stroke vectors
