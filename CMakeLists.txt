@@ -73,6 +73,7 @@ registerFilesToFormat(FILES GLFWExample.cpp)
 
 add_subdirectory(include)
 add_subdirectory(classes)
+add_subdirectory(interfaces)
 if (BUILD_TESTING)
 	add_subdirectory(test)
 endif()
