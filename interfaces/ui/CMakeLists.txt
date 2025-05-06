@@ -1,0 +1,1 @@
+registerFilesToFormat(FILES IButton.h)
