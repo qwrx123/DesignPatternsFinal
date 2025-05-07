@@ -1,6 +1,6 @@
 registerFilesToFormat(FILES IDrawingTool.h 
-                            IDrawingEngine.h 
-                            IInputManager.h 
+                            IDrawingEngine.h
                             IStroke.h 
                             ITool.h 
-                            IStrokeGeneratingTool.h)
+                            IStrokeGeneratingTool.h
+                            IStrokeManager.h)

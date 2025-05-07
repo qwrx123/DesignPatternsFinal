@@ -1,1 +1,1 @@
-registerFilesToFormat(FILES IText.h ITextBox.h ITextManager.h Bounds.h)
+registerFilesToFormat(FILES IText.h ITextBox.h ITextManager.h)

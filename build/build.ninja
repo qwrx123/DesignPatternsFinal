@@ -571,15 +571,15 @@ build include/TargetButtonClass.h: phony include/FormatButtonClass.h
 
 
 #############################################
-# Utility command for Formatutil.h
+# Utility command for FormatBounds.h
 
-build include/Formatutil.h: phony include/CMakeFiles/Formatutil.h
+build include/FormatBounds.h: phony include/CMakeFiles/FormatBounds.h
 
 
 #############################################
-# Utility command for Targetutil.h
+# Utility command for TargetBounds.h
 
-build include/Targetutil.h: phony include/Formatutil.h
+build include/TargetBounds.h: phony include/FormatBounds.h
 
 
 #############################################
@@ -633,10 +633,10 @@ build include/CMakeFiles/FormatButtonClass.h | ${cmake_ninja_workdir}include/CMa
 
 
 #############################################
-# Custom command for include\CMakeFiles\Formatutil.h
+# Custom command for include\CMakeFiles\FormatBounds.h
 
-build include/CMakeFiles/Formatutil.h | ${cmake_ninja_workdir}include/CMakeFiles/Formatutil.h: CUSTOM_COMMAND
-  COMMAND = C:\WINDOWS\system32\cmd.exe /C "cd /D C:\Users\HoffR\software-engineering-project-daisy\include && "C:\Program Files\LLVM\bin\clang-format.exe" -i -style=file C:/Users/HoffR/software-engineering-project-daisy/include/util.h"
+build include/CMakeFiles/FormatBounds.h | ${cmake_ninja_workdir}include/CMakeFiles/FormatBounds.h: CUSTOM_COMMAND
+  COMMAND = C:\WINDOWS\system32\cmd.exe /C "cd /D C:\Users\HoffR\software-engineering-project-daisy\include && "C:\Program Files\LLVM\bin\clang-format.exe" -i -style=file C:/Users/HoffR/software-engineering-project-daisy/include/Bounds.h"
 
 # =============================================================================
 # Write statements declared in CMakeLists.txt:
@@ -906,6 +906,78 @@ build interfaces/canvas/rebuild_cache: phony interfaces/canvas/CMakeFiles/rebuil
 
 
 #############################################
+# Utility command for FormatIDrawingTool.h
+
+build interfaces/drawing/FormatIDrawingTool.h: phony interfaces/drawing/CMakeFiles/FormatIDrawingTool.h
+
+
+#############################################
+# Utility command for TargetIDrawingTool.h
+
+build interfaces/drawing/TargetIDrawingTool.h: phony interfaces/drawing/FormatIDrawingTool.h
+
+
+#############################################
+# Utility command for FormatIDrawingEngine.h
+
+build interfaces/drawing/FormatIDrawingEngine.h: phony interfaces/drawing/CMakeFiles/FormatIDrawingEngine.h
+
+
+#############################################
+# Utility command for TargetIDrawingEngine.h
+
+build interfaces/drawing/TargetIDrawingEngine.h: phony interfaces/drawing/FormatIDrawingEngine.h
+
+
+#############################################
+# Utility command for FormatIStroke.h
+
+build interfaces/drawing/FormatIStroke.h: phony interfaces/drawing/CMakeFiles/FormatIStroke.h
+
+
+#############################################
+# Utility command for TargetIStroke.h
+
+build interfaces/drawing/TargetIStroke.h: phony interfaces/drawing/FormatIStroke.h
+
+
+#############################################
+# Utility command for FormatITool.h
+
+build interfaces/drawing/FormatITool.h: phony interfaces/drawing/CMakeFiles/FormatITool.h
+
+
+#############################################
+# Utility command for TargetITool.h
+
+build interfaces/drawing/TargetITool.h: phony interfaces/drawing/FormatITool.h
+
+
+#############################################
+# Utility command for FormatIStrokeGeneratingTool.h
+
+build interfaces/drawing/FormatIStrokeGeneratingTool.h: phony interfaces/drawing/CMakeFiles/FormatIStrokeGeneratingTool.h
+
+
+#############################################
+# Utility command for TargetIStrokeGeneratingTool.h
+
+build interfaces/drawing/TargetIStrokeGeneratingTool.h: phony interfaces/drawing/FormatIStrokeGeneratingTool.h
+
+
+#############################################
+# Utility command for FormatIStrokeManager.h
+
+build interfaces/drawing/FormatIStrokeManager.h: phony interfaces/drawing/CMakeFiles/FormatIStrokeManager.h
+
+
+#############################################
+# Utility command for TargetIStrokeManager.h
+
+build interfaces/drawing/TargetIStrokeManager.h: phony interfaces/drawing/FormatIStrokeManager.h
+
+
+#############################################
 # Utility command for test
 
 build interfaces/drawing/CMakeFiles/test.util: CUSTOM_COMMAND
@@ -939,6 +1011,48 @@ build interfaces/drawing/CMakeFiles/rebuild_cache.util: CUSTOM_COMMAND
   restat = 1
 
 build interfaces/drawing/rebuild_cache: phony interfaces/drawing/CMakeFiles/rebuild_cache.util
+
+
+#############################################
+# Custom command for interfaces\drawing\CMakeFiles\FormatIDrawingTool.h
+
+build interfaces/drawing/CMakeFiles/FormatIDrawingTool.h | ${cmake_ninja_workdir}interfaces/drawing/CMakeFiles/FormatIDrawingTool.h: CUSTOM_COMMAND
+  COMMAND = C:\WINDOWS\system32\cmd.exe /C "cd /D C:\Users\HoffR\software-engineering-project-daisy\interfaces\drawing && "C:\Program Files\LLVM\bin\clang-format.exe" -i -style=file C:/Users/HoffR/software-engineering-project-daisy/interfaces/drawing/IDrawingTool.h"
+
+
+#############################################
+# Custom command for interfaces\drawing\CMakeFiles\FormatIDrawingEngine.h
+
+build interfaces/drawing/CMakeFiles/FormatIDrawingEngine.h | ${cmake_ninja_workdir}interfaces/drawing/CMakeFiles/FormatIDrawingEngine.h: CUSTOM_COMMAND
+  COMMAND = C:\WINDOWS\system32\cmd.exe /C "cd /D C:\Users\HoffR\software-engineering-project-daisy\interfaces\drawing && "C:\Program Files\LLVM\bin\clang-format.exe" -i -style=file C:/Users/HoffR/software-engineering-project-daisy/interfaces/drawing/IDrawingEngine.h"
+
+
+#############################################
+# Custom command for interfaces\drawing\CMakeFiles\FormatIStroke.h
+
+build interfaces/drawing/CMakeFiles/FormatIStroke.h | ${cmake_ninja_workdir}interfaces/drawing/CMakeFiles/FormatIStroke.h: CUSTOM_COMMAND
+  COMMAND = C:\WINDOWS\system32\cmd.exe /C "cd /D C:\Users\HoffR\software-engineering-project-daisy\interfaces\drawing && "C:\Program Files\LLVM\bin\clang-format.exe" -i -style=file C:/Users/HoffR/software-engineering-project-daisy/interfaces/drawing/IStroke.h"
+
+
+#############################################
+# Custom command for interfaces\drawing\CMakeFiles\FormatITool.h
+
+build interfaces/drawing/CMakeFiles/FormatITool.h | ${cmake_ninja_workdir}interfaces/drawing/CMakeFiles/FormatITool.h: CUSTOM_COMMAND
+  COMMAND = C:\WINDOWS\system32\cmd.exe /C "cd /D C:\Users\HoffR\software-engineering-project-daisy\interfaces\drawing && "C:\Program Files\LLVM\bin\clang-format.exe" -i -style=file C:/Users/HoffR/software-engineering-project-daisy/interfaces/drawing/ITool.h"
+
+
+#############################################
+# Custom command for interfaces\drawing\CMakeFiles\FormatIStrokeGeneratingTool.h
+
+build interfaces/drawing/CMakeFiles/FormatIStrokeGeneratingTool.h | ${cmake_ninja_workdir}interfaces/drawing/CMakeFiles/FormatIStrokeGeneratingTool.h: CUSTOM_COMMAND
+  COMMAND = C:\WINDOWS\system32\cmd.exe /C "cd /D C:\Users\HoffR\software-engineering-project-daisy\interfaces\drawing && "C:\Program Files\LLVM\bin\clang-format.exe" -i -style=file C:/Users/HoffR/software-engineering-project-daisy/interfaces/drawing/IStrokeGeneratingTool.h"
+
+
+#############################################
+# Custom command for interfaces\drawing\CMakeFiles\FormatIStrokeManager.h
+
+build interfaces/drawing/CMakeFiles/FormatIStrokeManager.h | ${cmake_ninja_workdir}interfaces/drawing/CMakeFiles/FormatIStrokeManager.h: CUSTOM_COMMAND
+  COMMAND = C:\WINDOWS\system32\cmd.exe /C "cd /D C:\Users\HoffR\software-engineering-project-daisy\interfaces\drawing && "C:\Program Files\LLVM\bin\clang-format.exe" -i -style=file C:/Users/HoffR/software-engineering-project-daisy/interfaces/drawing/IStrokeManager.h"
 
 # =============================================================================
 # Write statements declared in CMakeLists.txt:
@@ -988,6 +1102,42 @@ build interfaces/file/rebuild_cache: phony interfaces/file/CMakeFiles/rebuild_ca
 
 
 #############################################
+# Utility command for FormatIText.h
+
+build interfaces/text/FormatIText.h: phony interfaces/text/CMakeFiles/FormatIText.h
+
+
+#############################################
+# Utility command for TargetIText.h
+
+build interfaces/text/TargetIText.h: phony interfaces/text/FormatIText.h
+
+
+#############################################
+# Utility command for FormatITextBox.h
+
+build interfaces/text/FormatITextBox.h: phony interfaces/text/CMakeFiles/FormatITextBox.h
+
+
+#############################################
+# Utility command for TargetITextBox.h
+
+build interfaces/text/TargetITextBox.h: phony interfaces/text/FormatITextBox.h
+
+
+#############################################
+# Utility command for FormatITextManager.h
+
+build interfaces/text/FormatITextManager.h: phony interfaces/text/CMakeFiles/FormatITextManager.h
+
+
+#############################################
+# Utility command for TargetITextManager.h
+
+build interfaces/text/TargetITextManager.h: phony interfaces/text/FormatITextManager.h
+
+
+#############################################
 # Utility command for test
 
 build interfaces/text/CMakeFiles/test.util: CUSTOM_COMMAND
@@ -1022,6 +1172,27 @@ build interfaces/text/CMakeFiles/rebuild_cache.util: CUSTOM_COMMAND
 
 build interfaces/text/rebuild_cache: phony interfaces/text/CMakeFiles/rebuild_cache.util
 
+
+#############################################
+# Custom command for interfaces\text\CMakeFiles\FormatIText.h
+
+build interfaces/text/CMakeFiles/FormatIText.h | ${cmake_ninja_workdir}interfaces/text/CMakeFiles/FormatIText.h: CUSTOM_COMMAND
+  COMMAND = C:\WINDOWS\system32\cmd.exe /C "cd /D C:\Users\HoffR\software-engineering-project-daisy\interfaces\text && "C:\Program Files\LLVM\bin\clang-format.exe" -i -style=file C:/Users/HoffR/software-engineering-project-daisy/interfaces/text/IText.h"
+
+
+#############################################
+# Custom command for interfaces\text\CMakeFiles\FormatITextBox.h
+
+build interfaces/text/CMakeFiles/FormatITextBox.h | ${cmake_ninja_workdir}interfaces/text/CMakeFiles/FormatITextBox.h: CUSTOM_COMMAND
+  COMMAND = C:\WINDOWS\system32\cmd.exe /C "cd /D C:\Users\HoffR\software-engineering-project-daisy\interfaces\text && "C:\Program Files\LLVM\bin\clang-format.exe" -i -style=file C:/Users/HoffR/software-engineering-project-daisy/interfaces/text/ITextBox.h"
+
+
+#############################################
+# Custom command for interfaces\text\CMakeFiles\FormatITextManager.h
+
+build interfaces/text/CMakeFiles/FormatITextManager.h | ${cmake_ninja_workdir}interfaces/text/CMakeFiles/FormatITextManager.h: CUSTOM_COMMAND
+  COMMAND = C:\WINDOWS\system32\cmd.exe /C "cd /D C:\Users\HoffR\software-engineering-project-daisy\interfaces\text && "C:\Program Files\LLVM\bin\clang-format.exe" -i -style=file C:/Users/HoffR/software-engineering-project-daisy/interfaces/text/ITextManager.h"
+
 # =============================================================================
 # Write statements declared in CMakeLists.txt:
 # C:/Users/HoffR/software-engineering-project-daisy/interfaces/CMakeLists.txt
@@ -1038,6 +1209,42 @@ build interfaces/ui/FormatIButton.h: phony interfaces/ui/CMakeFiles/FormatIButto
 # Utility command for TargetIButton.h
 
 build interfaces/ui/TargetIButton.h: phony interfaces/ui/FormatIButton.h
+
+
+#############################################
+# Utility command for FormatIMenu.h
+
+build interfaces/ui/FormatIMenu.h: phony interfaces/ui/CMakeFiles/FormatIMenu.h
+
+
+#############################################
+# Utility command for TargetIMenu.h
+
+build interfaces/ui/TargetIMenu.h: phony interfaces/ui/FormatIMenu.h
+
+
+#############################################
+# Utility command for FormatIInputReceiver.h
+
+build interfaces/ui/FormatIInputReceiver.h: phony interfaces/ui/CMakeFiles/FormatIInputReceiver.h
+
+
+#############################################
+# Utility command for TargetIInputReceiver.h
+
+build interfaces/ui/TargetIInputReceiver.h: phony interfaces/ui/FormatIInputReceiver.h
+
+
+#############################################
+# Utility command for FormatIInputManager.h
+
+build interfaces/ui/FormatIInputManager.h: phony interfaces/ui/CMakeFiles/FormatIInputManager.h
+
+
+#############################################
+# Utility command for TargetIInputManager.h
+
+build interfaces/ui/TargetIInputManager.h: phony interfaces/ui/FormatIInputManager.h
 
 
 #############################################
@@ -1081,6 +1288,27 @@ build interfaces/ui/rebuild_cache: phony interfaces/ui/CMakeFiles/rebuild_cache.
 
 build interfaces/ui/CMakeFiles/FormatIButton.h | ${cmake_ninja_workdir}interfaces/ui/CMakeFiles/FormatIButton.h: CUSTOM_COMMAND
   COMMAND = C:\WINDOWS\system32\cmd.exe /C "cd /D C:\Users\HoffR\software-engineering-project-daisy\interfaces\ui && "C:\Program Files\LLVM\bin\clang-format.exe" -i -style=file C:/Users/HoffR/software-engineering-project-daisy/interfaces/ui/IButton.h"
+
+
+#############################################
+# Custom command for interfaces\ui\CMakeFiles\FormatIMenu.h
+
+build interfaces/ui/CMakeFiles/FormatIMenu.h | ${cmake_ninja_workdir}interfaces/ui/CMakeFiles/FormatIMenu.h: CUSTOM_COMMAND
+  COMMAND = C:\WINDOWS\system32\cmd.exe /C "cd /D C:\Users\HoffR\software-engineering-project-daisy\interfaces\ui && "C:\Program Files\LLVM\bin\clang-format.exe" -i -style=file C:/Users/HoffR/software-engineering-project-daisy/interfaces/ui/IMenu.h"
+
+
+#############################################
+# Custom command for interfaces\ui\CMakeFiles\FormatIInputReceiver.h
+
+build interfaces/ui/CMakeFiles/FormatIInputReceiver.h | ${cmake_ninja_workdir}interfaces/ui/CMakeFiles/FormatIInputReceiver.h: CUSTOM_COMMAND
+  COMMAND = C:\WINDOWS\system32\cmd.exe /C "cd /D C:\Users\HoffR\software-engineering-project-daisy\interfaces\ui && "C:\Program Files\LLVM\bin\clang-format.exe" -i -style=file C:/Users/HoffR/software-engineering-project-daisy/interfaces/ui/IInputReceiver.h"
+
+
+#############################################
+# Custom command for interfaces\ui\CMakeFiles\FormatIInputManager.h
+
+build interfaces/ui/CMakeFiles/FormatIInputManager.h | ${cmake_ninja_workdir}interfaces/ui/CMakeFiles/FormatIInputManager.h: CUSTOM_COMMAND
+  COMMAND = C:\WINDOWS\system32\cmd.exe /C "cd /D C:\Users\HoffR\software-engineering-project-daisy\interfaces\ui && "C:\Program Files\LLVM\bin\clang-format.exe" -i -style=file C:/Users/HoffR/software-engineering-project-daisy/interfaces/ui/IInputManager.h"
 
 # =============================================================================
 # Write statements declared in CMakeLists.txt:
@@ -1203,11 +1431,37 @@ build ButtonClass: phony classes/ButtonClass.lib
 
 build ButtonClass.lib: phony classes/ButtonClass.lib
 
+build FormatBounds.h: phony include/FormatBounds.h
+
 build FormatButtonClass.cpp: phony classes/FormatButtonClass.cpp
 
 build FormatButtonClass.h: phony include/FormatButtonClass.h
 
 build FormatIButton.h: phony interfaces/ui/FormatIButton.h
+
+build FormatIDrawingEngine.h: phony interfaces/drawing/FormatIDrawingEngine.h
+
+build FormatIDrawingTool.h: phony interfaces/drawing/FormatIDrawingTool.h
+
+build FormatIInputManager.h: phony interfaces/ui/FormatIInputManager.h
+
+build FormatIInputReceiver.h: phony interfaces/ui/FormatIInputReceiver.h
+
+build FormatIMenu.h: phony interfaces/ui/FormatIMenu.h
+
+build FormatIStroke.h: phony interfaces/drawing/FormatIStroke.h
+
+build FormatIStrokeGeneratingTool.h: phony interfaces/drawing/FormatIStrokeGeneratingTool.h
+
+build FormatIStrokeManager.h: phony interfaces/drawing/FormatIStrokeManager.h
+
+build FormatIText.h: phony interfaces/text/FormatIText.h
+
+build FormatITextBox.h: phony interfaces/text/FormatITextBox.h
+
+build FormatITextManager.h: phony interfaces/text/FormatITextManager.h
+
+build FormatITool.h: phony interfaces/drawing/FormatITool.h
 
 build FormatWindowClass.cpp: phony classes/FormatWindowClass.cpp
 
@@ -1215,9 +1469,9 @@ build FormatWindowClass.h: phony include/FormatWindowClass.h
 
 build FormatprojectTests.cpp: phony test/FormatprojectTests.cpp
 
-build Formatutil.h: phony include/Formatutil.h
-
 build GlfwTestApp: phony GlfwTestApp.exe
+
+build TargetBounds.h: phony include/TargetBounds.h
 
 build TargetButtonClass.cpp: phony classes/TargetButtonClass.cpp
 
@@ -1225,13 +1479,35 @@ build TargetButtonClass.h: phony include/TargetButtonClass.h
 
 build TargetIButton.h: phony interfaces/ui/TargetIButton.h
 
+build TargetIDrawingEngine.h: phony interfaces/drawing/TargetIDrawingEngine.h
+
+build TargetIDrawingTool.h: phony interfaces/drawing/TargetIDrawingTool.h
+
+build TargetIInputManager.h: phony interfaces/ui/TargetIInputManager.h
+
+build TargetIInputReceiver.h: phony interfaces/ui/TargetIInputReceiver.h
+
+build TargetIMenu.h: phony interfaces/ui/TargetIMenu.h
+
+build TargetIStroke.h: phony interfaces/drawing/TargetIStroke.h
+
+build TargetIStrokeGeneratingTool.h: phony interfaces/drawing/TargetIStrokeGeneratingTool.h
+
+build TargetIStrokeManager.h: phony interfaces/drawing/TargetIStrokeManager.h
+
+build TargetIText.h: phony interfaces/text/TargetIText.h
+
+build TargetITextBox.h: phony interfaces/text/TargetITextBox.h
+
+build TargetITextManager.h: phony interfaces/text/TargetITextManager.h
+
+build TargetITool.h: phony interfaces/drawing/TargetITool.h
+
 build TargetWindowClass.cpp: phony classes/TargetWindowClass.cpp
 
 build TargetWindowClass.h: phony include/TargetWindowClass.h
 
 build TargetprojectTests.cpp: phony test/TargetprojectTests.cpp
-
-build Targetutil.h: phony include/Targetutil.h
 
 build WindowClass: phony classes/WindowClass.lib
 
@@ -1263,7 +1539,7 @@ build classes/all: phony classes/WindowClass.lib classes/ButtonClass.lib classes
 #############################################
 # Folder: C:/Users/HoffR/software-engineering-project-daisy/build/include
 
-build include/all: phony include/FormatWindowClass.h include/TargetWindowClass.h include/FormatButtonClass.h include/TargetButtonClass.h include/Formatutil.h include/Targetutil.h
+build include/all: phony include/FormatWindowClass.h include/TargetWindowClass.h include/FormatButtonClass.h include/TargetButtonClass.h include/FormatBounds.h include/TargetBounds.h
 
 # =============================================================================
 
@@ -1284,7 +1560,7 @@ build interfaces/canvas/all: phony
 #############################################
 # Folder: C:/Users/HoffR/software-engineering-project-daisy/build/interfaces/drawing
 
-build interfaces/drawing/all: phony
+build interfaces/drawing/all: phony interfaces/drawing/FormatIDrawingTool.h interfaces/drawing/TargetIDrawingTool.h interfaces/drawing/FormatIDrawingEngine.h interfaces/drawing/TargetIDrawingEngine.h interfaces/drawing/FormatIStroke.h interfaces/drawing/TargetIStroke.h interfaces/drawing/FormatITool.h interfaces/drawing/TargetITool.h interfaces/drawing/FormatIStrokeGeneratingTool.h interfaces/drawing/TargetIStrokeGeneratingTool.h interfaces/drawing/FormatIStrokeManager.h interfaces/drawing/TargetIStrokeManager.h
 
 # =============================================================================
 
@@ -1298,14 +1574,14 @@ build interfaces/file/all: phony
 #############################################
 # Folder: C:/Users/HoffR/software-engineering-project-daisy/build/interfaces/text
 
-build interfaces/text/all: phony
+build interfaces/text/all: phony interfaces/text/FormatIText.h interfaces/text/TargetIText.h interfaces/text/FormatITextBox.h interfaces/text/TargetITextBox.h interfaces/text/FormatITextManager.h interfaces/text/TargetITextManager.h
 
 # =============================================================================
 
 #############################################
 # Folder: C:/Users/HoffR/software-engineering-project-daisy/build/interfaces/ui
 
-build interfaces/ui/all: phony interfaces/ui/FormatIButton.h interfaces/ui/TargetIButton.h
+build interfaces/ui/all: phony interfaces/ui/FormatIButton.h interfaces/ui/TargetIButton.h interfaces/ui/FormatIMenu.h interfaces/ui/TargetIMenu.h interfaces/ui/FormatIInputReceiver.h interfaces/ui/TargetIInputReceiver.h interfaces/ui/FormatIInputManager.h interfaces/ui/TargetIInputManager.h
 
 # =============================================================================
 
