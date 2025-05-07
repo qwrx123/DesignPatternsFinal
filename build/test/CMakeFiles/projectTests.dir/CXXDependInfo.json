@@ -1,0 +1,30 @@
+{
+	"bmi-installation" : null,
+	"compiler-frontend-variant" : "GNU",
+	"compiler-id" : "Clang",
+	"compiler-simulate-id" : "MSVC",
+	"config" : "Debug",
+	"cxx-modules" : {},
+	"database-info" : null,
+	"dir-cur-bld" : "C:/Users/HoffR/software-engineering-project-daisy/build/test",
+	"dir-cur-src" : "C:/Users/HoffR/software-engineering-project-daisy/test",
+	"dir-top-bld" : "C:/Users/HoffR/software-engineering-project-daisy/build",
+	"dir-top-src" : "C:/Users/HoffR/software-engineering-project-daisy",
+	"exports" : [],
+	"forward-modules-from-target-dirs" : [],
+	"include-dirs" : 
+	[
+		"C:\\vcpkg\\installed\\x64-windows\\include"
+	],
+	"language" : "CXX",
+	"linked-target-dirs" : [],
+	"module-dir" : "C:/Users/HoffR/software-engineering-project-daisy/build/test/CMakeFiles/projectTests.dir",
+	"sources" : 
+	{
+		"test/CMakeFiles/projectTests.dir/projectTests.cpp.obj" : 
+		{
+			"language" : "CXX",
+			"source" : "C:/Users/HoffR/software-engineering-project-daisy/test/projectTests.cpp"
+		}
+	}
+}

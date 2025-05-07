@@ -1,0 +1,31 @@
+{
+	"bmi-installation" : null,
+	"compiler-frontend-variant" : "GNU",
+	"compiler-id" : "Clang",
+	"compiler-simulate-id" : "MSVC",
+	"config" : "Debug",
+	"cxx-modules" : {},
+	"database-info" : null,
+	"dir-cur-bld" : "C:/Users/HoffR/software-engineering-project-daisy/build/classes",
+	"dir-cur-src" : "C:/Users/HoffR/software-engineering-project-daisy/classes",
+	"dir-top-bld" : "C:/Users/HoffR/software-engineering-project-daisy/build",
+	"dir-top-src" : "C:/Users/HoffR/software-engineering-project-daisy",
+	"exports" : [],
+	"forward-modules-from-target-dirs" : [],
+	"include-dirs" : 
+	[
+		"C:\\Users\\HoffR\\software-engineering-project-daisy\\include",
+		"C:\\Program Files\\GLFW\\include"
+	],
+	"language" : "CXX",
+	"linked-target-dirs" : [],
+	"module-dir" : "C:/Users/HoffR/software-engineering-project-daisy/build/classes/CMakeFiles/WindowClass.dir",
+	"sources" : 
+	{
+		"classes/CMakeFiles/WindowClass.dir/WindowClass.cpp.obj" : 
+		{
+			"language" : "CXX",
+			"source" : "C:/Users/HoffR/software-engineering-project-daisy/classes/WindowClass.cpp"
+		}
+	}
+}

@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\HoffR\software-engineering-project-daisy\build\CMakeFiles\2d0cbfd7d2c4dea7010a9d8c9ae4aa06\RUN_TESTS_force.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{609FB6B6-5B2C-38B1-A692-1AA22C05F9A2}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

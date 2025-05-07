@@ -1,0 +1,26 @@
+[
+{
+  "directory": "C:/Users/HoffR/software-engineering-project-daisy/build",
+  "command": "C:\\PROGRA~1\\LLVM\\bin\\CLANG_~1.EXE -DGLFW_DLL -IC:/Users/HoffR/software-engineering-project-daisy/include -isystem \"C:/Program Files/GLFW/include\" -O0 -std=gnu++20 -D_DEBUG -D_DLL -D_MT -Xclang --dependent-lib=msvcrtd -g -Xclang -gcodeview @CMakeFiles\\GlfwTestApp.dir\\GLFWExample.cpp.obj.modmap -o CMakeFiles\\GlfwTestApp.dir\\GLFWExample.cpp.obj -c C:\\Users\\HoffR\\software-engineering-project-daisy\\GLFWExample.cpp",
+  "file": "C:\\Users\\HoffR\\software-engineering-project-daisy\\GLFWExample.cpp",
+  "output": "CMakeFiles\\GlfwTestApp.dir\\GLFWExample.cpp.obj"
+},
+{
+  "directory": "C:/Users/HoffR/software-engineering-project-daisy/build",
+  "command": "C:\\PROGRA~1\\LLVM\\bin\\CLANG_~1.EXE -DGLFW_DLL -IC:/Users/HoffR/software-engineering-project-daisy/include -isystem \"C:/Program Files/GLFW/include\" -O0 -std=gnu++20 -D_DEBUG -D_DLL -D_MT -Xclang --dependent-lib=msvcrtd -g -Xclang -gcodeview @classes\\CMakeFiles\\WindowClass.dir\\WindowClass.cpp.obj.modmap -o classes\\CMakeFiles\\WindowClass.dir\\WindowClass.cpp.obj -c C:\\Users\\HoffR\\software-engineering-project-daisy\\classes\\WindowClass.cpp",
+  "file": "C:\\Users\\HoffR\\software-engineering-project-daisy\\classes\\WindowClass.cpp",
+  "output": "classes\\CMakeFiles\\WindowClass.dir\\WindowClass.cpp.obj"
+},
+{
+  "directory": "C:/Users/HoffR/software-engineering-project-daisy/build",
+  "command": "C:\\PROGRA~1\\LLVM\\bin\\CLANG_~1.EXE -DGLFW_DLL -IC:/Users/HoffR/software-engineering-project-daisy/include -isystem \"C:/Program Files/GLFW/include\" -O0 -std=gnu++20 -D_DEBUG -D_DLL -D_MT -Xclang --dependent-lib=msvcrtd -g -Xclang -gcodeview @classes\\CMakeFiles\\ButtonClass.dir\\ButtonClass.cpp.obj.modmap -o classes\\CMakeFiles\\ButtonClass.dir\\ButtonClass.cpp.obj -c C:\\Users\\HoffR\\software-engineering-project-daisy\\classes\\ButtonClass.cpp",
+  "file": "C:\\Users\\HoffR\\software-engineering-project-daisy\\classes\\ButtonClass.cpp",
+  "output": "classes\\CMakeFiles\\ButtonClass.dir\\ButtonClass.cpp.obj"
+},
+{
+  "directory": "C:/Users/HoffR/software-engineering-project-daisy/build",
+  "command": "C:\\PROGRA~1\\LLVM\\bin\\CLANG_~1.EXE -DGTEST_LINKED_AS_SHARED_LIBRARY=1 -isystem C:/vcpkg/installed/x64-windows/include -O0 -std=gnu++20 -D_DEBUG -D_DLL -D_MT -Xclang --dependent-lib=msvcrtd -g -Xclang -gcodeview @test\\CMakeFiles\\projectTests.dir\\projectTests.cpp.obj.modmap -o test\\CMakeFiles\\projectTests.dir\\projectTests.cpp.obj -c C:\\Users\\HoffR\\software-engineering-project-daisy\\test\\projectTests.cpp",
+  "file": "C:\\Users\\HoffR\\software-engineering-project-daisy\\test\\projectTests.cpp",
+  "output": "test\\CMakeFiles\\projectTests.dir\\projectTests.cpp.obj"
+}
+]

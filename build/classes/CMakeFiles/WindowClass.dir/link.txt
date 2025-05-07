@@ -1,0 +1,2 @@
+C:\ProgramData\mingw64\mingw64\bin\ar.exe qc libWindowClass.a CMakeFiles/WindowClass.dir/WindowClass.cpp.obj
+C:\ProgramData\mingw64\mingw64\bin\ranlib.exe libWindowClass.a

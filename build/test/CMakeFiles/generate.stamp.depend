@@ -1,0 +1,12 @@
+# CMake generation dependency list for this directory.
+C:/Program Files/CMake/share/cmake-3.31/Modules/CMakeFindDependencyMacro.cmake
+C:/Program Files/CMake/share/cmake-3.31/Modules/FindGTest.cmake
+C:/Program Files/CMake/share/cmake-3.31/Modules/FindPackageHandleStandardArgs.cmake
+C:/Program Files/CMake/share/cmake-3.31/Modules/FindPackageMessage.cmake
+C:/Program Files/CMake/share/cmake-3.31/Modules/GoogleTest.cmake
+C:/Users/HoffR/software-engineering-project-daisy/test/CMakeLists.txt
+C:/vcpkg/installed/x64-windows/share/gtest/GTestConfig.cmake
+C:/vcpkg/installed/x64-windows/share/gtest/GTestConfigVersion.cmake
+C:/vcpkg/installed/x64-windows/share/gtest/GTestTargets-debug.cmake
+C:/vcpkg/installed/x64-windows/share/gtest/GTestTargets-release.cmake
+C:/vcpkg/installed/x64-windows/share/gtest/GTestTargets.cmake
