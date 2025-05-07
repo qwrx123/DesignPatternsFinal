@@ -1,1 +1,1 @@
-registerFilesToFormat(FILES IButton.h)
+registerFilesToFormat(FILES IButton.h IMenu.h IInputReceiver.h IInputManager.h)

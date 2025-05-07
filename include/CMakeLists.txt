@@ -1,2 +1,2 @@
 #Make sure header gets formatted
-registerFilesToFormat(FILES WindowClass.h ButtonClass.h)
+registerFilesToFormat(FILES WindowClass.h ButtonClass.h Bounds.h)
