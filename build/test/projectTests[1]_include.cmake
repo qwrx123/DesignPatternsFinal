@@ -1,5 +1,0 @@
-if(EXISTS "C:/Users/HoffR/software-engineering-project-daisy/build/test/projectTests[1]_tests.cmake")
-  include("C:/Users/HoffR/software-engineering-project-daisy/build/test/projectTests[1]_tests.cmake")
-else()
-  add_test(projectTests_NOT_BUILT projectTests_NOT_BUILT)
-endif()
