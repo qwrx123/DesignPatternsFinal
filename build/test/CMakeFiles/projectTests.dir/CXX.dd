@@ -1,3 +1,0 @@
-ninja_dyndep_version = 1.0
-build test/CMakeFiles/projectTests.dir/projectTests.cpp.obj: dyndep
-
