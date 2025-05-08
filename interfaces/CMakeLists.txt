@@ -1,0 +1,5 @@
+add_subdirectory(canvas)
+add_subdirectory(drawing)
+add_subdirectory(file)
+add_subdirectory(text)
+add_subdirectory(ui)
