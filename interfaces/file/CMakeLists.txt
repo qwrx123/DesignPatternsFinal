@@ -1,0 +1,1 @@
+registerFilesToFormat(FILES IExport.h IFiles.h IImport.h ILoad.h ISave.h)
