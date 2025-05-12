@@ -4,16 +4,17 @@
 #include <vector>
 
 template <class T>
-class IRenderManager {
-    protected:
-        int width;
-        int height;
+class IRenderManager
+{
+   protected:
+	int width;
+	int height;
 
-    public:
-        IRenderManager(int, int) = default;
-        virtual ~IRenderManager() = default;
+   public:
+	IRenderManager(int, int)  = default;
+	virtual ~IRenderManager() = default;
 
-        virtual void render(vector<T>) = 0;
+	virtual void render(vector<T>) = 0;
 };
 
-#endif //I_RENDER_MANAGER_H
+#endif	// I_RENDER_MANAGER_H
