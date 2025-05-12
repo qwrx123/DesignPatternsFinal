@@ -1,8 +1,10 @@
 add_library(WindowClass
+	SHARED
 	WindowClass.cpp
 )
 
 add_library(ButtonClass
+	SHARED
 	ButtonClass.cpp
 )
 
@@ -34,3 +36,14 @@ target_include_directories(ButtonClass
 	PUBLIC
 	${PROJECT_SOURCE_DIR}/include
 )
+if(WIN32)
+	install(TARGETS WindowClass ButtonClass
+	RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+	ARCHIVE DESTINATION ${CMAKE_INSTALL_BINDIR}
+	)
+else()
+	install(TARGETS WindowClass ButtonClass
+	LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+	ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+	)
+endif()
