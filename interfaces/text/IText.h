@@ -26,8 +26,8 @@ class IText
 	virtual int	 getFontSize() const   = 0;
 	virtual void setFontSize(int size) = 0;
 
-	virtual Color getColor() const					 = 0;
-	virtual void  setColor(const Color& color) const = 0;
+	virtual Color getColor() const			   = 0;
+	virtual void  setColor(const Color& color) = 0;
 
 	virtual bool isEditable() const			= 0;
 	virtual void setEditable(bool editable) = 0;
