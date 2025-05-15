@@ -6,37 +6,37 @@ TextManager::~TextManager() {}
 
 void TextManager::addText(std::shared_ptr<IText> text)
 {
-    texts.push_back(text);
+	texts.push_back(text);
 }
 
 void TextManager::removeText(std::shared_ptr<IText> text)
 {
-    auto it = std::remove(texts.begin(), texts.end(), text);
-    if (it != texts.end())
-    {
-        texts.erase(it, texts.end());
-    }
+	auto it = std::remove(texts.begin(), texts.end(), text);
+	if (it != texts.end())
+	{
+		texts.erase(it, texts.end());
+	}
 }
 
 const std::vector<std::shared_ptr<IText>>& TextManager::getTexts() const
 {
-    return texts;
+	return texts;
 }
 
 std::shared_ptr<IText> TextManager::getTextAt(double x, double y) const
 {
-    for (const auto& text : texts)
-    {
-        Bounds bounds = text->getBounds();
-        if (x >= bounds.left && x <= bounds.right && y >= bounds.top && y <= bounds.bottom)
-        {
-            return text;
-        }
-    }
-    return nullptr;
+	for (const auto& text : texts)
+	{
+		Bounds bounds = text->getBounds();
+		if (x >= bounds.left && x <= bounds.right && y >= bounds.top && y <= bounds.bottom)
+		{
+			return text;
+		}
+	}
+	return nullptr;
 }
 
 void TextManager::clearAll()
 {
-    texts.clear();
+	texts.clear();
 }

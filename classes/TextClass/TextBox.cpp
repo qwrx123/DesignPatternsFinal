@@ -5,21 +5,20 @@ TextBox::~TextBox() {}
 
 bool TextBox::hasBorder() const
 {
-    return hasBorder;
+	return hasBorder;
 }
 
 void TextBox::setBorder(bool hasBorder)
 {
-    this->borderStatus = hasBorder;
+	this->borderStatus = hasBorder;
 }
 
 bool TextBox::isSelected() const
 {
-    return selected;
+	return selected;
 }
 
 void TextBox::setSelected(bool selected)
 {
-    this->selected = selected;
+	this->selected = selected;
 }
-

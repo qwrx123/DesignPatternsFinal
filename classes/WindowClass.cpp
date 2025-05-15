@@ -4,7 +4,6 @@
 #include <cmath>
 #include <iostream>
 #include "ButtonClass.h"
-#include "TextClass.h"
 
 WindowClass::WindowClass() : width(0), height(0), title(nullptr), window(nullptr) {}
 
@@ -19,10 +18,9 @@ WindowClass::~WindowClass()
 
 bool WindowClass::CreateWindow(int width, int height, const char* title)
 {
-	this->width			= width;
-	this->height		= height;
-	this->title			= title;
-	this->m_textHandler = new TextClass();
+	this->width	 = width;
+	this->height = height;
+	this->title	 = title;
 
 	if (!glfwInit())
 	{
@@ -124,12 +122,6 @@ void WindowClass::render()
 	ButtonClass togglePenErase = ButtonClass(10, 10, 100, 40, 0, .5, .5);
 	togglePenErase.renderButton();
 
-	// Text rendering
-	if (m_textHandler)
-	{
-		m_textHandler->renderText();
-	}
-
 	glfwSwapBuffers(window);
 	glfwPollEvents();
 }
@@ -221,13 +213,7 @@ void WindowClass::characterCallback(GLFWwindow* window, unsigned int codepoint)
 }
 
 // TODO: Implement the character input handling function
-void WindowClass::handleCharacterInput(unsigned int codepoint)
-{
-	if (m_textHandler)
-	{
-		m_textHandler->textInput(codepoint);
-	}
-}
+void WindowClass::handleCharacterInput(unsigned int codepoint) {}
 
 // Erases what is within the erasers radius and breaks up any required stroke vectors
 void WindowClass::eraseAtCursor(double xpos, double ypos)

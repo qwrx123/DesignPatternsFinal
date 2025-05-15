@@ -1,6 +1,5 @@
 #include <GLFW/glfw3.h>
 #include <vector>
-#include "TextClass.h"
 
 class WindowClass
 {
@@ -34,7 +33,6 @@ class WindowClass
    protected:
 	static void characterCallback(GLFWwindow* window, unsigned int codepoint);
 	void		handleCharacterInput(unsigned int codepoint);
-	TextClass*	m_textHandler{nullptr};
 
 	// Tools
    protected:
