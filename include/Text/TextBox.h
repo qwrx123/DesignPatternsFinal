@@ -7,8 +7,8 @@
 class TextBox : public ITextBox, public Text
 {
    public:
-    TextBox() = default;
-    ~TextBox() override = default;
+    TextBox();
+    ~TextBox();
 
     bool hasBorder() const override;
     void setBorder(bool hasBorder) override;
@@ -17,7 +17,7 @@ class TextBox : public ITextBox, public Text
     void setSelected(bool selected) override;
 
     private:
-    bool borderStatus;
+    bool boarderStatus;
     bool selected;
 
 };

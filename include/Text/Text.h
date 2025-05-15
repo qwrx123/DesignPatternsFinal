@@ -6,8 +6,8 @@
 class Text : public IText
 {
    public:
-    Text() = default;
-    ~Text() override = default;
+    Text();
+    ~Text();
 
     std::string getContent() const override;
     void		setContent(const std::string& text) override;

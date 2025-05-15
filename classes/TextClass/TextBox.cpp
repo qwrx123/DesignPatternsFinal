@@ -1,16 +1,16 @@
 #include "TextBox.h"
 
-TextBox::TextBox() : borderStatus(false), selected(false) {}
+TextBox::TextBox() : boarderStatus(false), selected(false) {}
 TextBox::~TextBox() {}
 
 bool TextBox::hasBorder() const
 {
-	return hasBorder;
+	return boarderStatus;
 }
 
 void TextBox::setBorder(bool hasBorder)
 {
-	this->borderStatus = hasBorder;
+	this->boarderStatus = hasBorder;
 }
 
 bool TextBox::isSelected() const

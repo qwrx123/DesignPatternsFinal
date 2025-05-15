@@ -28,4 +28,6 @@ target_include_directories(TextClass
 	${FREETYPE_INCLUDE_DIRS}
 	PUBLIC
 	${PROJECT_SOURCE_DIR}/include
+	${PROJECT_SOURCE_DIR}/include/Text
+	${PROJECT_SOURCE_DIR}/interfaces/text
 )

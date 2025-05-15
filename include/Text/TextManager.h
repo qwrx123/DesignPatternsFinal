@@ -9,8 +9,8 @@
 class TextManager : public ITextManager
 {
    public:
-    TextManager() = default;
-    ~TextManager() override = default;
+    TextManager();
+    ~TextManager();
 
     void addText(std::shared_ptr<IText> text) override;
     void removeText(std::shared_ptr<IText> text) override;
