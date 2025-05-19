@@ -9,6 +9,7 @@ add_library(ButtonClass
 )
 
 add_subdirectory(TextClass)
+add_subdirectory(Tools)
 
 find_package(OpenGL REQUIRED)
 find_package(glfw3 3.3 REQUIRED)

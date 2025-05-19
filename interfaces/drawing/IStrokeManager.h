@@ -2,7 +2,6 @@
 #define ISTROKEMANAGER_H
 
 #include <memory>
-#include <vector>
 #include "IStroke.h"
 
 class IStrokeManager
