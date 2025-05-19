@@ -1,4 +1,5 @@
 #include "TextManager.h"
+#include <algorithm>
 
 TextManager::TextManager() {}
 
