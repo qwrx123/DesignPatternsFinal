@@ -57,6 +57,7 @@ bool WindowClass::initCallbacks()
 	glfwSetWindowSizeCallback(window, (GLFWwindowsizefun) (&windowSizeCallback));
 	glfwSetCursorPosCallback(window, &cursorPositionCallback);
 	glfwSetMouseButtonCallback(window, &mouseButtonCallback);
+	glfwSetCharCallback(window, characterCallback);
 	return true;
 }
 
@@ -200,6 +201,19 @@ void WindowClass::handleMouseButton(int button, int action, int mods)
 		}
 	}
 }
+
+void WindowClass::characterCallback(GLFWwindow* window, unsigned int codepoint)
+{
+	WindowClass* myWindow = static_cast<WindowClass*>(glfwGetWindowUserPointer(window));
+
+	if (myWindow)
+	{
+		myWindow->handleCharacterInput(codepoint);
+	}
+}
+
+// TODO: Implement the character input handling function
+void WindowClass::handleCharacterInput(unsigned int codepoint) {}
 
 // Erases what is within the erasers radius and breaks up any required stroke vectors
 void WindowClass::eraseAtCursor(double xpos, double ypos)

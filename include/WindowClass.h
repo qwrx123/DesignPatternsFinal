@@ -29,6 +29,11 @@ class WindowClass
 	void		handleMouseMove(double xpos, double ypos);
 	void		handleMouseButton(int button, int action, int mods);
 
+	// Keyboard Interactions
+   protected:
+	static void characterCallback(GLFWwindow* window, unsigned int codepoint);
+	void		handleCharacterInput(unsigned int codepoint);
+
 	// Tools
    protected:
 	enum class ToolType
