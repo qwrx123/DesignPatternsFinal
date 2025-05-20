@@ -50,3 +50,27 @@ void ToolManager::endStroke(const Point& end) {
         current_tool->endStroke(end);
     }
 }
+
+void ToolManager::onMouseMove(double x, double y) {
+    if (current_tool && current_tool->isDrawing()) {
+        addPoint({x, y});
+    }
+}
+
+void ToolManager::onMouseButton(MouseButton button, KeyAction action, double x, double y) {
+    if (!current_tool || button != MouseButton::Left) return;
+
+    Point p = {x, y};
+
+    if (action == KeyAction::Press) {
+        beginStroke(p);
+    } else if (action == KeyAction::Release) {
+        endStroke(p);
+    }
+}
+
+void ToolManager::onKey(int key, KeyAction action) {
+    // Optional: switch tools with keys
+    // Example:
+    // if (action == KeyAction::Press && key == GLFW_KEY_E) selectTool("eraser");
+}

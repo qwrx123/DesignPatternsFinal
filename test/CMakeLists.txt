@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.29.5)
 project (SoftwareEngineeringTest VERSION 1.1 LANGUAGES CXX)
 
 enable_testing()
+include(GoogleTest)
 
 # use C++20 language standard
 set(CMAKE_CXX_STANDARD 20)
@@ -13,17 +14,14 @@ registerFilesToFormat(FILES projectTests.cpp)
 find_package(GTest REQUIRED)
 find_package(OpenGL REQUIRED)
 find_package(glfw3 3.3 REQUIRED)
-find_package(glad CONFIG REQUIRED)
-
+find_package(glad REQUIRED)
 
 add_executable(projectTests
-    # add test files here
     ToolManagerTests.cpp
     projectTests.cpp
     CanvasRendererTest.cpp
     StrokeManagerTest.cpp
 
-    # add source files here
     ${CMAKE_SOURCE_DIR}/classes/Tools/ToolManager.cpp
     ${CMAKE_SOURCE_DIR}/classes/Tools/BrushTool.cpp
     ${CMAKE_SOURCE_DIR}/classes/Tools/Stroke.cpp
@@ -33,24 +31,16 @@ add_executable(projectTests
     ${CMAKE_SOURCE_DIR}/classes/Rendering/CanvasRenderer.cpp
 )
 
-target_include_directories(projectTests PRIVATE
-    ${CMAKE_SOURCE_DIR}/include
-    ${CMAKE_SOURCE_DIR}/include/Tools
-    ${CMAKE_SOURCE_DIR}/include/Rendering
-    ${CMAKE_SOURCE_DIR}/interfaces
-    ${CMAKE_SOURCE_DIR}/interfaces/drawing
-    ${CMAKE_SOURCE_DIR}/interfaces/canvas
-)
+target_include_directories(projectTests PRIVATE ${PROJECT_COMMON_INCLUDE_DIRS})
 
 target_link_libraries(projectTests
-	PRIVATE
-	${GLEW_LIBRARIES}
-	glfw
-    glad::glad
-	OpenGL::GL
+    PRIVATE
+    ${GLEW_LIBRARIES}
+    glad
+    glfw
+    OpenGL::GL
     GTest::gtest
     GTest::gtest_main
 )
 
-include(GoogleTest)
 gtest_discover_tests(projectTests)

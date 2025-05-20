@@ -10,6 +10,7 @@ private:
     Color brush_color;
     float brush_thickness;
 	bool active;
+    bool drawing = false;
 
    public:
     BrushTool(Color color, float thickness);
@@ -24,6 +25,8 @@ private:
 
     bool isActive() const override;
     void setActive(bool value);
+
+    bool isDrawing() const override;
 };
 
 #endif // BRUSHTOOL_H

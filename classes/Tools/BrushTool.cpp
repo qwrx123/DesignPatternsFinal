@@ -7,7 +7,8 @@ BrushTool::BrushTool(Color color, float thickness)
 BrushTool::~BrushTool() = default;
 
 void BrushTool::beginStroke(const Point& start) {
-    current_stroke = std::make_shared<Stroke>(brush_color, brush_thickness);
+	drawing = true;
+	current_stroke = std::make_shared<Stroke>(brush_color, brush_thickness);
     current_stroke->addPoint(start);
 }
 
@@ -18,7 +19,8 @@ void BrushTool::addPoint(const Point& point) {
 }
 
 void BrushTool::endStroke(const Point& end) {
-    if (current_stroke) {
+	drawing = false;
+	if (current_stroke) {
         current_stroke->addPoint(end);
     }
 }
@@ -33,4 +35,8 @@ bool BrushTool::isActive() const {
 
 void BrushTool::setActive(bool value) {
     active = value;
+}
+
+bool BrushTool::isDrawing() const {
+    return drawing;
 }

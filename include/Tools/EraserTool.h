@@ -19,10 +19,13 @@ public:
     bool isActive() const override;
     void setActive(bool value);
 
-private:
+	bool isDrawing() const override;
+
+   private:
     std::shared_ptr<Stroke> erase_path;
     float eraser_thickness;
 	bool active;
+    bool drawing = false;
 };
 
 #endif // ERASER_TOOL_H

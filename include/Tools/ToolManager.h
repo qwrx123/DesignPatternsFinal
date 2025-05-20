@@ -2,9 +2,10 @@
 #define TOOL_MANAGER_H
 
 #include "IToolManager.h"
+#include "IInputReceiver.h"
 #include <unordered_map>
 
-class ToolManager : public IToolManager 
+class ToolManager : public IToolManager, public IInputReceiver 
 {
 public:
     ToolManager();
@@ -19,6 +20,10 @@ public:
     void beginStroke(const Point& start) override;
     void addPoint(const Point& point) override;
     void endStroke(const Point& end) override;
+
+    void onMouseMove(double x, double y) override;
+    void onMouseButton(MouseButton button, KeyAction action, double x, double y) override;
+    void onKey(int key, KeyAction action) override;
 
 private:
     std::unordered_map<std::string, std::shared_ptr<IDrawingTool>> tools;

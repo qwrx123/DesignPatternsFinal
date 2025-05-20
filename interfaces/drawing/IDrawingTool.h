@@ -18,6 +18,8 @@ class IDrawingTool : ITool
 
 	virtual std::shared_ptr<IStroke> getCurrentStroke() = 0;
 	virtual std::string				 getName()			= 0;
+
+	virtual bool isDrawing() const = 0;
 };
 
 #endif	// IDRAWINGTOOL_H
