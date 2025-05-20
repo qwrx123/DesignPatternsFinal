@@ -1,5 +1,7 @@
-set(FILE_LIST IHistoryStack.h
-    IRenderManager.h)
+set(FILE_LIST 
+    IHistoryStack.h
+    IRenderManager.h
+    ICanvasRenderer.h)
 
 registerFilesToFormat(FILES ${FILE_LIST})
 

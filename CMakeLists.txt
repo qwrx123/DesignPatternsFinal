@@ -10,6 +10,8 @@ endif()
 project (SoftwareEngineeringTest VERSION 1.1 LANGUAGES CXX)
 
 include_directories(${PROJECT_SOURCE_DIR}/include)
+set(CMAKE_TOOLCHAIN_FILE "${CMAKE_SOURCE_DIR}/vcpkg/scripts/buildsystems/vcpkg.cmake"
+    CACHE STRING "Vcpkg toolchain file")
 
 # use C++20 language standard
 set(CMAKE_CXX_STANDARD 20)

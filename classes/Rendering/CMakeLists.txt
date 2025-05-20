@@ -1,24 +1,20 @@
 add_library(
-    Tools
+    Rendering
 	SHARED
-    Stroke.cpp
-	BrushTool.cpp
-	ToolManager.cpp
-	EraserTool.cpp
-	StrokeManager.cpp
+    CanvasRenderer.cpp
 )
 
 find_package(glfw3 REQUIRED)
 
-target_include_directories(Tools
+target_include_directories(Rendering
 	PUBLIC
     ${PROJECT_SOURCE_DIR}/include
-	${PROJECT_SOURCE_DIR}/include/Tools
-	${PROJECT_SOURCE_DIR}/interfaces/drawing
+	${PROJECT_SOURCE_DIR}/include/Rendering
+	${PROJECT_SOURCE_DIR}/interfaces/Canvas
 )
 
 target_link_libraries(
-    Tools
+    Rendering
     ${GLFW_LIBRARIES}
     glfw
 )

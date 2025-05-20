@@ -10,11 +10,13 @@ public:
     Stroke(Color color, float thickness);
     ~Stroke() override;
 
+    void setThickness(float thickness) override;
+    void setColor(const Color& color) override;
     void addPoint(const Point& point) override;
-    const std::vector<Point>& getPoints() const override;
 
+    const std::vector<Point>& getPoints() const override;
     Color getColor() const override;
-    float getThickness() const override;
+	float getThickness() const override;
     double getLength() const override;
 
 private:

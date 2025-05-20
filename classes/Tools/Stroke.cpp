@@ -33,3 +33,11 @@ double Stroke::getLength() const {
     }
     return length;
 }
+
+void Stroke::setThickness(float thickness) {
+    stroke_thickness = thickness;
+}
+
+void Stroke::setColor(const Color& color) {
+    stroke_color = color;
+}
