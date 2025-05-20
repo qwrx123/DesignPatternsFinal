@@ -3,6 +3,7 @@ add_library(
 	SHARED
     Stroke.cpp
 	BrushTool.cpp
+	ToolManager.cpp
 )
 
 find_package(glfw3 REQUIRED)

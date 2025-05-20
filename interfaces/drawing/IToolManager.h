@@ -7,6 +7,7 @@
 class IToolManager
 {
    public:
+	IToolManager()			= default;
 	virtual ~IToolManager() = default;
 
 	virtual void registerTool(const std::string& name, std::shared_ptr<IDrawingTool> tool) = 0;

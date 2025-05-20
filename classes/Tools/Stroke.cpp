@@ -1,4 +1,5 @@
 #include "Stroke.h"
+#include <cmath>
 
 Stroke::Stroke(Color color, float thickness)
     : stroke_color(color), stroke_thickness(thickness) {}
@@ -20,8 +21,6 @@ Color Stroke::getColor() const {
 float Stroke::getThickness() const {
     return stroke_thickness;
 }
-
-#include <cmath> // for std::sqrt, std::pow
 
 double Stroke::getLength() const {
     if (points.size() < 2) return 0.0;

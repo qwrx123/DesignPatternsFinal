@@ -12,14 +12,29 @@ registerFilesToFormat(FILES projectTests.cpp)
 
 find_package(GTest REQUIRED)
 
-add_executable(
-	projectTests
-	projectTests.cpp
+add_executable(projectTests
+    ToolManagerTest.cpp
+    projectTests.cpp
+
+    ${CMAKE_SOURCE_DIR}/classes/Tools/ToolManager.cpp
+    ${CMAKE_SOURCE_DIR}/classes/Tools/BrushTool.cpp
+    ${CMAKE_SOURCE_DIR}/classes/Tools/Stroke.cpp
 )
 
-target_link_libraries(
-	projectTests
-	GTest::gtest_main
+target_include_directories(projectTests PRIVATE
+    ${CMAKE_SOURCE_DIR}/include
+    ${CMAKE_SOURCE_DIR}/include/Tools
+    ${CMAKE_SOURCE_DIR}/interfaces
+    ${CMAKE_SOURCE_DIR}/interfaces/drawing
+    ${CMAKE_SOURCE_DIR}/classes
+    ${CMAKE_SOURCE_DIR}/classes/Tools
+)
+
+find_package(GTest REQUIRED)
+
+target_link_libraries(projectTests
+    GTest::gtest
+    GTest::gtest_main
 )
 
 include(GoogleTest)

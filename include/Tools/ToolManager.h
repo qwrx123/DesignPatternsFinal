@@ -8,8 +8,9 @@ class ToolManager : public IToolManager
 {
 public:
     ToolManager();
+	~ToolManager();
 
-    void registerTool(const std::string& name, std::shared_ptr<IDrawingTool> tool) override;
+	void registerTool(const std::string& name, std::shared_ptr<IDrawingTool> tool) override;
     bool selectTool(const std::string& name) override;
 
     std::string getActiveToolName() const override;
