@@ -13,12 +13,15 @@ registerFilesToFormat(FILES projectTests.cpp)
 find_package(GTest REQUIRED)
 
 add_executable(projectTests
-    ToolManagerTest.cpp
+    # add test files here
+    ToolManagerTests.cpp
     projectTests.cpp
 
+    # add source files here
     ${CMAKE_SOURCE_DIR}/classes/Tools/ToolManager.cpp
     ${CMAKE_SOURCE_DIR}/classes/Tools/BrushTool.cpp
     ${CMAKE_SOURCE_DIR}/classes/Tools/Stroke.cpp
+    ${CMAKE_SOURCE_DIR}/classes/Tools/EraserTool.cpp
 )
 
 target_include_directories(projectTests PRIVATE
@@ -26,8 +29,6 @@ target_include_directories(projectTests PRIVATE
     ${CMAKE_SOURCE_DIR}/include/Tools
     ${CMAKE_SOURCE_DIR}/interfaces
     ${CMAKE_SOURCE_DIR}/interfaces/drawing
-    ${CMAKE_SOURCE_DIR}/classes
-    ${CMAKE_SOURCE_DIR}/classes/Tools
 )
 
 find_package(GTest REQUIRED)

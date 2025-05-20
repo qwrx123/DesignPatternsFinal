@@ -1,24 +1,28 @@
-#ifndef ERASERTOOL_H
-#define ERASERTOOL_H
+#ifndef ERASER_TOOL_H
+#define ERASER_TOOL_H
 
 #include "IDrawingTool.h"
 #include "Stroke.h"
 
-class EraserTool : public IDrawingTool 
-{
-private:
-    std::shared_ptr<Stroke> erase_path;
-    float eraser_thickness;
-
+class EraserTool : public IDrawingTool {
 public:
     EraserTool(float thickness);
+    ~EraserTool() override;
 
     void beginStroke(const Point& start) override;
     void addPoint(const Point& point) override;
     void endStroke(const Point& end) override;
-    std::shared_ptr<IStroke> getCurrentStroke() const;
 
-    std::string getName() const { return "Eraser"; }
+    std::shared_ptr<IStroke> getCurrentStroke() override;
+    std::string getName() override;
+
+    bool isActive() const override;
+    void setActive(bool value);
+
+private:
+    std::shared_ptr<Stroke> erase_path;
+    float eraser_thickness;
+	bool active;
 };
 
-#endif // ERASERTOOL_H
+#endif // ERASER_TOOL_H

@@ -3,6 +3,7 @@
 #include "drawing/IDrawingTool.h"
 #include "BrushTool.h"
 #include "Stroke.h"
+#include "EraserTool.h"
 
 TEST(ToolManagerTest, CanRegisterAndSelectTool) {
     ToolManager tm;
@@ -35,4 +36,31 @@ TEST(ToolManagerTest, DelegatesToBrushTool) {
     EXPECT_EQ(stroke->getPoints()[0].x, 10);
     EXPECT_EQ(stroke->getPoints()[1].y, 20);
     EXPECT_EQ(stroke->getPoints()[2].x, 30);
+}
+
+TEST(ToolManagerTest, SwitchesBetweenBrushAndEraser) {
+    ToolManager tm;
+
+    auto brush = std::make_shared<BrushTool>(Color{1, 0, 0, 1}, 2.0f);
+    auto eraser = std::make_shared<EraserTool>(10.0f);
+
+    tm.registerTool("Brush", brush);
+    tm.registerTool("Eraser", eraser);
+
+    // ToolManager should default to the first registered tool
+    EXPECT_EQ(tm.getActiveToolName(), "Brush");
+    EXPECT_EQ(tm.getActiveTool(), brush);
+
+    // Switch to Eraser
+    EXPECT_TRUE(tm.selectTool("Eraser"));
+    EXPECT_EQ(tm.getActiveToolName(), "Eraser");
+    EXPECT_EQ(tm.getActiveTool(), eraser);
+
+    // Switch back to Brush
+    EXPECT_TRUE(tm.selectTool("Brush"));
+    EXPECT_EQ(tm.getActiveToolName(), "Brush");
+    EXPECT_EQ(tm.getActiveTool(), brush);
+
+    // Should not switch to unregistered tool
+    EXPECT_FALSE(tm.selectTool("MagicWand"));
 }

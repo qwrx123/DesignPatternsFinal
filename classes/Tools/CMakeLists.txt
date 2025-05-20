@@ -4,6 +4,7 @@ add_library(
     Stroke.cpp
 	BrushTool.cpp
 	ToolManager.cpp
+	EraserTool.cpp
 )
 
 find_package(glfw3 REQUIRED)
