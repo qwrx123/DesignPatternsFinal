@@ -8,7 +8,8 @@ class Stroke : public IStroke
 {
 public:
     Stroke(Color color, float thickness);
-    ~Stroke() override;
+	Stroke();
+	~Stroke() override;
 
     void setThickness(float thickness) override;
     void setColor(const Color& color) override;

@@ -4,6 +4,8 @@
 Stroke::Stroke(Color color, float thickness)
     : stroke_color(color), stroke_thickness(thickness) {}
 
+Stroke::Stroke() = default;
+
 Stroke::~Stroke() = default;
 
 void Stroke::addPoint(const Point& point) {

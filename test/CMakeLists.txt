@@ -21,11 +21,13 @@ add_executable(projectTests
     ToolManagerTests.cpp
     projectTests.cpp
     CanvasRendererTest.cpp
+    StrokeManagerTest.cpp
 
     # add source files here
     ${CMAKE_SOURCE_DIR}/classes/Tools/ToolManager.cpp
     ${CMAKE_SOURCE_DIR}/classes/Tools/BrushTool.cpp
     ${CMAKE_SOURCE_DIR}/classes/Tools/Stroke.cpp
+    ${CMAKE_SOURCE_DIR}/classes/Tools/StrokeManager.cpp
     ${CMAKE_SOURCE_DIR}/classes/Tools/EraserTool.cpp
 
     ${CMAKE_SOURCE_DIR}/classes/Rendering/CanvasRenderer.cpp
