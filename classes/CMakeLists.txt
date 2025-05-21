@@ -8,6 +8,11 @@ add_library(ButtonClass
 	ButtonClass.cpp
 )
 
+add_library(MenuBar
+	SHARED
+	MenuBar.cpp
+)
+
 add_subdirectory(TextClass)
 
 find_package(OpenGL REQUIRED)
@@ -27,6 +32,7 @@ target_link_libraries(WindowClass
 target_include_directories(WindowClass
 	PUBLIC
 	${PROJECT_SOURCE_DIR}/include
+	${PROJECT_SOURCE_DIR}/interfaces/ui
 )
 
 target_link_libraries(ButtonClass
@@ -38,14 +44,22 @@ target_link_libraries(ButtonClass
 target_include_directories(ButtonClass
 	PUBLIC
 	${PROJECT_SOURCE_DIR}/include
+	${PROJECT_SOURCE_DIR}/interfaces/ui
 )
+
+target_include_directories(MenuBar
+	PUBLIC
+	${PROJECT_SOURCE_DIR}/include
+	${PROJECT_SOURCE_DIR}/interfaces/ui
+	)
+
 if(WIN32)
-	install(TARGETS WindowClass ButtonClass
+	install(TARGETS WindowClass ButtonClass MenuBar
 	RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 	ARCHIVE DESTINATION ${CMAKE_INSTALL_BINDIR}
 	)
 else()
-	install(TARGETS WindowClass ButtonClass
+	install(TARGETS WindowClass ButtonClass MenuBar
 	LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
 	ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
 	)
