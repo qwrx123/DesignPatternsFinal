@@ -18,6 +18,7 @@ find_package(GLEW REQUIRED)
 add_executable(projectTests
     ToolManagerTests.cpp
     projectTests.cpp
+    CanvasRendererTest.cpp
     StrokeManagerTest.cpp
 
     ${CMAKE_SOURCE_DIR}/classes/Tools/ToolManager.cpp
@@ -28,6 +29,7 @@ add_executable(projectTests
 
     ${CMAKE_SOURCE_DIR}/classes/Rendering/CanvasRenderer.cpp
 )
+
 target_include_directories(projectTests PRIVATE ${PROJECT_COMMON_INCLUDE_DIRS})
 
 target_link_libraries(projectTests
