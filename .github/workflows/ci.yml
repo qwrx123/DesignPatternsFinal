@@ -19,11 +19,15 @@ jobs:
 
       - name: Install dependencies
         run: sudo apt-get update && sudo apt-get install -y libglfw3 libglfw3-dev libgtest-dev libgmock-dev libfreetype6 libfreetype6-dev libglew-dev
-        run2: sudo apt-get install -y xorg xvfb xfonts-100dpi xfonts-75dpi xfonts-scalable xfonts-cyrillic
+      
+      - name: Install xvfb dependencies
+        run: sudo apt-get install -y xorg xvfb xfonts-100dpi xfonts-75dpi xfonts-scalable xfonts-cyrillic
 
       - name: Configure xvfb
         run: export DISPLAY=:0
-        run2: Xvfb :0 &
+
+      - name: run xvfb
+        run: Xvfb :0 &
 
       - name: Configure
         run: cmake -DCMAKE_BUILD_TYPE=Debug -DBUILD_SHARED_LIBS=ON -DBUILD_TESTING=ON -B build
