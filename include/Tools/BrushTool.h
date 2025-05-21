@@ -2,10 +2,12 @@
 #define BRUSHTOOL_H
 
 #include "IDrawingTool.h"
+#include "IStrokeManager.h"
 #include "Stroke.h"
 
 class BrushTool : public IDrawingTool {
 private:
+    std::shared_ptr<IStrokeManager> stroke_manager;
     std::shared_ptr<Stroke> current_stroke;
     Color brush_color;
     float brush_thickness;
@@ -13,7 +15,8 @@ private:
     bool drawing = false;
 
    public:
-    BrushTool(Color color, float thickness);
+    BrushTool(std::shared_ptr<IStrokeManager> stroke_manager, Color color, float thickness);
+	BrushTool::BrushTool(Color color, float thickness);
 	~BrushTool() override;
 
 	void beginStroke(const Point& start) override;

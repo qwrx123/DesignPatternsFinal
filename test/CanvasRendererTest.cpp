@@ -46,9 +46,7 @@ TEST_F(CanvasRendererTest, CanRenderSimpleStrokeWithoutCrash) {
     stroke.addPoint({0.0f, 0.5f});
     stroke.addPoint({0.5f, 0.0f});
 
-    EXPECT_NO_THROW({
-        renderer->beginFrame();
-        renderer->drawStroke(stroke);
-        renderer->endFrame();
-    });
+    renderer->beginFrame();
+    renderer->drawStroke(stroke);
+    renderer->endFrame();
 }

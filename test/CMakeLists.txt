@@ -2,7 +2,6 @@ cmake_minimum_required(VERSION 3.29.5)
 project (SoftwareEngineeringTest VERSION 1.1 LANGUAGES CXX)
 
 enable_testing()
-include(GoogleTest)
 
 # use C++20 language standard
 set(CMAKE_CXX_STANDARD 20)
@@ -39,8 +38,8 @@ target_link_libraries(projectTests
     glfw
     GLEW::GLEW
     OpenGL::GL
-    GTest::gtest
     GTest::gtest_main
 )
 
+include(GoogleTest)
 gtest_discover_tests(projectTests)

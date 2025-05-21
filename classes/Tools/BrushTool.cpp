@@ -4,6 +4,11 @@
 BrushTool::BrushTool(Color color, float thickness)
     : brush_color(color), brush_thickness(thickness), active(false) {}
 
+BrushTool::BrushTool(std::shared_ptr<IStrokeManager> stroke_manager, Color color, float thickness)
+    : stroke_manager(stroke_manager), brush_color(color), brush_thickness(thickness),
+      active(false), drawing(false) {}
+
+
 BrushTool::~BrushTool() = default;
 
 void BrushTool::beginStroke(const Point& start) {
@@ -19,9 +24,11 @@ void BrushTool::addPoint(const Point& point) {
 }
 
 void BrushTool::endStroke(const Point& end) {
-	drawing = false;
-	if (current_stroke) {
+    drawing = false;
+    if (current_stroke) {
         current_stroke->addPoint(end);
+        stroke_manager->addStroke(current_stroke);
+        current_stroke.reset();
     }
 }
 

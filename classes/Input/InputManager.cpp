@@ -40,6 +40,11 @@ void InputManager::handleKey(int key, KeyAction action) {
     }
 }
 
+void InputManager::setResizeCallback(std::function<void(int, int)> cb) {
+    resize_callback = std::move(cb);
+}
+
+
 void InputManager::bindToWindow(GLFWwindow* window) {
     glfwSetWindowUserPointer(window, this);
 
@@ -86,5 +91,15 @@ void InputManager::bindToWindow(GLFWwindow* window) {
         }
 
         self->handleKey(key, ka);
+    });
+
+    glfwSetFramebufferSizeCallback(window, [](GLFWwindow* win, int width, int height) {
+        auto* self = static_cast<InputManager*>(glfwGetWindowUserPointer(win));
+        if (!self) return;
+
+        // Broadcast resize to renderer (needs access to it)
+        if (self->resize_callback) {
+            self->resize_callback(width, height);
+        }
     });
 }

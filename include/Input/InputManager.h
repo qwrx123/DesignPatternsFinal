@@ -4,6 +4,7 @@
 #include "IInputManager.h"
 #include <vector>
 #include <memory>
+#include <functional>
 #include <GLFW/glfw3.h>
 
 class InputManager : public IInputManager {
@@ -20,10 +21,13 @@ public:
     void handleMouseButton(MouseButton button, KeyAction action, double x, double y) override;
     void handleKey(int key, KeyAction action) override;
 
-    void bindToWindow(GLFWwindow* window);  // Registers callbacks internally
+    void setResizeCallback(std::function<void(int, int)> cb);
+
+	void bindToWindow(GLFWwindow* window);  // Registers callbacks internally
 
 private:
     std::vector<std::shared_ptr<IInputReceiver>> receivers;
+    std::function<void(int, int)> resize_callback;
 };
 
 #endif // INPUTMANAGER_H

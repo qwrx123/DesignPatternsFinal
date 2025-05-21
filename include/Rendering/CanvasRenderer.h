@@ -11,6 +11,8 @@ public:
     CanvasRenderer(GLFWwindow* window);
     ~CanvasRenderer();
 
+    void resize(int width, int height);
+
     void beginFrame() override;
     void drawStroke(const IStroke& stroke) override;
     void endFrame() override;

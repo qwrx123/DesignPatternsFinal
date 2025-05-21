@@ -7,6 +7,7 @@
 #include "InputManager.h"
 #include "StrokeManager.h"
 #include "ToolManager.h"
+#include "BrushTool.h"
 
 // --- Main Entry ---
 int main()
@@ -48,6 +49,13 @@ int main()
 	inputManager->bindToWindow(window);
 	inputManager->registerReceiver(toolManager);
 
+	toolManager->registerTool(
+		"brush", std::make_shared<BrushTool>(strokeManager, Color{0.0f, 0.0f, 0.0f, 1.0f},	// Black
+											 2.0f  // Thickness
+											 ));
+
+	inputManager->setResizeCallback([&](int w, int h) { renderer->resize(w, h); });
+
 	// --- Main Loop ---
 	while (!glfwWindowShouldClose(window))
 	{
@@ -59,6 +67,17 @@ int main()
 		{
 			renderer->drawStroke(*stroke);
 		}
+
+		auto current_tool = toolManager->getActiveTool();
+		if (current_tool)
+		{
+			auto live_stroke = current_tool->getCurrentStroke();
+			if (live_stroke)
+			{
+				renderer->drawStroke(*live_stroke);
+			}
+		}
+
 		renderer->endFrame();
 
 		inputManager->endFrame();
