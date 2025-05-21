@@ -1,10 +1,11 @@
-set(FILE_LIST IDrawingTool.h 
+set(FILE_LIST
+    IDrawingTool.h
     IDrawingEngine.h
-    IStroke.h 
-    ITool.h 
-    IStrokeGeneratingTool.h
-    IStrokeManager.h)
-
+    IStroke.h
+    ITool.h
+    IStrokeManager.h
+    IToolManager.h
+)
 
 registerFilesToFormat(FILES ${FILE_LIST})
 

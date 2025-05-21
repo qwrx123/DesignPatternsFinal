@@ -11,15 +11,34 @@ set(CMAKE_VERBOSE_MAKEFILE ON)
 registerFilesToFormat(FILES projectTests.cpp)
 
 find_package(GTest REQUIRED)
+find_package(OpenGL REQUIRED)
+find_package(glfw3 3.3 REQUIRED)
+find_package(GLEW REQUIRED)
 
-add_executable(
-	projectTests
-	projectTests.cpp
+add_executable(projectTests
+    ToolManagerTests.cpp
+    projectTests.cpp
+    CanvasRendererTest.cpp
+    StrokeManagerTest.cpp
+
+    ${CMAKE_SOURCE_DIR}/classes/Tools/ToolManager.cpp
+    ${CMAKE_SOURCE_DIR}/classes/Tools/BrushTool.cpp
+    ${CMAKE_SOURCE_DIR}/classes/Tools/Stroke.cpp
+    ${CMAKE_SOURCE_DIR}/classes/Tools/StrokeManager.cpp
+    ${CMAKE_SOURCE_DIR}/classes/Tools/EraserTool.cpp
+
+    ${CMAKE_SOURCE_DIR}/classes/Rendering/CanvasRenderer.cpp
 )
 
-target_link_libraries(
-	projectTests
-	GTest::gtest_main
+target_include_directories(projectTests PRIVATE ${PROJECT_COMMON_INCLUDE_DIRS})
+
+target_link_libraries(projectTests
+    PRIVATE
+    ${GLEW_LIBRARIES}
+    glfw
+    GLEW::GLEW
+    OpenGL::GL
+    GTest::gtest_main
 )
 
 include(GoogleTest)

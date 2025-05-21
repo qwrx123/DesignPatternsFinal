@@ -1,9 +1,9 @@
 add_library(TextClass
-	SHARED
-	Text.cpp
-	Font.cpp
-	TextBox.cpp
-	TextManager.cpp
+    SHARED
+    Text.cpp
+    Font.cpp
+    TextBox.cpp
+    TextManager.cpp
 )
 
 find_package(OpenGL REQUIRED)
@@ -12,22 +12,27 @@ find_package(Freetype REQUIRED)
 
 registerFilesToFormat(FILES Text.cpp Font.cpp TextBox.cpp TextManager.cpp)
 
-include_directories(${FREETYPE_INCLUDE_DIRS})
+target_include_directories(TextClass
+    PUBLIC
+    ${PROJECT_COMMON_INCLUDE_DIRS}
+    ${FREETYPE_INCLUDE_DIRS}
+)
 
 target_link_libraries(TextClass
     PRIVATE
-    ${FREETYPE_LIBRARIES}
     Freetype::Freetype
-    ${GLEW_LIBRARIES}
     glfw
     OpenGL::GL
 )
 
-target_include_directories(TextClass
-	PRIVATE
-	${FREETYPE_INCLUDE_DIRS}
-	PUBLIC
-	${PROJECT_SOURCE_DIR}/include
-	${PROJECT_SOURCE_DIR}/include/Text
-	${PROJECT_SOURCE_DIR}/interfaces/text
-)
+if(WIN32)
+    install(TARGETS TextClass
+        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+        ARCHIVE DESTINATION ${CMAKE_INSTALL_BINDIR}
+    )
+else()
+    install(TARGETS TextClass
+        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    )
+endif()

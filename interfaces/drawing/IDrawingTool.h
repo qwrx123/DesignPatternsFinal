@@ -1,6 +1,9 @@
 #ifndef IDRAWINGTOOL_H
 #define IDRAWINGTOOL_H
 
+#include <memory>
+#include <string>
+#include "IStroke.h"
 #include "ITool.h"
 
 class IDrawingTool : ITool
@@ -9,9 +12,14 @@ class IDrawingTool : ITool
 	IDrawingTool()			= default;
 	virtual ~IDrawingTool() = default;
 
-	virtual void beginStroke(double x, double y) = 0;
-	virtual void addPoint(double x, double y)	 = 0;
-	virtual void endStroke()					 = 0;
+	virtual void beginStroke(const Point& start) = 0;
+	virtual void addPoint(const Point& point)	 = 0;
+	virtual void endStroke(const Point& end)	 = 0;
+
+	virtual std::shared_ptr<IStroke> getCurrentStroke() = 0;
+	virtual std::string				 getName()			= 0;
+
+	virtual bool isDrawing() const = 0;
 };
 
 #endif	// IDRAWINGTOOL_H
