@@ -1,4 +1,5 @@
 #include "MenuBar.h"
+#include "Bounds.h"
 
 MenuBar::MenuBar() {}
 
@@ -10,73 +11,73 @@ MenuBar::~MenuBar()
 	}
 }
 
-std::string MenuBar::getLabel() const override
+std::string MenuBar::getLabel() const
 {
 	return label;
 }
 
-void MenuBar::setLabel(const std::string& label) override
+void MenuBar::setLabel(const std::string& label)
 {
 	this->label = label;
 }
 
-Bounds MenuBar::getBounds() const override
+Bounds MenuBar::getBounds() const
 {
 	return bounds;
 }
 
-void MenuBar::setBounds(const Bounds& bounds) override
+void MenuBar::setBounds(const Bounds& bounds)
 {
 	this->bounds = bounds;
 }
 
-bool MenuBar::isOpen() const override
+bool MenuBar::isOpen() const
 {
 	return true;
 }
 
-bool MenuBar::isClosed() const override
+bool MenuBar::isClosed() const
 {
 	return false;
 }
 
-void MenuBar::open() override {}
+void MenuBar::open() {}
 
-void MenuBar::close() override {}
+void MenuBar::close() {}
 
-void MenuBar::addButton(std::shared_ptr<IButton> button) override
+void MenuBar::addButton(std::shared_ptr<IButton> button)
 {
-	buttons.insert(button);
+	buttons.push_back(button);
 }
 
-void MenuBar::clearButtons() override
+void MenuBar::clearButtons()
 {
 	buttons.clear();
 }
 
-const std::vector<std::shared_ptr<IButton>>& MenuBar::getButtons() const override
+const std::vector<std::shared_ptr<IButton>>& MenuBar::getButtons() const
 {
 	return buttons;
 }
 
-int MenuBar::getSelectedIndex() const override
+int MenuBar::getSelectedIndex() const
 {
 	return selectedIndex;
 }
 
-void MenuBar::setSelectedIndex(int index) override
+void MenuBar::setSelectedIndex(int index)
 {
 	selectedIndex = index;
 }
 
-std::shared_ptr<IButton> MenuBar::getSelectedItem() const override
+std::shared_ptr<IButton> MenuBar::getSelectedItem() const
 {
 	return buttons.at(selectedIndex);
 }
 
-bool MenuBar::showSelectedLabelWhenClosed() const override
+bool MenuBar::showSelectedLabelWhenClosed() const
 {
 	return false;
 }
 
-void MenuBar::setShowSelectedLabelWhenClosed(bool show) override {}
+void MenuBar::setShowSelectedLabelWhenClosed(bool show) {}
