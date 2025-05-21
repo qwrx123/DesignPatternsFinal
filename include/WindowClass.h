@@ -1,5 +1,6 @@
 #include <GLFW/glfw3.h>
 #include <vector>
+#include "MenuBar.h"
 
 class WindowClass
 {
@@ -21,6 +22,7 @@ class WindowClass
 	int			height;
 	const char* title;
 	GLFWwindow* window;
+	MenuBar		toolBar;  // added to test toolBar
 
 	// Mouse Interactions
    protected:
