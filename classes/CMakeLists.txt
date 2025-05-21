@@ -38,6 +38,7 @@ target_link_libraries(ButtonClass
 target_include_directories(ButtonClass
 	PUBLIC
 	${PROJECT_SOURCE_DIR}/include
+	${PROJECT_SOURCE_DIR}/interfaces/ui
 )
 
 target_include_directories(MenuBar
