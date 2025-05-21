@@ -4,6 +4,7 @@
 #include "BrushTool.h"
 #include "Stroke.h"
 #include "EraserTool.h"
+#include "StrokeManager.h"
 
 TEST(ToolManagerTest, CanRegisterAndSelectTool) {
     ToolManager tm;
@@ -18,9 +19,12 @@ TEST(ToolManagerTest, CanRegisterAndSelectTool) {
 }
 
 TEST(ToolManagerTest, DelegatesToBrushTool) {
+    auto strokeManager = std::make_shared<StrokeManager>();
+    auto brush = std::make_shared<BrushTool>(strokeManager, Color{0.0f, 1.0f, 0.0f, 1.0f}, 3.0f);
+
     ToolManager tm;
-    auto brush = std::make_shared<BrushTool>(Color{0.0f, 1.0f, 0.0f, 1.0f}, 3.0f);
     tm.registerTool("Brush", brush);
+    tm.selectTool("Brush");
 
     Point p1{10, 10};
     Point p2{20, 20};
@@ -30,12 +34,16 @@ TEST(ToolManagerTest, DelegatesToBrushTool) {
     tm.addPoint(p2);
     tm.endStroke(p3);
 
-    auto stroke = std::dynamic_pointer_cast<Stroke>(brush->getCurrentStroke());
+    const auto& strokes = strokeManager->getStrokes();
+    ASSERT_EQ(strokes.size(), 1);
+    auto stroke = std::dynamic_pointer_cast<Stroke>(strokes[0]);
     ASSERT_NE(stroke, nullptr);
-    EXPECT_EQ(stroke->getPoints().size(), 3);
-    EXPECT_EQ(stroke->getPoints()[0].x, 10);
-    EXPECT_EQ(stroke->getPoints()[1].y, 20);
-    EXPECT_EQ(stroke->getPoints()[2].x, 30);
+
+    const auto& pts = stroke->getPoints();
+    ASSERT_EQ(pts.size(), 3);
+    EXPECT_EQ(pts[0].x, 10);
+    EXPECT_EQ(pts[1].y, 20);
+    EXPECT_EQ(pts[2].x, 30);
 }
 
 TEST(ToolManagerTest, SwitchesBetweenBrushAndEraser) {
