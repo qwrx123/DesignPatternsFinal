@@ -36,7 +36,6 @@ set(PROJECT_COMMON_INCLUDE_DIRS
 	${CMAKE_SOURCE_DIR}/classes/Rendering
 	${CMAKE_SOURCE_DIR}/classes/TextClass
 	${CMAKE_SOURCE_DIR}/classes/Tools
-	${CMAKE_SOURCE_DIR}/external
 )
 
 # Make common includes available to subdirectories
@@ -118,6 +117,9 @@ target_link_libraries(GlfwTestApp
     Freetype::Freetype
     ${FREETYPE_LIBRARIES}
     TextClass
+	Rendering
+	Tools
+	Input
 )
 
 target_include_directories(GlfwTestApp
