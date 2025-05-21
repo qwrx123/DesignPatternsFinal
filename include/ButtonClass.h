@@ -10,8 +10,7 @@
 class ButtonClass : public IButton
 {
    public:
-	ButtonClass(double x, double y, double width, double height, double percentRed,
-				double percentGreen, double percentBlue);
+	ButtonClass(Bounds bounds, double percentRed, double percentGreen, double percentBlue);
 	~ButtonClass();
 
 	void   setBounds(const Bounds& bounds) override;
@@ -27,11 +26,7 @@ class ButtonClass : public IButton
 
 	void onClick(std::function<void()> callback) override;
 
-	double getTop();
-	double getBottom();
-	double getLeft();
-	double getRight();
-	void   renderButton();
+	void renderButton();
 
    private:
 	Bounds		bounds;
@@ -39,10 +34,6 @@ class ButtonClass : public IButton
 	bool		pressed;
 	std::string label;
 
-	double top;
-	double bottom;
-	double left;
-	double right;
 	double red;
 	double green;
 	double blue;

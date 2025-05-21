@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <cmath>
 #include <iostream>
+#include "Bounds.h"
 #include "ButtonClass.h"
 
 WindowClass::WindowClass() : width(0), height(0), title(nullptr), window(nullptr) {}
@@ -118,7 +119,8 @@ void WindowClass::render()
 	glLoadIdentity();
 
 	// Brush-Eraser toggle button
-	ButtonClass togglePenErase = ButtonClass(10, 10, 100, 40, 0, .5, .5);
+	Bounds		buttonBounds(0, 39, 0, 99);
+	ButtonClass togglePenErase = ButtonClass(buttonBounds, 0, .5, .5);
 	togglePenErase.renderButton();
 
 	glfwSwapBuffers(window);
@@ -165,11 +167,12 @@ void WindowClass::handleMouseButton(int button, int action, int mods)
 		double xpos, ypos;
 		glfwGetCursorPos(window, &xpos, &ypos);
 		// Location of Eraser-Brush toggle button
-		ButtonClass togglePenErase = ButtonClass(10, 10, 100, 40, 0, .5, .5);
+		Bounds		buttonBounds(0, 39, 0, 99);
+		ButtonClass togglePenErase = ButtonClass(buttonBounds, 0, .5, .5);
 
-		bool clickOnButton = xpos >= togglePenErase.getLeft() &&
-							 xpos <= togglePenErase.getRight() && ypos >= togglePenErase.getTop() &&
-							 ypos <= togglePenErase.getBottom();
+		bool clickOnButton =
+			xpos >= togglePenErase.getBounds().left && xpos <= togglePenErase.getBounds().right &&
+			ypos >= togglePenErase.getBounds().top && ypos <= togglePenErase.getBounds().bottom;
 
 		if (action == GLFW_PRESS)
 		{

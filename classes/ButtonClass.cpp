@@ -4,12 +4,13 @@
 #include <string>
 #include "Bounds.h"
 
-ButtonClass::ButtonClass(double x, double y, double width, double height, double percentRed,
-						 double percentGreen, double percentBlue)
-	: left(x), top(y), red(percentRed), green(percentGreen), blue(percentBlue)
+ButtonClass::ButtonClass(Bounds bounds, double percentRed, double percentGreen, double percentBlue)
+	: red(percentRed), green(percentGreen), blue(percentBlue)
 {
-	right  = left + width - 1;
-	bottom = top + height - 1;
+	this->bounds = bounds;
+	hovered		 = false;
+	pressed		 = false;
+	label		 = "Button";
 }
 
 ButtonClass::~ButtonClass() {}
@@ -57,44 +58,24 @@ void ButtonClass::setLabel(const std::string& label)
 // customize for specialized button classes inheriting from ButtonClass
 void ButtonClass::onClick(std::function<void()> callback) {}
 
-double ButtonClass::getTop()
-{
-	return top;
-}
-
-double ButtonClass::getBottom()
-{
-	return bottom;
-}
-
-double ButtonClass::getLeft()
-{
-	return left;
-}
-
-double ButtonClass::getRight()
-{
-	return right;
-}
-
 void ButtonClass::renderButton()
 {
 	glBegin(GL_QUADS);
 	glColor3f(.8, .8, .8);
-	glVertex2f(left, top);
+	glVertex2f(bounds.left, bounds.top);
 	glColor3f(.7, .7, .7);
-	glVertex2f(right, top);
+	glVertex2f(bounds.right, bounds.top);
 	glColor3f(.3, .3, .3);
-	glVertex2f(right, bottom);
+	glVertex2f(bounds.right, bounds.bottom);
 	glColor3f(.5, .5, .5);
-	glVertex2f(left, bottom);
+	glVertex2f(bounds.left, bounds.bottom);
 	glEnd();
 
 	glBegin(GL_QUADS);
 	glColor3f(red, green, blue);
-	glVertex2f(left + 3, top + 3);
-	glVertex2f(right - 3, top + 3);
-	glVertex2f(right - 3, bottom - 3);
-	glVertex2f(left + 3, bottom - 3);
+	glVertex2f(bounds.left + 3, bounds.top + 3);
+	glVertex2f(bounds.right - 3, bounds.top + 3);
+	glVertex2f(bounds.right - 3, bounds.bottom - 3);
+	glVertex2f(bounds.left + 3, bounds.bottom - 3);
 	glEnd();
 }
