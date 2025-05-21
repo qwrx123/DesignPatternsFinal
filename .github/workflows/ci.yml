@@ -23,12 +23,6 @@ jobs:
       - name: Install xvfb dependencies
         run: sudo apt-get install -y xorg xvfb xfonts-100dpi xfonts-75dpi xfonts-scalable xfonts-cyrillic
 
-      - name: Configure xvfb
-        run: export DISPLAY=:0
-
-      - name: run xvfb
-        run: Xvfb :0 &
-
       - name: Configure
         run: cmake -DCMAKE_BUILD_TYPE=Debug -DBUILD_SHARED_LIBS=ON -DBUILD_TESTING=ON -B build
 
@@ -36,4 +30,4 @@ jobs:
         run: cmake --build build --config Debug
 
       - name: Tests
-        run: ctest --test-dir build --output-on-failure
+        run: xvfb-run ctest --test-dir build --output-on-failure
