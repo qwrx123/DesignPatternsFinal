@@ -212,6 +212,8 @@ ctest --test-dir build --output-on-failure
 sudo cmake --install build
 ```
 
+---
+
 ### Compiling Steps on Docker
 
 #### 1. **Install docker**
