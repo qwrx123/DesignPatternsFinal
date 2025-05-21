@@ -21,6 +21,33 @@ include(helpfulFunctions)
 set(option BUILD_TESTING "Build testing" ON)
 include(CTest)
 
+#Set up installing
+include(GNUInstallDirs)
+set(CMAKE_INSTALL_DOCDIR ${CMAKE_INSTALL_DATAROOTDIR}/doc/${PROJECT_NAME})
+
+file(RELATIVE_PATH relDir
+	${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_INSTALL_BINDIR}
+	${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR}
+)
+
+if(WIN32)
+	set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
+elseif(APPLE)
+	set(CMAKE_MACOSX_RPATH TRUE)
+	set(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)
+	set(CMAKE_INSTALL_RPATH_USE_LINK_PATH FALSE)
+	set(CMAKE_INSTALL_RPATH @loader_path @loader_path/${relDir})
+elseif(CMAKE_HOST_SYSTEM_NAME MATCHES "Linux|FreeBSD|OpenBSD")
+	option(ENABLE_RELOCATABLE FALSE)
+	if (ENABLE_RELOCATABLE)
+		message(STATUS "Enabled Relocatable Package")
+		set(CMAKE_INSTALL_RPATH $ORIGIN $ORIGIN/${relDir})
+	endif()
+endif()
+
+
+SET(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
+
 # Make sure debug is set as default option on non multi-config build systems
 get_property(isMultiConfig GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG)
 if(NOT isMultiConfig)
@@ -59,17 +86,25 @@ find_program(CLANG_FORMAT clang-format)
 # Second test dependencies
 find_package(glfw3 3.3 REQUIRED)
 find_package(OpenGL REQUIRED)
+find_package(Freetype REQUIRED)
 
 add_executable(GlfwTestApp GLFWExample.cpp)
 
-target_link_libraries(GlfwTestApp WindowClass glfw)
+target_link_libraries(GlfwTestApp WindowClass glfw Freetype::Freetype ${FREETYPE_LIBRARIES} TextClass)
 
 target_include_directories(GlfwTestApp
+	PRIVATE
+	${FREETYPE_INCLUDE_DIRS}
 	PUBLIC
 	${PROJECT_SOURCE_DIR}/include
 )
 
 registerFilesToFormat(FILES GLFWExample.cpp)
+
+install(TARGETS GlfwTestApp
+DESTINATION ${CMAKE_INSTALL_BINDIR}
+)
+
 
 add_subdirectory(include)
 add_subdirectory(classes)
