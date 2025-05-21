@@ -29,7 +29,6 @@ void CanvasRenderer::beginFrame() {
 
 void CanvasRenderer::drawStroke(const IStroke& stroke) {
     const auto& points = stroke.getPoints();
-    std::cout << "Drawing stroke with " << points.size() << " points.\n";
     if (points.size() < 2) return;
     
     glLineWidth(stroke.getThickness());

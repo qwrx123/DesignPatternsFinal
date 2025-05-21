@@ -16,7 +16,7 @@ private:
 
    public:
     BrushTool(std::shared_ptr<IStrokeManager> stroke_manager, Color color, float thickness);
-	BrushTool::BrushTool(Color color, float thickness);
+	BrushTool(Color color, float thickness);
 	~BrushTool() override;
 
 	void beginStroke(const Point& start) override;
