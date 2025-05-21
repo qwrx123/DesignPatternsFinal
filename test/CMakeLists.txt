@@ -14,7 +14,7 @@ registerFilesToFormat(FILES projectTests.cpp)
 find_package(GTest REQUIRED)
 find_package(OpenGL REQUIRED)
 find_package(glfw3 3.3 REQUIRED)
-find_package(glad REQUIRED)
+find_package(GLEW REQUIRED)
 
 add_executable(projectTests
     ToolManagerTests.cpp
@@ -36,8 +36,8 @@ target_include_directories(projectTests PRIVATE ${PROJECT_COMMON_INCLUDE_DIRS})
 target_link_libraries(projectTests
     PRIVATE
     ${GLEW_LIBRARIES}
-    glad
     glfw
+    GLEW::GLEW
     OpenGL::GL
     GTest::gtest
     GTest::gtest_main

@@ -4,7 +4,7 @@ add_library(
     CanvasRenderer.cpp
 )
 
-find_package(glfw3 REQUIRED)
+find_package(glfw3 3.3 REQUIRED)
 
 target_include_directories(Rendering
     PUBLIC

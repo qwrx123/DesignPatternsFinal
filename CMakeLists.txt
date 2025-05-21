@@ -106,14 +106,14 @@ find_program(CLANG_FORMAT clang-format)
 find_package(glfw3 3.3 REQUIRED)
 find_package(OpenGL REQUIRED)
 find_package(Freetype REQUIRED)
-find_package(glad REQUIRED)
+find_package(GLEW REQUIRED)
 
 add_executable(GlfwTestApp GLFWExample.cpp)
 
 target_link_libraries(GlfwTestApp
     WindowClass
-    glad
     glfw
+	GLEW::GLEW
     OpenGL::GL
     Freetype::Freetype
     ${FREETYPE_LIBRARIES}
