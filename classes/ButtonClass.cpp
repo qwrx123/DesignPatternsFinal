@@ -58,6 +58,7 @@ void ButtonClass::setLabel(const std::string& label)
 // customize for specialized button classes inheriting from ButtonClass
 void ButtonClass::onClick(std::function<void()> callback) {}
 
+// for ease of rendering the buttons until proper renderer is done
 void ButtonClass::renderButton()
 {
 	glBegin(GL_QUADS);
@@ -69,9 +70,7 @@ void ButtonClass::renderButton()
 	glVertex2f(bounds.right, bounds.bottom);
 	glColor3f(.5, .5, .5);
 	glVertex2f(bounds.left, bounds.bottom);
-	glEnd();
 
-	glBegin(GL_QUADS);
 	glColor3f(red, green, blue);
 	glVertex2f(bounds.left + 3, bounds.top + 3);
 	glVertex2f(bounds.right - 3, bounds.top + 3);

@@ -1,7 +1,12 @@
 #include "MenuBar.h"
 #include "Bounds.h"
 
-MenuBar::MenuBar() {}
+MenuBar::MenuBar()
+{
+	label		  = "Menu Bar";
+	bounds		  = Bounds(0, 0, 0, 0);
+	selectedIndex = 0;
+}
 
 MenuBar::~MenuBar()
 {
