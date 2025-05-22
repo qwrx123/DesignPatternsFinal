@@ -1,7 +1,6 @@
 #ifndef BUTTON_CLASS_H
 #define BUTTON_CLASS_H
 
-#include <GLFW/glfw3.h>
 #include <functional>
 #include <string>
 #include "Bounds.h"
@@ -10,11 +9,14 @@
 class ButtonClass : public IButton
 {
    public:
-	ButtonClass(Bounds bounds, double percentRed, double percentGreen, double percentBlue);
+	ButtonClass(std::string label, Bounds bounds, bColor color);
 	~ButtonClass();
 
 	void   setBounds(const Bounds& bounds) override;
 	Bounds getBounds() const override;
+
+	void   setColor(const bColor& color) override;
+	bColor getColor() const override;
 
 	bool isHovered() const override;
 	void setHovered(bool hovered) override;
@@ -26,17 +28,12 @@ class ButtonClass : public IButton
 
 	void onClick(std::function<void()> callback) override;
 
-	void renderButton();
-
    private:
 	Bounds		bounds;
+	bColor		color;
 	bool		hovered;
 	bool		pressed;
 	std::string label;
-
-	double red;
-	double green;
-	double blue;
 };
 
 #endif

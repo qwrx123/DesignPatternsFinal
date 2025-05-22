@@ -50,6 +50,10 @@ target_include_directories(ButtonClass
 	${PROJECT_SOURCE_DIR}/interfaces/ui
 )
 
+target_link_libraries(MenuBar
+	ButtonClass
+)
+
 target_include_directories(MenuBar
 	PUBLIC
 	${PROJECT_SOURCE_DIR}/include

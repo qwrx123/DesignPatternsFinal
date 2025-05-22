@@ -1,11 +1,13 @@
 #include "MenuBar.h"
 #include "Bounds.h"
+#include "ButtonClass.h"
 
 MenuBar::MenuBar()
 {
 	label		  = "Menu Bar";
 	bounds		  = Bounds(0, 0, 0, 0);
 	selectedIndex = 0;
+	addButton(std::make_shared<ButtonClass>("emptyEdge", Bounds(0, 0, 0, 0), bColor(0, 0, 0, 0)));
 }
 
 MenuBar::~MenuBar()

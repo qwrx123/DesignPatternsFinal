@@ -25,12 +25,12 @@ bool WindowClass::CreateWindow(int width, int height, const char* title)
 	this->title	 = title;
 
 	// adding some test buttons for pen and eraser toolBar
-	toolBar.setBounds(Bounds(0, 39, 0, width));
+	/*toolBar.setBounds(Bounds(0, 39, 0, width));
 	Bounds buttonBounds = Bounds(0, toolBar.getBounds().bottom, 0, 39);
 	toolBar.addButton(std::make_shared<ButtonClass>(ButtonClass(buttonBounds, 1, 1, 1)));
 	double edge	 = toolBar.getButtons().at(0)->getBounds().right;
 	buttonBounds = Bounds(0, toolBar.getBounds().bottom, edge + 1, edge + 40);
-	toolBar.addButton(std::make_shared<ButtonClass>(ButtonClass(buttonBounds, 0, 0, 0)));
+	toolBar.addButton(std::make_shared<ButtonClass>(ButtonClass(buttonBounds, 0, 0, 0)));*/
 
 	if (!glfwInit())
 	{
@@ -129,20 +129,20 @@ void WindowClass::render()
 	glLoadIdentity();
 
 	// render ToolBar
-	toolBar.setBounds(Bounds(0, 39, 0, width));
+	/*toolBar.setBounds(Bounds(0, 39, 0, width));
 	glBegin(GL_QUADS);
 	glColor3f(.3, .3, .3);
 	glVertex2f(toolBar.getBounds().left, toolBar.getBounds().top);
 	glVertex2f(toolBar.getBounds().right, toolBar.getBounds().top);
 	glVertex2f(toolBar.getBounds().right, toolBar.getBounds().bottom);
 	glVertex2f(toolBar.getBounds().left, toolBar.getBounds().bottom);
-	glEnd();
+	glEnd();*/
 
 	// render all buttons within toolbar
-	for (int i = 0; i < toolBar.getButtons().size(); i++)
+	/*for (int i = 0; i < toolBar.getButtons().size(); i++)
 	{
 		std::dynamic_pointer_cast<ButtonClass>(toolBar.getButtons().at(i))->renderButton();
-	}
+	}*/
 
 	glfwSwapBuffers(window);
 	glfwPollEvents();
@@ -189,17 +189,17 @@ void WindowClass::handleMouseButton(int button, int action, int mods)
 		glfwGetCursorPos(window, &xpos, &ypos);
 
 		// checks through every button to see if it was pressed
-		for (int i = 0; i < toolBar.getButtons().size(); i++)
+		/*for (int i = 0; i < toolBar.getButtons().size(); i++)
 		{
 			Bounds bounds = toolBar.getButtons().at(i)->getBounds();
 			toolBar.getButtons().at(i)->setPressed(xpos >= bounds.left && xpos <= bounds.right &&
 												   ypos >= bounds.top && ypos <= bounds.bottom);
-		}
+		}*/
 
 		if (action == GLFW_PRESS)
 		{
 			// hard-coded button actions for testing purposes
-			if (toolBar.getButtons().at(0)->isPressed() && currentTool != ToolType::Brush)
+			/*if (toolBar.getButtons().at(0)->isPressed() && currentTool != ToolType::Brush)
 			{
 				currentTool = ToolType::Brush;
 
@@ -212,7 +212,7 @@ void WindowClass::handleMouseButton(int button, int action, int mods)
 
 				std::cout << "Switched to Eraser" << std::endl;
 				return;
-			}
+			}*/
 
 			if (currentTool == ToolType::Brush)
 			{
