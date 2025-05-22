@@ -14,14 +14,37 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_VERBOSE_MAKEFILE ON)
 
-#include helpful modules
+# Include helpful modules
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 include(helpfulFunctions)
 
 set(option BUILD_TESTING "Build testing" ON)
 include(CTest)
 
-#Set up installing
+# Define common include directories
+set(PROJECT_COMMON_INCLUDE_DIRS
+	${CMAKE_SOURCE_DIR}/include
+	${CMAKE_SOURCE_DIR}/include/Input
+	${CMAKE_SOURCE_DIR}/include/Rendering
+	${CMAKE_SOURCE_DIR}/include/Text
+	${CMAKE_SOURCE_DIR}/include/Tools
+	${CMAKE_SOURCE_DIR}/interfaces
+	${CMAKE_SOURCE_DIR}/interfaces/canvas
+	${CMAKE_SOURCE_DIR}/interfaces/drawing
+	${CMAKE_SOURCE_DIR}/interfaces/file
+	${CMAKE_SOURCE_DIR}/interfaces/text
+	${CMAKE_SOURCE_DIR}/interfaces/ui
+	${CMAKE_SOURCE_DIR}/classes
+	${CMAKE_SOURCE_DIR}/classes/Input
+	${CMAKE_SOURCE_DIR}/classes/Rendering
+	${CMAKE_SOURCE_DIR}/classes/TextClass
+	${CMAKE_SOURCE_DIR}/classes/Tools
+)
+
+# Make common includes available to subdirectories
+set(PROJECT_COMMON_INCLUDE_DIRS ${PROJECT_COMMON_INCLUDE_DIRS} PARENT_SCOPE)
+
+# Set up installing
 include(GNUInstallDirs)
 set(CMAKE_INSTALL_DOCDIR ${CMAKE_INSTALL_DATAROOTDIR}/doc/${PROJECT_NAME})
 
@@ -45,7 +68,6 @@ elseif(CMAKE_HOST_SYSTEM_NAME MATCHES "Linux|FreeBSD|OpenBSD")
 	endif()
 endif()
 
-
 SET(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 
 # Make sure debug is set as default option on non multi-config build systems
@@ -63,7 +85,6 @@ if(CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
 	elseif(NOT "Profile" IN_LIST CMAKE_CONFIGURATION_TYPES)
 		list(APPEND CMAKE_CONFIGURATION_TYPES Profile)
 	endif()
-	
 endif()
 
 # Enable clang-tidy
@@ -80,31 +101,40 @@ message(STATUS "clang-tidy: ${CMAKE_CXX_CLANG_TIDY}")
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-#Add clang-format support
+# Add clang-format support
 find_program(CLANG_FORMAT clang-format)
 
-# Second test dependencies
+# Required packages
 find_package(glfw3 3.3 REQUIRED)
 find_package(OpenGL REQUIRED)
 find_package(Freetype REQUIRED)
+find_package(GLEW REQUIRED)
 
 add_executable(GlfwTestApp GLFWExample.cpp)
 
-target_link_libraries(GlfwTestApp WindowClass glfw Freetype::Freetype ${FREETYPE_LIBRARIES} TextClass)
+target_link_libraries(GlfwTestApp
+    WindowClass
+    glfw
+	GLEW::GLEW
+    OpenGL::GL
+    Freetype::Freetype
+    ${FREETYPE_LIBRARIES}
+    TextClass
+	Rendering
+	Tools
+	Input
+)
 
 target_include_directories(GlfwTestApp
-	PRIVATE
-	${FREETYPE_INCLUDE_DIRS}
-	PUBLIC
-	${PROJECT_SOURCE_DIR}/include
+	PRIVATE ${FREETYPE_INCLUDE_DIRS}
+	${PROJECT_COMMON_INCLUDE_DIRS}
 )
 
 registerFilesToFormat(FILES GLFWExample.cpp)
 
 install(TARGETS GlfwTestApp
-DESTINATION ${CMAKE_INSTALL_BINDIR}
+	DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
-
 
 add_subdirectory(include)
 add_subdirectory(classes)

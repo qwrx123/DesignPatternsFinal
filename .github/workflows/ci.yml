@@ -11,20 +11,23 @@ on:
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
-    timeout-minutes: 3
+    timeout-minutes: 5
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
       - name: Install dependencies
-        run: sudo apt-get update && sudo apt-get install -y libglfw3 libglfw3-dev libgtest-dev libgmock-dev libfreetype6 libfreetype6-dev
+        run: sudo apt-get update && sudo apt-get install -y libglfw3 libglfw3-dev libgtest-dev libgmock-dev libfreetype6 libfreetype6-dev libglew-dev
+      
+      - name: Install xvfb dependencies
+        run: sudo apt-get install -y xorg xvfb xfonts-100dpi xfonts-75dpi xfonts-scalable xfonts-cyrillic
 
       - name: Configure
         run: cmake -DCMAKE_BUILD_TYPE=Debug -DBUILD_SHARED_LIBS=ON -DBUILD_TESTING=ON -B build
 
       - name: Build
-        run: cmake --build build --config Debug
+        run: cmake --build build --config Debug --parallel $(nproc)
 
       - name: Tests
-        run: ctest --test-dir build --output-on-failure
+        run: xvfb-run ctest --test-dir build --output-on-failure
