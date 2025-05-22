@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.29.5)
+cmake_minimum_required(VERSION 3.28.3)
 
 if (DEFINED ENV{VCPKG_ROOT} AND NOT DEFINED CMAKE_TOOLCHAIN_FILE)
 	message(STATUS "VCPKG_ROOT: $ENV{VCPKG_ROOT}")
@@ -123,6 +123,8 @@ target_link_libraries(GlfwTestApp
 	Rendering
 	Tools
 	Input
+	MenuBar
+	ButtonClass
 )
 
 target_include_directories(GlfwTestApp

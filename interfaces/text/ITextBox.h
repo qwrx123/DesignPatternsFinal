@@ -15,4 +15,4 @@ class ITextBox : public IText
 	virtual void setSelected(bool selected) = 0;
 };
 
-#endif	// ITEXTBOX_H\
+#endif	// ITEXTBOX_H

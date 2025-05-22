@@ -1,4 +1,4 @@
-registerFilesToFormat(FILES WindowClass.h ButtonClass.h Bounds.h Color.h)
+registerFilesToFormat(FILES WindowClass.h ButtonClass.h Bounds.h Color.h MenuBar.h)
 
 # Install public headers
 install(FILES
@@ -6,6 +6,7 @@ install(FILES
     ButtonClass.h
     Bounds.h
     Color.h
+    MenuBar.h
     DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/daisy
 )
 

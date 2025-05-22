@@ -18,6 +18,8 @@ public:
     void beginFrame() override;
     void drawStroke(const IStroke& stroke) override;
     void renderText(const IText& text);
+    void drawButton(const IButton& button) override;
+    void drawMenu(const IMenu& menu) override;
     void endFrame() override;
 
     void textRenderTest();

@@ -1,28 +1,39 @@
 #ifndef BUTTON_CLASS_H
 #define BUTTON_CLASS_H
 
-#include <GLFW/glfw3.h>
+#include <functional>
+#include <string>
+#include "Bounds.h"
+#include "IButton.h"
 
-class ButtonClass
+class ButtonClass : public IButton
 {
    public:
-	ButtonClass(double x, double y, double width, double height, double percentRed,
-				double percentGreen, double percentBlue);
+	ButtonClass(std::string label, Bounds bounds, bColor color);
 	~ButtonClass();
-	double getTop();
-	double getBottom();
-	double getLeft();
-	double getRight();
-	void   renderButton();
+
+	void   setBounds(const Bounds& bounds) override;
+	Bounds getBounds() const override;
+
+	void   setColor(const bColor& color) override;
+	bColor getColor() const override;
+
+	bool isHovered() const override;
+	void setHovered(bool hovered) override;
+	bool isPressed() const override;
+	void setPressed(bool pressed) override;
+
+	std::string getLabel() const override;
+	void		setLabel(const std::string& label) override;
+
+	void onClick(std::function<void()> callback) override;
 
    private:
-	double top;
-	double bottom;
-	double left;
-	double right;
-	double red;
-	double green;
-	double blue;
+	Bounds		bounds;
+	bColor		color;
+	bool		hovered;
+	bool		pressed;
+	std::string label;
 };
 
 #endif
