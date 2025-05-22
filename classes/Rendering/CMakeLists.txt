@@ -7,13 +7,17 @@ add_library(
 find_package(glfw3 3.3 REQUIRED)
 find_package(Freetype REQUIRED)
 
+registerFilesToFormat(FILES CanvasRenderer.cpp)
+
 target_include_directories(Rendering
     PUBLIC
     ${PROJECT_COMMON_INCLUDE_DIRS}
+    ${FREETYPE_INCLUDE_DIRS}
 )
 
 target_link_libraries(
     Rendering
+    TextClass
     ${GLEW_LIBRARIES}
     Freetype::Freetype
 	glfw
