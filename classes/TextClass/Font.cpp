@@ -19,7 +19,6 @@ Font::Font(std::filesystem::path fontPath) : fontPath(fontPath)
 	{
 		return;
 	}
-	FT_Set_Pixel_Sizes(face, 0, 100);
 }
 
 Font::~Font()
@@ -49,4 +48,14 @@ FT_Bitmap Font::getFontBitmap(char c) const
 	}
 
 	return face->glyph->bitmap;
+}
+
+void Font::setFontSize(int size)
+{
+	FT_Set_Pixel_Sizes(face, 0, size);
+}
+
+int Font::getFontSize()
+{
+	return fontSize;
 }

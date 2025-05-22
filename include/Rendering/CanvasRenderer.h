@@ -6,6 +6,7 @@
 #include "IStroke.h"
 #include "IText.h"
 #include "Font.h"
+#include "Color.h"
 #include <GLFW/glfw3.h>
 
 class CanvasRenderer : public ICanvasRenderer {
@@ -23,12 +24,11 @@ public:
     void endFrame() override;
 
     void textRenderTest();
-    void renderGlyph(FT_Face face, FT_GlyphSlot glyph, float x, float y);
+    void renderGlyph(FT_Face face, FT_GlyphSlot glyph, float x, float y, Color color);
 
 private:
     GLFWwindow* window_;
-    GLuint textureID_;  // Add texture ID for font rendering
-    
+    GLuint textureID_;  // Add texture ID for font rendering 
 };
 
 #endif // CANVASRENDERER_H

@@ -1,6 +1,7 @@
 #include "CanvasRenderer.h"
 #include <iostream>
 #include "Font.h"
+#include "Color.h"
 #ifdef _WIN32
 #include <GL/glext.h>
 #endif
@@ -50,15 +51,6 @@ void CanvasRenderer::drawStroke(const IStroke& stroke)
 	glEnd();
 }
 
-void CanvasRenderer::renderText(const IText& text)
-{
-	std::string content = text.getContent();
-	for (char c : content)
-	{
-		std::cout << "Rendering character: " << c << std::endl;
-	}
-}
-
 void CanvasRenderer::drawButton(const IButton& button)
 {
 	glBegin(GL_QUADS);
@@ -90,87 +82,76 @@ void CanvasRenderer::drawMenu(const IMenu& menu)
 	glEnd();
 }
 
-void CanvasRenderer::renderGlyph(FT_Face face, FT_GlyphSlot glyph, float x, float y)
+void CanvasRenderer::renderText(const IText& text)
 {
-	// Generate texture
-	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-
-	GLuint texture;
-	glGenTextures(1, &texture);
-	glBindTexture(GL_TEXTURE_2D, texture);
-
-	// Set texture parameters - corrected wrapping modes
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-	// Upload glyph bitmap as texture
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, glyph->bitmap.width, glyph->bitmap.rows, 0, GL_RED,
-				 GL_UNSIGNED_BYTE, glyph->bitmap.buffer);
-
-	// Calculate vertex positions
-	float x2 = x + glyph->bitmap_left;
-	float y2 = y - glyph->bitmap_top;
-	float w	 = glyph->bitmap.width;
-	float h	 = glyph->bitmap.rows;
-
-	// Enable blending for transparent backgrounds
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-	// Set color to white (will be modulated with texture)
-	glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-
-	// Enable texture
-	glEnable(GL_TEXTURE_2D);
-	glBindTexture(GL_TEXTURE_2D, texture);
-
-	// Draw textured quad
-	glBegin(GL_QUADS);
-	glTexCoord2f(0.0f, 1.0f);  // Changed from (0,0)
-	glVertex2f(x2, y2 + h);
-	glTexCoord2f(1.0f, 1.0f);  // Changed from (1,0)
-	glVertex2f(x2 + w, y2 + h);
-	glTexCoord2f(1.0f, 0.0f);  // Changed from (1,1)
-	glVertex2f(x2 + w, y2);
-	glTexCoord2f(0.0f, 0.0f);  // Changed from (0,1)
-	glVertex2f(x2, y2);
-	glEnd();
-
-	// Cleanup
-	glDisable(GL_TEXTURE_2D);
-	glDisable(GL_BLEND);
-	glDeleteTextures(1, &texture);
-}
-
-void CanvasRenderer::textRenderTest()
-{
-	std::string text = "Daisy";
-	// glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
-	double x = 100.0f;
-	double y = 150.0f;
-	glRasterPos2f(x, y);
+	std::string			  content  = text.getContent();
+	int					  fontSize = text.getFontSize();
+	Color				  color	   = text.getColor();
+	double				  x		   = text.getBounds().left;
+	double				  y		   = text.getBounds().top;
 	std::filesystem::path fontPath = "../include/Delius-Regular.ttf";
 	if (!std::filesystem::exists(fontPath))
 	{
 		return;
 	}
 	Font font(fontPath);
-	for (char c : text)
+	font.setFontSize(fontSize);
+	for (char c : content)
 	{
+		std::cout << "Rendering character: " << c << std::endl;
 		if (font.getFontBitmap(c).width == 0)
 		{
 			std::cerr << "Failed to load glyph for character: " << c << std::endl;
 			continue;
 		}
-
 		FT_Face face = font.getFontFace();
-		renderGlyph(face, face->glyph, x, y);
-
-		// Advance cursor
-		x += (face->glyph->advance.x >> 6);	 // Convert from 1/64th pixels to pixels
+		renderGlyph(face, face->glyph, x, y, color);
+		x += (face->glyph->advance.x >> 6);
 	}
+}
+
+void CanvasRenderer::renderGlyph(FT_Face face, FT_GlyphSlot glyph, float x, float y, Color color)
+{
+	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+	GLuint texture;
+	glGenTextures(1, &texture);
+	glBindTexture(GL_TEXTURE_2D, texture);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA, glyph->bitmap.width, glyph->bitmap.rows, 0, GL_ALPHA,
+				 GL_UNSIGNED_BYTE, glyph->bitmap.buffer);
+
+	float x2 = x + glyph->bitmap_left;
+	float y2 = y - glyph->bitmap_top;
+	float w	 = glyph->bitmap.width;
+	float h	 = glyph->bitmap.rows;
+
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	glColor4f(color.r, color.g, color.b, color.a);
+
+	glEnable(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D, texture);
+
+	glBegin(GL_QUADS);
+	glTexCoord2f(0.0f, 1.0f);
+	glVertex2f(x2, y2 + h);
+	glTexCoord2f(1.0f, 1.0f);
+	glVertex2f(x2 + w, y2 + h);
+	glTexCoord2f(1.0f, 0.0f);
+	glVertex2f(x2 + w, y2);
+	glTexCoord2f(0.0f, 0.0f);
+	glVertex2f(x2, y2);
+	glEnd();
+
+	glDisable(GL_TEXTURE_2D);
+	glDisable(GL_BLEND);
+	glDeleteTextures(1, &texture);
 }
 
 void CanvasRenderer::endFrame()
@@ -188,4 +169,37 @@ void CanvasRenderer::resize(int width, int height)
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
+}
+
+void CanvasRenderer::textRenderTest()
+{
+	std::string text = "Daisy";
+	// glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
+	double x	 = 100.0f;
+	double y	 = 150.0f;
+	Color  color = {0.0f, 0.0f, 0.0f, 1.0f};
+	glRasterPos2f(x, y);
+	std::filesystem::path fontPath =
+		"../include/Delius-Regular.ttf";  // why the position of terminal matters for if text
+										  // renders
+	if (!std::filesystem::exists(fontPath))
+	{
+		return;
+	}
+	Font font(fontPath);
+	font.setFontSize(100);
+	for (char c : text)
+	{
+		if (font.getFontBitmap(c).width == 0)
+		{
+			std::cerr << "Failed to load glyph for character: " << c << std::endl;
+			continue;
+		}
+
+		FT_Face face = font.getFontFace();
+		renderGlyph(face, face->glyph, x, y, color);
+
+		// Advance cursor
+		x += (face->glyph->advance.x >> 6);	 // Convert from 1/64th pixels to pixels
+	}
 }

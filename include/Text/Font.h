@@ -12,10 +12,13 @@ class Font
     ~Font();
     FT_Face getFontFace() const;
     FT_Bitmap getFontBitmap(char c) const;
+    void setFontSize(int size);
+    int getFontSize();
 
     protected:
     FT_Library library;
     FT_Face face;
+    int fontSize;
     std::filesystem::path fontPath;
 };
 
