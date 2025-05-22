@@ -19,6 +19,7 @@ Font::Font(std::filesystem::path fontPath) : fontPath(fontPath)
 	{
 		return;
 	}
+	FT_Set_Pixel_Sizes(face, 0, 100);
 }
 
 Font::~Font()

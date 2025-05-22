@@ -35,6 +35,7 @@ target_include_directories(projectTests PRIVATE ${PROJECT_COMMON_INCLUDE_DIRS})
 target_link_libraries(projectTests
     PRIVATE
     ${GLEW_LIBRARIES}
+    TextClass
     glfw
     GLEW::GLEW
     OpenGL::GL

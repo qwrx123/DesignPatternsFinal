@@ -20,6 +20,7 @@ class IInputManager
 	virtual void handleMouseMove(double x, double y)										 = 0;
 	virtual void handleMouseButton(MouseButton button, KeyAction action, double x, double y) = 0;
 	virtual void handleKey(int key, KeyAction action)										 = 0;
+	virtual void handleChar(unsigned int codepoint)											 = 0;
 };
 
 #endif	// IINPUTMANAGER_H
