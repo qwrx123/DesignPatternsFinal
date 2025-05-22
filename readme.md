@@ -248,5 +248,5 @@ docker buildx build --no-cache -t daisy .
 
 #### 3. **Run the tests**
 ```bash
-docker run daisy
+docker run --rm daisy
 ```
