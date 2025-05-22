@@ -40,6 +40,35 @@ void CanvasRenderer::drawStroke(const IStroke& stroke) {
     glEnd();
 }
 
+void CanvasRenderer::drawButton(const IButton& button) {
+	glBegin(GL_QUADS);
+	glColor4f(.8, .8, .8, 1);
+	glVertex2f(button.getBounds().left, button.getBounds().top);
+	glColor4f(.7, .7, .7, 1);
+	glVertex2f(button.getBounds().right, button.getBounds().top);
+	glColor4f(.3, .3, .3, 1);
+	glVertex2f(button.getBounds().right, button.getBounds().bottom);
+	glColor4f(.5, .5, .5, 1);
+	glVertex2f(button.getBounds().left, button.getBounds().bottom);
+
+	glColor4f(button.getColor().r, button.getColor().g, button.getColor().b, button.getColor().a);
+	glVertex2f(button.getBounds().left + 3, button.getBounds().top + 3);
+	glVertex2f(button.getBounds().right - 3, button.getBounds().top + 3);
+	glVertex2f(button.getBounds().right - 3, button.getBounds().bottom - 3);
+	glVertex2f(button.getBounds().left + 3, button.getBounds().bottom - 3);
+	glEnd();
+}
+
+void CanvasRenderer::drawMenu(const IMenu& menu) {
+	glBegin(GL_QUADS);
+	glColor4f(.3, .3, .3, 1);
+	glVertex2f(menu.getBounds().left, menu.getBounds().top);
+	glVertex2f(menu.getBounds().right, menu.getBounds().top);
+	glVertex2f(menu.getBounds().right, menu.getBounds().bottom);
+	glVertex2f(menu.getBounds().left, menu.getBounds().bottom);
+	glEnd();
+}
+
 void CanvasRenderer::endFrame() {
     glfwSwapBuffers(window_);
 }
