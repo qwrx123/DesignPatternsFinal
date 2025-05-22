@@ -57,7 +57,8 @@ void CanvasRenderer::renderText(const IText& text)
 	{
 		std::cout << "Rendering character: " << c << std::endl;
 	}
-  
+}
+
 void CanvasRenderer::drawButton(const IButton& button) {
 	glBegin(GL_QUADS);
 	glColor4f(.8, .8, .8, 1);
@@ -85,11 +86,6 @@ void CanvasRenderer::drawMenu(const IMenu& menu) {
 	glVertex2f(menu.getBounds().right, menu.getBounds().bottom);
 	glVertex2f(menu.getBounds().left, menu.getBounds().bottom);
 	glEnd();
-}
-
-void CanvasRenderer::endFrame() {
-    glfwSwapBuffers(window_);
-
 }
 
 void CanvasRenderer::renderGlyph(FT_Face face, FT_GlyphSlot glyph, float x, float y)
