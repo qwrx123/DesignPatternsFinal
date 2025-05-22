@@ -18,8 +18,10 @@ set(CMAKE_VERBOSE_MAKEFILE ON)
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 include(helpfulFunctions)
 
-set(option BUILD_TESTING "Build testing" ON)
+option(BUILD_TESTING "Build testing" ON)
 include(CTest)
+
+option(BUILD_DOCS "Build documentation" ON)
 
 # Define common include directories
 set(PROJECT_COMMON_INCLUDE_DIRS
@@ -143,4 +145,7 @@ add_subdirectory(classes)
 add_subdirectory(interfaces)
 if (BUILD_TESTING)
 	add_subdirectory(test)
+endif()
+if (BUILD_DOCS)
+	add_subdirectory(doc)
 endif()

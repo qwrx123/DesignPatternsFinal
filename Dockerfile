@@ -12,6 +12,7 @@
 	libfreetype6 \
 	libfreetype6-dev \
 	libglew-dev \
+	doxygen \
 	xorg \
 	xvfb \
 	xfonts-100dpi \
