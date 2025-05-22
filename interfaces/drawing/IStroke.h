@@ -3,11 +3,7 @@
 
 #include <vector>
 #include "Point.h"
-
-struct Color
-{
-	float r, g, b, a;
-};	// a = alpha is opacity
+#include "Color.h"
 
 class IStroke
 {

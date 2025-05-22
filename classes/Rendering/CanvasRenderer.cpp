@@ -1,5 +1,6 @@
 #include "CanvasRenderer.h"
 #include <iostream>
+#include "Font.h"
 
 CanvasRenderer::CanvasRenderer(GLFWwindow* window)
     : window_(window)
@@ -38,6 +39,26 @@ void CanvasRenderer::drawStroke(const IStroke& stroke) {
         glVertex2d(p.x, p.y);
     }
     glEnd();
+}
+
+void CanvasRenderer::renderText(const IText& text)
+{
+    std::string content = text.getContent();
+    for(char c : content)
+    {
+        std::cout << "Rendering character: " << c << std::endl;
+    }
+}
+void CanvasRenderer::textRenderTest()
+{
+    std::string text = "Hello, World!";
+    glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
+    glRasterPos2f(10.0f, 20.0f);
+    Font font = Font("../include/Delius-Regular.ttf");
+    for (char c : text) {
+        FT_Bitmap bitmap = font.getFontBitmap(c);
+        
+    }
 }
 
 void CanvasRenderer::endFrame() {

@@ -1,3 +1,6 @@
+#ifndef BOUNDS_H
+#define BOUNDS_H
+
 struct Bounds
 {
 	double top;
@@ -5,3 +8,5 @@ struct Bounds
 	double left;
 	double right;
 };
+
+#endif

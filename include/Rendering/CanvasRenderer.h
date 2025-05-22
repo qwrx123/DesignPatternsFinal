@@ -4,6 +4,7 @@
 
 #include "ICanvasRenderer.h"
 #include "IStroke.h"
+#include "IText.h"
 #include <GLFW/glfw3.h>
 
 class CanvasRenderer : public ICanvasRenderer {
@@ -15,7 +16,10 @@ public:
 
     void beginFrame() override;
     void drawStroke(const IStroke& stroke) override;
+    void renderText(const IText& text);
     void endFrame() override;
+
+    void textRenderTest();
 
 private:
     GLFWwindow* window_;

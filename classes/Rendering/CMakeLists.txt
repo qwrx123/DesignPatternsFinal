@@ -5,6 +5,7 @@ add_library(
 )
 
 find_package(glfw3 3.3 REQUIRED)
+find_package(Freetype REQUIRED)
 
 target_include_directories(Rendering
     PUBLIC
@@ -14,6 +15,7 @@ target_include_directories(Rendering
 target_link_libraries(
     Rendering
     ${GLEW_LIBRARIES}
+    Freetype::Freetype
 	glfw
 	OpenGL::GL
 )
