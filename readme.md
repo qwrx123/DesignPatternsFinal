@@ -211,3 +211,42 @@ ctest --test-dir build --output-on-failure
 ```bash
 sudo cmake --install build
 ```
+
+---
+
+### Compiling Steps on Docker
+
+#### 1. **Install docker**
+
+- On **Debian/Ubuntu**:
+	https://docs.docker.com/engine/install/debian/
+
+- On **Arch**:
+	```bash
+	pacman -S docker docker-buildx
+	```
+
+- On **Gentoo**:
+	```bash
+	emerge --ask app-containers/docker app-containers/docker-cli app-containers/docker-buildx
+	```
+- On **Windows**:
+	```bash
+	winget install --id=Docker.DockerCLI  -e
+	docker buildx install
+	```
+
+- On **Mac**
+	```bash
+	brew install docker docker-buildx
+	```
+
+#### 2. **Build the image**
+```bash
+docker buildx build --no-cache -t daisy .
+```
+
+#### 3. **Run the tests**
+```bash
+docker run --rm daisy
+```
