@@ -250,3 +250,36 @@ docker buildx build --no-cache -t daisy .
 ```bash
 docker run --rm daisy
 ```
+
+---
+
+### Generating documentation with doxygen
+
+#### 1. **Install doxygen**
+
+- On **Debian/Ubuntu**:
+	```bash
+	apt install doxygen
+	```
+
+- On **Arch**:
+	```bash
+	pacman -S doxygen
+	```
+
+- On **Gentoo**:
+	```bash
+	emerge --ask app-text/doxygen
+	```
+
+- On **Windows**:
+	```bash
+	winget install -e --id DimitriVanHeesch.Doxygen
+	```
+
+- On **Mac**
+	```bash
+	brew install doxygen
+	```
+
+#### 2. **Build as normal**
