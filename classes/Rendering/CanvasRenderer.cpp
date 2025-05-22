@@ -59,7 +59,8 @@ void CanvasRenderer::renderText(const IText& text)
 	}
 }
 
-void CanvasRenderer::drawButton(const IButton& button) {
+void CanvasRenderer::drawButton(const IButton& button)
+{
 	glBegin(GL_QUADS);
 	glColor4f(.8, .8, .8, 1);
 	glVertex2f(button.getBounds().left, button.getBounds().top);
@@ -78,7 +79,8 @@ void CanvasRenderer::drawButton(const IButton& button) {
 	glEnd();
 }
 
-void CanvasRenderer::drawMenu(const IMenu& menu) {
+void CanvasRenderer::drawMenu(const IMenu& menu)
+{
 	glBegin(GL_QUADS);
 	glColor4f(.3, .3, .3, 1);
 	glVertex2f(menu.getBounds().left, menu.getBounds().top);
@@ -147,7 +149,7 @@ void CanvasRenderer::textRenderTest()
 	std::string text = "Daisy";
 	// glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
 	double x = 100.0f;
-	double y = 100.0f;
+	double y = 150.0f;
 	glRasterPos2f(x, y);
 	std::filesystem::path fontPath = "../include/Delius-Regular.ttf";
 	if (!std::filesystem::exists(fontPath))
