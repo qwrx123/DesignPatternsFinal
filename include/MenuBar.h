@@ -1,0 +1,48 @@
+#ifndef MENU_BAR_H
+#define MENU_BAR_H
+
+#include <memory>
+#include <string>
+#include <vector>
+#include "Bounds.h"
+#include "IButton.h"
+#include "IMenu.h"
+
+class MenuBar : public IMenu
+{
+   public:
+	MenuBar();
+	~MenuBar();
+
+	std::string getLabel() const override;
+	void		setLabel(const std::string& label) override;
+
+	Bounds getBounds() const override;
+	void   setBounds(const Bounds& bounds) override;
+
+	// MenuBar is being implemented as always open
+	bool isOpen() const override;
+	bool isClosed() const override;	 // wait why is there both, isOpen():false == isClosed():true?
+	void open() override;
+	void close() override;
+
+	void addButton(std::shared_ptr<IButton> button) override;
+	void clearButtons() override;
+	const std::vector<std::shared_ptr<IButton>>& getButtons() const override;
+
+	int						 getSelectedIndex() const override;
+	void					 setSelectedIndex(int index) override;
+	std::shared_ptr<IButton> getSelectedItem() const override;
+
+	// since MenuBar is implemented as always open, these will be false/unused
+	bool showSelectedLabelWhenClosed() const override;
+	void setShowSelectedLabelWhenClosed(bool show) override;
+
+   private:
+	std::string							  label;
+	Bounds								  bounds;
+	std::vector<std::shared_ptr<IButton>> buttons;
+	int									  selectedIndex;
+};
+
+#endif	// MENU_BAR_H

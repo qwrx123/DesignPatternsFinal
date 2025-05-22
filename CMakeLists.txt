@@ -123,6 +123,8 @@ target_link_libraries(GlfwTestApp
 	Rendering
 	Tools
 	Input
+	MenuBar
+	ButtonClass
 )
 
 target_include_directories(GlfwTestApp

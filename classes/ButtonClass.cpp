@@ -1,54 +1,69 @@
 #include "ButtonClass.h"
 #include <GLFW/glfw3.h>
+#include <functional>
+#include <string>
+#include "Bounds.h"
 
-ButtonClass::ButtonClass(double x, double y, double width, double height, double percentRed,
-						 double percentGreen, double percentBlue)
-	: left(x), top(y), red(percentRed), green(percentGreen), blue(percentBlue)
+ButtonClass::ButtonClass(std::string label, Bounds bounds, bColor color)
 {
-	right  = left + width - 1;
-	bottom = top + height - 1;
+	this->label	 = label;
+	this->bounds = bounds;
+	this->color	 = color;
+	hovered		 = false;
+	pressed		 = false;
 }
 
 ButtonClass::~ButtonClass() {}
 
-double ButtonClass::getTop()
+void ButtonClass::setBounds(const Bounds& bounds)
 {
-	return top;
+	this->bounds = bounds;
 }
 
-double ButtonClass::getBottom()
+Bounds ButtonClass::getBounds() const
 {
-	return bottom;
+	return bounds;
 }
 
-double ButtonClass::getLeft()
+void ButtonClass::setColor(const bColor& color)
 {
-	return left;
+	this->color = color;
 }
 
-double ButtonClass::getRight()
+bColor ButtonClass::getColor() const
 {
-	return right;
+	return color;
 }
 
-void ButtonClass::renderButton()
+bool ButtonClass::isHovered() const
 {
-	glBegin(GL_QUADS);
-	glColor3f(.8, .8, .8);
-	glVertex2f(left, top);
-	glColor3f(.7, .7, .7);
-	glVertex2f(right, top);
-	glColor3f(.3, .3, .3);
-	glVertex2f(right, bottom);
-	glColor3f(.5, .5, .5);
-	glVertex2f(left, bottom);
-	glEnd();
-
-	glBegin(GL_QUADS);
-	glColor3f(red, green, blue);
-	glVertex2f(left + 3, top + 3);
-	glVertex2f(right - 3, top + 3);
-	glVertex2f(right - 3, bottom - 3);
-	glVertex2f(left + 3, bottom - 3);
-	glEnd();
+	return hovered;
 }
+
+void ButtonClass::setHovered(bool hovered)
+{
+	this->hovered = hovered;
+}
+
+bool ButtonClass::isPressed() const
+{
+	return pressed;
+}
+
+void ButtonClass::setPressed(bool pressed)
+{
+	this->pressed = pressed;
+}
+
+std::string ButtonClass::getLabel() const
+{
+	return label;
+}
+
+void ButtonClass::setLabel(const std::string& label)
+{
+	this->label = label;
+}
+
+// customize for specialized button classes inheriting from ButtonClass
+void ButtonClass::onClick(std::function<void()> callback) {}
