@@ -4,6 +4,7 @@
 #include "BrushTool.h"
 #include "Stroke.h"
 #include "EraserTool.h"
+#include "Text.h"
 #include "StrokeManager.h"
 
 TEST(ToolManagerTest, CanRegisterAndSelectTool) {

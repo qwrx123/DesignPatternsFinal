@@ -1,5 +1,6 @@
 #include "InputManager.h"
 #include <algorithm>
+#include <iostream>
 
 InputManager::InputManager() {}
 
@@ -37,6 +38,12 @@ void InputManager::handleMouseButton(MouseButton button, KeyAction action, doubl
 void InputManager::handleKey(int key, KeyAction action) {
     for (auto& receiver : receivers) {
         receiver->onKey(key, action);
+    }
+}
+
+void InputManager::handleChar(unsigned int codepoint) {
+    for (auto& receiver : receivers) {
+        receiver->onChar(codepoint);
     }
 }
 
@@ -91,6 +98,15 @@ void InputManager::bindToWindow(GLFWwindow* window) {
         }
 
         self->handleKey(key, ka);
+    });
+
+    glfwSetCharCallback(window, [](GLFWwindow* win, unsigned int codepoint) {
+        auto* self = static_cast<InputManager*>(glfwGetWindowUserPointer(win));
+        if (!self) return;
+
+        // Handle character input here if needed
+        self->handleChar(codepoint);
+        std::cout << "Character input: " << static_cast<char>(codepoint) << std::endl;
     });
 
     glfwSetFramebufferSizeCallback(window, [](GLFWwindow* win, int width, int height) {

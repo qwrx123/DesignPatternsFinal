@@ -16,7 +16,6 @@ class Font
     protected:
     FT_Library library;
     FT_Face face;
-    FT_Bitmap bitmap;
     std::filesystem::path fontPath;
 };
 

@@ -74,3 +74,8 @@ void ToolManager::onKey(int key, KeyAction action) {
     // Example:
     // if (action == KeyAction::Press && key == GLFW_KEY_E) selectTool("eraser");
 }
+
+void ToolManager::onChar(unsigned int codepoint) {
+    // Optional: handle character input
+    // Example: if (codepoint == 'B') selectTool("brush");
+}

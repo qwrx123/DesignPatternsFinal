@@ -20,6 +20,7 @@ public:
     void handleMouseMove(double x, double y) override;
     void handleMouseButton(MouseButton button, KeyAction action, double x, double y) override;
     void handleKey(int key, KeyAction action) override;
+    void handleChar(unsigned int codepoint) override;
 
     void setResizeCallback(std::function<void(int, int)> cb);
 

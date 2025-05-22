@@ -24,6 +24,7 @@ public:
     void onMouseMove(double x, double y) override;
     void onMouseButton(MouseButton button, KeyAction action, double x, double y) override;
     void onKey(int key, KeyAction action) override;
+    void onChar(unsigned int codepoint) override;
 
 private:
     std::unordered_map<std::string, std::shared_ptr<IDrawingTool>> tools;
