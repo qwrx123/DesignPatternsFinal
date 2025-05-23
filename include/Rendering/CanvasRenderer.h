@@ -8,27 +8,27 @@
 #include "Font.h"
 #include <GLFW/glfw3.h>
 
-class CanvasRenderer : public ICanvasRenderer {
-public:
-    CanvasRenderer(GLFWwindow* window);
-    ~CanvasRenderer();
+class CanvasRenderer : public ICanvasRenderer
+{
+   public:
+	CanvasRenderer(GLFWwindow* window);
+	~CanvasRenderer();
 
-    void resize(int width, int height);
+	void resize(int width, int height);
 
-    void beginFrame() override;
-    void drawStroke(const IStroke& stroke) override;
-    void renderText(const IText& text);
-    void drawButton(const IButton& button) override;
-    void drawMenu(const IMenu& menu) override;
-    void endFrame() override;
+	void beginFrame() override;
+	void drawStroke(const IStroke& stroke) override;
+	void renderText(const IText& text);
+	void drawButton(const IButton& button) override;
+	void drawMenu(const IMenu& menu) override;
+	void endFrame() override;
 
-    void textRenderTest();
-    void renderGlyph(FT_Face face, FT_GlyphSlot glyph, float x, float y);
+	void textRenderTest();
+	void renderGlyph(FT_Face face, FT_GlyphSlot glyph, float x, float y);
 
-private:
-    GLFWwindow* window_;
-    GLuint textureID_;  // Add texture ID for font rendering
-    
+   private:
+	GLFWwindow* window_;
+	GLuint		textureID_;	 // Add texture ID for font rendering
 };
 
-#endif // CANVASRENDERER_H
+#endif	// CANVASRENDERER_H
