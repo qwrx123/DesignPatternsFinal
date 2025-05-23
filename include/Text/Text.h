@@ -7,25 +7,25 @@ class Text : public IText
 {
    public:
 	Text();
-	~Text();
+	~Text() override;
 
-	std::string getContent() const override;
-	void		setContent(const std::string& text) override;
+	[[nodiscard]] std::string getContent() const override;
+	void					  setContent(const std::string& text) override;
 
-	Bounds getBounds() const override;
-	void   setPosition(double x, double y) override;
+	[[nodiscard]] Bounds getBounds() const override;
+	void				 setPosition(double x, double y) override;
 
-	std::string getFontName() const override;
-	void		setFontName(const std::string& fontName) override;
+	[[nodiscard]] std::string getFontName() const override;
+	void					  setFontName(const std::string& fontName) override;
 
-	int	 getFontSize() const override;
-	void setFontSize(int size) override;
+	[[nodiscard]] int getFontSize() const override;
+	void			  setFontSize(int size) override;
 
-	Color getColor() const override;
-	void  setColor(const Color& color) override;
+	[[nodiscard]] Color getColor() const override;
+	void				setColor(const Color& color) override;
 
-	bool isEditable() const override;
-	void setEditable(bool editable) override;
+	[[nodiscard]] bool isEditable() const override;
+	void			   setEditable(bool editable) override;
 
    private:
 	std::string content;
