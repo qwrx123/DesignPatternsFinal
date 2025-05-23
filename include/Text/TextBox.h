@@ -8,17 +8,17 @@ class TextBox : public ITextBox, public Text
 {
    public:
 	TextBox();
-	~TextBox();
+	~TextBox() override;
 
-	bool hasBorder() const override;
+	[[nodiscard]] bool hasBorder() const override;
 	void setBorder(bool hasBorder) override;
 
-	bool isSelected() const override;
+	[[nodiscard]] bool isSelected() const override;
 	void setSelected(bool selected) override;
 
    private:
-	bool boarderStatus;
-	bool selected;
+	bool boarderStatus = true;
+	bool selected = false;
 };
 
 #endif	// TEXTBOX_H
