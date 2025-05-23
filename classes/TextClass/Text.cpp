@@ -1,8 +1,8 @@
 #include "Text.h"
 
-Text::Text() {}
+Text::Text() : color({.r = 0, .g = 0, .b = 0, .a = 0}) {}
 
-Text::~Text() {}
+Text::~Text() = default;
 
 std::string Text::getContent() const
 {

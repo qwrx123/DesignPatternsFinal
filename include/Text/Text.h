@@ -31,9 +31,9 @@ class Text : public IText
 	std::string content;
 	Bounds		bounds;
 	std::string fontName;
-	int			fontSize;
+	int			fontSize = 0;
 	Color		color;
-	bool		editable;
+	bool		editable = false;
 };
 
 #endif	// TEXT_H
