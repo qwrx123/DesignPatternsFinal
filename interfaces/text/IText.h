@@ -13,8 +13,8 @@ class IText
 	[[nodiscard]] virtual std::string getContent() const				  = 0;
 	virtual void					  setContent(const std::string& text) = 0;
 
-	[[nodiscard]] virtual Bounds getBounds() const				 = 0;
-	virtual void				 setPosition(double x, double y) = 0;
+	[[nodiscard]] virtual Bounds getBounds() const			   = 0;
+	virtual void				 setPosition(float x, float y) = 0;
 
 	[[nodiscard]] virtual std::string getFontName() const					   = 0;
 	virtual void					  setFontName(const std::string& fontName) = 0;

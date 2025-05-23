@@ -70,7 +70,7 @@ int main()
 
 	inputManager->setResizeCallback([&](int w, int h) { renderer->resize(w, h); });
 
-	menuBar->setBounds(Bounds(0, defaultMenuBarHeight, 0, INT_MAX));
+	menuBar->setBounds(Bounds(0, defaultMenuBarHeight, 0, static_cast<float>(INT_MAX)));
 	menuBar->addButton(std::make_shared<ButtonClass>(
 		"button",
 		Bounds(0, menuBar->getBounds().bottom,

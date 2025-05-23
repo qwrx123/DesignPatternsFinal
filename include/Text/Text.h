@@ -13,7 +13,7 @@ class Text : public IText
 	void					  setContent(const std::string& text) override;
 
 	[[nodiscard]] Bounds getBounds() const override;
-	void				 setPosition(double x, double y) override;
+	void				 setPosition(float x, float y) override;
 
 	[[nodiscard]] std::string getFontName() const override;
 	void					  setFontName(const std::string& fontName) override;

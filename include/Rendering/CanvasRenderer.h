@@ -14,21 +14,21 @@ class CanvasRenderer : public ICanvasRenderer
 	CanvasRenderer(GLFWwindow* window);
 	~CanvasRenderer() override;
 
-	void resize(int width, int height);
+	static void resize(int width, int height);
 
-	void beginFrame() override;
-	void drawStroke(const IStroke& stroke) override;
-	void renderText(const IText& text);
-	void drawButton(const IButton& button) override;
-	void drawMenu(const IMenu& menu) override;
-	void endFrame() override;
+	void		beginFrame() override;
+	void		drawStroke(const IStroke& stroke) override;
+	static void renderText(const IText& text);
+	void		drawButton(const IButton& button) override;
+	void		drawMenu(const IMenu& menu) override;
+	void		endFrame() override;
 
-	void textRenderTest();
-	void renderGlyph(FT_Face face, FT_GlyphSlot glyph, float x, float y);
+	static void textRenderTest();
+	static void renderGlyph(FT_Face face, FT_GlyphSlot glyph, float x, float y);
 
    private:
 	GLFWwindow* window_;
-	GLuint		textureID_;	 // Add texture ID for font rendering
+	GLuint		textureID_ = 0;	 // Add texture ID for font rendering
 };
 
 #endif	// CANVASRENDERER_H
