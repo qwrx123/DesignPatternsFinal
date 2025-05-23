@@ -9,10 +9,10 @@ class Font
    public:
 	Font(std::filesystem::path fontPath);
 	~Font();
-	FT_Face	  getFontFace() const;
-	FT_Bitmap getFontBitmap(char c) const;
+	[[nodiscard]] FT_Face	getFontFace() const;
+	[[nodiscard]] FT_Bitmap getFontBitmap(char c) const;
 
-   protected:
+   private:
 	FT_Library			  library;
 	FT_Face				  face;
 	std::filesystem::path fontPath;
