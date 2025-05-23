@@ -11,14 +11,14 @@ class TextBox : public ITextBox, public Text
 	~TextBox() override;
 
 	[[nodiscard]] bool hasBorder() const override;
-	void setBorder(bool hasBorder) override;
+	void			   setBorder(bool hasBorder) override;
 
 	[[nodiscard]] bool isSelected() const override;
-	void setSelected(bool selected) override;
+	void			   setSelected(bool selected) override;
 
    private:
 	bool boarderStatus = true;
-	bool selected = false;
+	bool selected	   = false;
 };
 
 #endif	// TEXTBOX_H
