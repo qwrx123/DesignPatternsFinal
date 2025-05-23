@@ -7,7 +7,7 @@ class ITool
 	ITool()			 = default;
 	virtual ~ITool() = default;
 
-	virtual bool isActive() const = 0;
+	[[nodiscard]] virtual bool isActive() const = 0;
 };
 
 #endif	// ITOOL_H
