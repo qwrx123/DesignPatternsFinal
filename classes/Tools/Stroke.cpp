@@ -3,7 +3,9 @@
 
 Stroke::Stroke(Color color, float thickness) : stroke_color(color), stroke_thickness(thickness) {}
 
-Stroke::Stroke() = default;
+Stroke::Stroke() : stroke_color{.r = 0.0F, .g = 0.0F, .b = 0.0F, .a = 1.0F}, stroke_thickness(1.0F)
+{
+}
 
 Stroke::~Stroke() = default;
 
@@ -29,14 +31,17 @@ float Stroke::getThickness() const
 
 double Stroke::getLength() const
 {
-	if (points.size() < 2) return 0.0;
+	if (points.size() < 2)
+	{
+		return 0.0;
+	}
 
 	double length = 0.0;
 	for (size_t i = 1; i < points.size(); ++i)
 	{
 		double dx = points[i].x - points[i - 1].x;
 		double dy = points[i].y - points[i - 1].y;
-		length += std::sqrt(dx * dx + dy * dy);
+		length += std::sqrt((dx * dx) + (dy * dy));
 	}
 	return length;
 }
