@@ -62,10 +62,10 @@ int main()
 	menuBar->setBounds(Bounds(0, 39, 0, INT_MAX));
 	menuBar->addButton(std::make_shared<ButtonClass>(
 		"button",
-		Bounds(0, menuBar->getBounds().bottom,
+		Bounds{0, menuBar->getBounds().bottom,
 			   menuBar->getButtons().at(menuBar->getButtons().size() - 1)->getBounds().right + 1,
-			   menuBar->getButtons().at(menuBar->getButtons().size() - 1)->getBounds().right + 40),
-		bColor(0, .5, .5, 1)));
+			   menuBar->getButtons().at(menuBar->getButtons().size() - 1)->getBounds().right + 40},
+		Color(0, .5, .5, 1)));
 
 	// --- Main Loop ---
 	while (!glfwWindowShouldClose(window))

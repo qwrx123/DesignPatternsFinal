@@ -4,7 +4,7 @@
 #include <string>
 #include "Bounds.h"
 
-ButtonClass::ButtonClass(std::string label, Bounds bounds, bColor color)
+ButtonClass::ButtonClass(std::string label, Bounds bounds, Color color)
 {
 	this->label	 = label;
 	this->bounds = bounds;
@@ -25,12 +25,12 @@ Bounds ButtonClass::getBounds() const
 	return bounds;
 }
 
-void ButtonClass::setColor(const bColor& color)
+void ButtonClass::setColor(const Color& color)
 {
 	this->color = color;
 }
 
-bColor ButtonClass::getColor() const
+Color ButtonClass::getColor() const
 {
 	return color;
 }
