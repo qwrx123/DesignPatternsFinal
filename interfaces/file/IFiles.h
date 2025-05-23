@@ -12,6 +12,6 @@ class IFiles
 		png,
 		bmp
 	};
-	virtual std::string quarryFileLocation()	  = 0;
-	virtual void		setFileType(IFiles::type) = 0;
+	[[nodiscard]] virtual std::string quarryFileLocation()		= 0;
+	virtual void					  setFileType(IFiles::type) = 0;
 };
