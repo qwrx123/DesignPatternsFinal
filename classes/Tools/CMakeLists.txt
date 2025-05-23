@@ -1,3 +1,13 @@
+set(FILE_LIST
+    BrushTool.cpp
+    EraserTool.cpp
+    Stroke.cpp
+    StrokeManager.cpp
+    ToolManager.cpp
+)
+
+registerFilesToFormat(FILES ${FILE_LIST})
+
 add_library(
     Tools
     SHARED

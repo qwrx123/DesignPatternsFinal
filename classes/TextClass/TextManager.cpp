@@ -1,9 +1,9 @@
 #include "TextManager.h"
 #include <algorithm>
 
-TextManager::TextManager() {}
+TextManager::TextManager() = default;
 
-TextManager::~TextManager() {}
+TextManager::~TextManager() = default;
 
 void TextManager::addText(std::shared_ptr<IText> text)
 {
@@ -12,7 +12,7 @@ void TextManager::addText(std::shared_ptr<IText> text)
 
 void TextManager::removeText(std::shared_ptr<IText> text)
 {
-	auto it = std::remove(texts.begin(), texts.end(), text);
+	auto it = std::ranges::remove(texts, text).begin();
 	if (it != texts.end())
 	{
 		texts.erase(it, texts.end());

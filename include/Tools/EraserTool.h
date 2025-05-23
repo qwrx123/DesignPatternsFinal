@@ -4,28 +4,29 @@
 #include "IDrawingTool.h"
 #include "Stroke.h"
 
-class EraserTool : public IDrawingTool {
-public:
-    EraserTool(float thickness);
-    ~EraserTool() override;
+class EraserTool : public IDrawingTool
+{
+   public:
+	EraserTool(float thickness);
+	~EraserTool() override;
 
-    void beginStroke(const Point& start) override;
-    void addPoint(const Point& point) override;
-    void endStroke(const Point& end) override;
+	void beginStroke(const Point& start) override;
+	void addPoint(const Point& point) override;
+	void endStroke(const Point& end) override;
 
-    std::shared_ptr<IStroke> getCurrentStroke() override;
-    std::string getName() override;
+	std::shared_ptr<IStroke> getCurrentStroke() override;
+	std::string				 getName() override;
 
-    bool isActive() const override;
-    void setActive(bool value);
+	[[nodiscard]] bool isActive() const override;
+	void			   setActive(bool value);
 
-	bool isDrawing() const override;
+	[[nodiscard]] bool isDrawing() const override;
 
    private:
-    std::shared_ptr<Stroke> erase_path;
-    float eraser_thickness;
-	bool active;
-    bool drawing = false;
+	std::shared_ptr<Stroke> erase_path;
+	float					eraser_thickness;
+	bool					active	= false;
+	bool					drawing = false;
 };
 
-#endif // ERASER_TOOL_H
+#endif	// ERASER_TOOL_H

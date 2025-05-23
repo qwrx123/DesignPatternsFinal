@@ -5,15 +5,11 @@
 #include "Bounds.h"
 
 ButtonClass::ButtonClass(std::string label, Bounds bounds, Color color)
+	: label(std::move(label)), bounds(bounds), color(color)
 {
-	this->label	 = label;
-	this->bounds = bounds;
-	this->color	 = color;
-	hovered		 = false;
-	pressed		 = false;
 }
 
-ButtonClass::~ButtonClass() {}
+ButtonClass::~ButtonClass() = default;
 
 void ButtonClass::setBounds(const Bounds& bounds)
 {

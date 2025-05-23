@@ -12,6 +12,10 @@ registerFilesToFormat(FILES CanvasRenderer.cpp)
 target_include_directories(Rendering
     PUBLIC
     ${PROJECT_COMMON_INCLUDE_DIRS}
+)
+
+target_include_directories(Rendering
+    SYSTEM PUBLIC
     ${FREETYPE_INCLUDE_DIRS}
 )
 
