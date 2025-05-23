@@ -5,8 +5,7 @@
 class ISave : IFiles
 {
    public:
-	ISave()			 = default;
 	virtual ~ISave() = default;
 
-	virtual void saveFile(void*, ssize_t) = 0;
+	[[nodiscard]] virtual void saveFile(void*, ssize_t) = 0;
 };
