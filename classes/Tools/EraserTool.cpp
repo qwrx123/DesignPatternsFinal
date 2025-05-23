@@ -1,6 +1,6 @@
 #include "EraserTool.h"
 
-EraserTool::EraserTool(float thickness) : eraser_thickness(thickness), active(false) {}
+EraserTool::EraserTool(float thickness) : eraser_thickness(thickness) {}
 
 EraserTool::~EraserTool() = default;
 
@@ -8,7 +8,8 @@ void EraserTool::beginStroke(const Point& start)
 {
 	// Eraser stroke is white with 0 alpha for now (can change this logic later)
 	drawing	   = true;
-	erase_path = std::make_shared<Stroke>(Color{1.0f, 1.0f, 1.0f, 0.0f}, eraser_thickness);
+	erase_path = std::make_shared<Stroke>(Color{.r = 1.0F, .g = 1.0F, .b = 1.0F, .a = 0.0F},
+										  eraser_thickness);
 	erase_path->addPoint(start);
 }
 
