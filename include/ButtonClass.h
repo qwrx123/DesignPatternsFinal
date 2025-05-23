@@ -10,21 +10,21 @@ class ButtonClass : public IButton
 {
    public:
 	ButtonClass(std::string label, Bounds bounds, bColor color);
-	~ButtonClass();
+	~ButtonClass() override;
 
-	void   setBounds(const Bounds& bounds) override;
-	Bounds getBounds() const override;
+	void				 setBounds(const Bounds& bounds) override;
+	[[nodiscard]] Bounds getBounds() const override;
 
-	void   setColor(const bColor& color) override;
-	bColor getColor() const override;
+	void				 setColor(const bColor& color) override;
+	[[nodiscard]] bColor getColor() const override;
 
-	bool isHovered() const override;
-	void setHovered(bool hovered) override;
-	bool isPressed() const override;
-	void setPressed(bool pressed) override;
+	[[nodiscard]] bool isHovered() const override;
+	void			   setHovered(bool hovered) override;
+	[[nodiscard]] bool isPressed() const override;
+	void			   setPressed(bool pressed) override;
 
-	std::string getLabel() const override;
-	void		setLabel(const std::string& label) override;
+	[[nodiscard]] std::string getLabel() const override;
+	void					  setLabel(const std::string& label) override;
 
 	void onClick(std::function<void()> callback) override;
 
