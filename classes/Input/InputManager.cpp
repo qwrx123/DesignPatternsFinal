@@ -70,7 +70,7 @@ void InputManager::bindToWindow(GLFWwindow* window)
 							 {
 								 auto* self =
 									 static_cast<InputManager*>(glfwGetWindowUserPointer(win));
-								 if (self)
+								 if (self != nullptr)
 								 {
 									 self->handleMouseMove(x, y);
 								 }
@@ -81,7 +81,7 @@ void InputManager::bindToWindow(GLFWwindow* window)
 							   {
 								   auto* self =
 									   static_cast<InputManager*>(glfwGetWindowUserPointer(win));
-								   if (!self)
+								   if (self == nullptr)
 								   {
 									   return;
 								   }
@@ -128,7 +128,7 @@ void InputManager::bindToWindow(GLFWwindow* window)
 					   [](GLFWwindow* win, int key, int, int action, int)
 					   {
 						   auto* self = static_cast<InputManager*>(glfwGetWindowUserPointer(win));
-						   if (!self)
+						   if (self == nullptr)
 						   {
 							   return;
 						   }
@@ -156,7 +156,7 @@ void InputManager::bindToWindow(GLFWwindow* window)
 						[](GLFWwindow* win, unsigned int codepoint)
 						{
 							auto* self = static_cast<InputManager*>(glfwGetWindowUserPointer(win));
-							if (!self)
+							if (self == nullptr)
 							{
 								return;
 							}
@@ -172,7 +172,7 @@ void InputManager::bindToWindow(GLFWwindow* window)
 		[](GLFWwindow* win, int width, int height)
 		{
 			auto* self = static_cast<InputManager*>(glfwGetWindowUserPointer(win));
-			if (!self)
+			if (self == nullptr)
 			{
 				return;
 			}
