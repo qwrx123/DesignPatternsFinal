@@ -4,118 +4,167 @@
 
 InputManager::InputManager() {}
 
-void InputManager::registerReceiver(std::shared_ptr<IInputReceiver> receiver) {
-    receivers.push_back(receiver);
+void InputManager::registerReceiver(std::shared_ptr<IInputReceiver> receiver)
+{
+	receivers.push_back(receiver);
 }
 
-void InputManager::unregisterReceiver(std::shared_ptr<IInputReceiver> receiver) {
-    receivers.erase(
-        std::remove(receivers.begin(), receivers.end(), receiver),
-        receivers.end()
-    );
+void InputManager::unregisterReceiver(std::shared_ptr<IInputReceiver> receiver)
+{
+	receivers.erase(std::remove(receivers.begin(), receivers.end(), receiver), receivers.end());
 }
 
-void InputManager::beginFrame() {
-    // No-op for now, useful for tracking state later
+void InputManager::beginFrame()
+{
+	// No-op for now, useful for tracking state later
 }
 
-void InputManager::endFrame() {
-    // No-op for now
+void InputManager::endFrame()
+{
+	// No-op for now
 }
 
-void InputManager::handleMouseMove(double x, double y) {
-    for (auto& receiver : receivers) {
-        receiver->onMouseMove(x, y);
-    }
+void InputManager::handleMouseMove(double x, double y)
+{
+	for (auto& receiver : receivers)
+	{
+		receiver->onMouseMove(x, y);
+	}
 }
 
-void InputManager::handleMouseButton(MouseButton button, KeyAction action, double x, double y) {
-    for (auto& receiver : receivers) {
-        receiver->onMouseButton(button, action, x, y);
-    }
+void InputManager::handleMouseButton(MouseButton button, KeyAction action, double x, double y)
+{
+	for (auto& receiver : receivers)
+	{
+		receiver->onMouseButton(button, action, x, y);
+	}
 }
 
-void InputManager::handleKey(int key, KeyAction action) {
-    for (auto& receiver : receivers) {
-        receiver->onKey(key, action);
-    }
+void InputManager::handleKey(int key, KeyAction action)
+{
+	for (auto& receiver : receivers)
+	{
+		receiver->onKey(key, action);
+	}
 }
 
-void InputManager::handleChar(unsigned int codepoint) {
-    for (auto& receiver : receivers) {
-        receiver->onChar(codepoint);
-    }
+void InputManager::handleChar(unsigned int codepoint)
+{
+	for (auto& receiver : receivers)
+	{
+		receiver->onChar(codepoint);
+	}
 }
 
-void InputManager::setResizeCallback(std::function<void(int, int)> cb) {
-    resize_callback = std::move(cb);
+void InputManager::setResizeCallback(std::function<void(int, int)> cb)
+{
+	resize_callback = std::move(cb);
 }
 
+void InputManager::bindToWindow(GLFWwindow* window)
+{
+	glfwSetWindowUserPointer(window, this);
 
-void InputManager::bindToWindow(GLFWwindow* window) {
-    glfwSetWindowUserPointer(window, this);
+	glfwSetCursorPosCallback(window,
+							 [](GLFWwindow* win, double x, double y)
+							 {
+								 auto* self =
+									 static_cast<InputManager*>(glfwGetWindowUserPointer(win));
+								 if (self) self->handleMouseMove(x, y);
+							 });
 
-    glfwSetCursorPosCallback(window, [](GLFWwindow* win, double x, double y) {
-        auto* self = static_cast<InputManager*>(glfwGetWindowUserPointer(win));
-        if (self) self->handleMouseMove(x, y);
-    });
+	glfwSetMouseButtonCallback(window,
+							   [](GLFWwindow* win, int button, int action, int)
+							   {
+								   auto* self =
+									   static_cast<InputManager*>(glfwGetWindowUserPointer(win));
+								   if (!self) return;
 
-    glfwSetMouseButtonCallback(window, [](GLFWwindow* win, int button, int action, int) {
-        auto* self = static_cast<InputManager*>(glfwGetWindowUserPointer(win));
-        if (!self) return;
+								   MouseButton mb;
+								   switch (button)
+								   {
+									   case GLFW_MOUSE_BUTTON_LEFT:
+										   mb = MouseButton::Left;
+										   break;
+									   case GLFW_MOUSE_BUTTON_RIGHT:
+										   mb = MouseButton::Right;
+										   break;
+									   case GLFW_MOUSE_BUTTON_MIDDLE:
+										   mb = MouseButton::Middle;
+										   break;
+									   default:
+										   return;
+								   }
 
-        MouseButton mb;
-        switch (button) {
-            case GLFW_MOUSE_BUTTON_LEFT:   mb = MouseButton::Left;   break;
-            case GLFW_MOUSE_BUTTON_RIGHT:  mb = MouseButton::Right;  break;
-            case GLFW_MOUSE_BUTTON_MIDDLE: mb = MouseButton::Middle; break;
-            default: return;
-        }
+								   KeyAction ka;
+								   switch (action)
+								   {
+									   case GLFW_PRESS:
+										   ka = KeyAction::Press;
+										   break;
+									   case GLFW_RELEASE:
+										   ka = KeyAction::Release;
+										   break;
+									   case GLFW_REPEAT:
+										   ka = KeyAction::Repeat;
+										   break;
+									   default:
+										   return;
+								   }
 
-        KeyAction ka;
-        switch (action) {
-            case GLFW_PRESS:   ka = KeyAction::Press;   break;
-            case GLFW_RELEASE: ka = KeyAction::Release; break;
-            case GLFW_REPEAT:  ka = KeyAction::Repeat;  break;
-            default: return;
-        }
+								   double x, y;
+								   glfwGetCursorPos(win, &x, &y);
+								   self->handleMouseButton(mb, ka, x, y);
+							   });
 
-        double x, y;
-        glfwGetCursorPos(win, &x, &y);
-        self->handleMouseButton(mb, ka, x, y);
-    });
+	glfwSetKeyCallback(window,
+					   [](GLFWwindow* win, int key, int, int action, int)
+					   {
+						   auto* self = static_cast<InputManager*>(glfwGetWindowUserPointer(win));
+						   if (!self) return;
 
-    glfwSetKeyCallback(window, [](GLFWwindow* win, int key, int, int action, int) {
-        auto* self = static_cast<InputManager*>(glfwGetWindowUserPointer(win));
-        if (!self) return;
+						   KeyAction ka;
+						   switch (action)
+						   {
+							   case GLFW_PRESS:
+								   ka = KeyAction::Press;
+								   break;
+							   case GLFW_RELEASE:
+								   ka = KeyAction::Release;
+								   break;
+							   case GLFW_REPEAT:
+								   ka = KeyAction::Repeat;
+								   break;
+							   default:
+								   return;
+						   }
 
-        KeyAction ka;
-        switch (action) {
-            case GLFW_PRESS:   ka = KeyAction::Press;   break;
-            case GLFW_RELEASE: ka = KeyAction::Release; break;
-            case GLFW_REPEAT:  ka = KeyAction::Repeat;  break;
-            default: return;
-        }
+						   self->handleKey(key, ka);
+					   });
 
-        self->handleKey(key, ka);
-    });
+	glfwSetCharCallback(window,
+						[](GLFWwindow* win, unsigned int codepoint)
+						{
+							auto* self = static_cast<InputManager*>(glfwGetWindowUserPointer(win));
+							if (!self) return;
 
-    glfwSetCharCallback(window, [](GLFWwindow* win, unsigned int codepoint) {
-        auto* self = static_cast<InputManager*>(glfwGetWindowUserPointer(win));
-        if (!self) return;
+							// Handle character input here if needed
+							self->handleChar(codepoint);
+							std::cout << "Character input: " << static_cast<char>(codepoint)
+									  << std::endl;
+						});
 
-        // Handle character input here if needed
-        self->handleChar(codepoint);
-        std::cout << "Character input: " << static_cast<char>(codepoint) << std::endl;
-    });
+	glfwSetFramebufferSizeCallback(
+		window,
+		[](GLFWwindow* win, int width, int height)
+		{
+			auto* self = static_cast<InputManager*>(glfwGetWindowUserPointer(win));
+			if (!self) return;
 
-    glfwSetFramebufferSizeCallback(window, [](GLFWwindow* win, int width, int height) {
-        auto* self = static_cast<InputManager*>(glfwGetWindowUserPointer(win));
-        if (!self) return;
-
-        // Broadcast resize to renderer (needs access to it)
-        if (self->resize_callback) {
-            self->resize_callback(width, height);
-        }
-    });
+			// Broadcast resize to renderer (needs access to it)
+			if (self->resize_callback)
+			{
+				self->resize_callback(width, height);
+			}
+		});
 }

@@ -6,6 +6,8 @@ add_library(
 
 find_package(glfw3 3.3 REQUIRED)
 
+registerFilesToFormat(FILES InputManager.cpp)
+
 target_include_directories(Input
     PUBLIC
     ${PROJECT_COMMON_INCLUDE_DIRS}
