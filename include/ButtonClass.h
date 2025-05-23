@@ -31,8 +31,8 @@ class ButtonClass : public IButton
    private:
 	Bounds		bounds;
 	bColor		color;
-	bool		hovered;
-	bool		pressed;
+	bool		hovered = false;
+	bool		pressed = false;
 	std::string label;
 };
 
