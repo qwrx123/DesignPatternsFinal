@@ -2,7 +2,7 @@
 #include <algorithm>
 #include <iostream>
 
-InputManager::InputManager() {}
+InputManager::InputManager() = default;
 
 void InputManager::registerReceiver(std::shared_ptr<IInputReceiver> receiver)
 {
@@ -11,7 +11,7 @@ void InputManager::registerReceiver(std::shared_ptr<IInputReceiver> receiver)
 
 void InputManager::unregisterReceiver(std::shared_ptr<IInputReceiver> receiver)
 {
-	receivers.erase(std::remove(receivers.begin(), receivers.end(), receiver), receivers.end());
+	std::ranges::remove(receivers, receiver);
 }
 
 void InputManager::beginFrame()
@@ -70,7 +70,10 @@ void InputManager::bindToWindow(GLFWwindow* window)
 							 {
 								 auto* self =
 									 static_cast<InputManager*>(glfwGetWindowUserPointer(win));
-								 if (self) self->handleMouseMove(x, y);
+								 if (self)
+								 {
+									 self->handleMouseMove(x, y);
+								 }
 							 });
 
 	glfwSetMouseButtonCallback(window,
@@ -78,9 +81,12 @@ void InputManager::bindToWindow(GLFWwindow* window)
 							   {
 								   auto* self =
 									   static_cast<InputManager*>(glfwGetWindowUserPointer(win));
-								   if (!self) return;
+								   if (!self)
+								   {
+									   return;
+								   }
 
-								   MouseButton mb;
+								   MouseButton mb = MouseButton::Left;
 								   switch (button)
 								   {
 									   case GLFW_MOUSE_BUTTON_LEFT:
@@ -96,7 +102,7 @@ void InputManager::bindToWindow(GLFWwindow* window)
 										   return;
 								   }
 
-								   KeyAction ka;
+								   KeyAction ka = KeyAction::Press;
 								   switch (action)
 								   {
 									   case GLFW_PRESS:
@@ -112,7 +118,8 @@ void InputManager::bindToWindow(GLFWwindow* window)
 										   return;
 								   }
 
-								   double x, y;
+								   double x = 0;
+								   double y = 0;
 								   glfwGetCursorPos(win, &x, &y);
 								   self->handleMouseButton(mb, ka, x, y);
 							   });
@@ -121,9 +128,12 @@ void InputManager::bindToWindow(GLFWwindow* window)
 					   [](GLFWwindow* win, int key, int, int action, int)
 					   {
 						   auto* self = static_cast<InputManager*>(glfwGetWindowUserPointer(win));
-						   if (!self) return;
+						   if (!self)
+						   {
+							   return;
+						   }
 
-						   KeyAction ka;
+						   KeyAction ka = KeyAction::Press;
 						   switch (action)
 						   {
 							   case GLFW_PRESS:
@@ -146,12 +156,15 @@ void InputManager::bindToWindow(GLFWwindow* window)
 						[](GLFWwindow* win, unsigned int codepoint)
 						{
 							auto* self = static_cast<InputManager*>(glfwGetWindowUserPointer(win));
-							if (!self) return;
+							if (!self)
+							{
+								return;
+							}
 
 							// Handle character input here if needed
 							self->handleChar(codepoint);
 							std::cout << "Character input: " << static_cast<char>(codepoint)
-									  << std::endl;
+									  << "\n";
 						});
 
 	glfwSetFramebufferSizeCallback(
@@ -159,7 +172,10 @@ void InputManager::bindToWindow(GLFWwindow* window)
 		[](GLFWwindow* win, int width, int height)
 		{
 			auto* self = static_cast<InputManager*>(glfwGetWindowUserPointer(win));
-			if (!self) return;
+			if (!self)
+			{
+				return;
+			}
 
 			// Broadcast resize to renderer (needs access to it)
 			if (self->resize_callback)
