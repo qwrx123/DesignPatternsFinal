@@ -43,7 +43,7 @@ class MenuBar : public IMenu
 	std::string							  label;
 	Bounds								  bounds;
 	std::vector<std::shared_ptr<IButton>> buttons;
-	int									  selectedIndex;
+	int									  selectedIndex = 0;
 };
 
 #endif	// MENU_BAR_H

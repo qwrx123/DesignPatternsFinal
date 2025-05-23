@@ -68,7 +68,7 @@ int main()
 					 defaultThickness													// Thickness
 					 ));
 
-	inputManager->setResizeCallback([&](int w, int h) { renderer->resize(w, h); });
+	inputManager->setResizeCallback([&](int w, int h) { CanvasRenderer::resize(w, h); });
 
 	menuBar->setBounds(Bounds(0, defaultMenuBarHeight, 0, static_cast<float>(INT_MAX)));
 	menuBar->addButton(std::make_shared<ButtonClass>(

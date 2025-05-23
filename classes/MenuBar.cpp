@@ -2,7 +2,7 @@
 #include "Bounds.h"
 #include "ButtonClass.h"
 
-MenuBar::MenuBar() : label("Menu Bar"), bounds(0, 0, 0, 0), selectedIndex(0)
+MenuBar::MenuBar() : label("Menu Bar"), bounds(0, 0, 0, 0)
 {
 	buttons.push_back(
 		std::make_shared<ButtonClass>("emptyEdge", Bounds(0, 0, 0, 0), bColor(0, 0, 0, 0)));
