@@ -8,14 +8,11 @@ struct Bounds
 	double left;
 	double right;
 
-	Bounds() {}
+	Bounds() : top(0), bottom(0), left(0), right(0) {}
 
 	Bounds(double top, double bottom, double left, double right)
+		: top(top), bottom(bottom), left(left), right(right)
 	{
-		this->top	 = top;
-		this->bottom = bottom;
-		this->left	 = left;
-		this->right	 = right;
 	}
 };
 
