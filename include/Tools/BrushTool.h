@@ -26,10 +26,10 @@ private:
     std::shared_ptr<IStroke> getCurrentStroke() override;
     std::string getName() override { return "Brush"; }
 
-    bool isActive() const override;
+    [[nodiscard]] bool isActive() const override;
     void setActive(bool value);
 
-    bool isDrawing() const override;
+    [[nodiscard]] bool isDrawing() const override;
 };
 
 #endif // BRUSHTOOL_H
