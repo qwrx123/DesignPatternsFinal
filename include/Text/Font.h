@@ -7,14 +7,14 @@
 class Font
 {
    public:
-	Font(std::filesystem::path fontPath);
+	Font(const std::filesystem::path& fontPath);
 	~Font();
 	[[nodiscard]] FT_Face	getFontFace() const;
 	[[nodiscard]] FT_Bitmap getFontBitmap(char c) const;
 
    private:
-	FT_Library			  library;
-	FT_Face				  face;
+	FT_Library			  library = nullptr;
+	FT_Face				  face	  = nullptr;
 	std::filesystem::path fontPath;
 };
 
