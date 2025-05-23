@@ -16,15 +16,15 @@ public:
     std::shared_ptr<IStroke> getCurrentStroke() override;
     std::string getName() override;
 
-    bool isActive() const override;
+    [[nodiscard]] bool isActive() const override;
     void setActive(bool value);
 
-	bool isDrawing() const override;
+	[[nodiscard]] bool isDrawing() const override;
 
    private:
     std::shared_ptr<Stroke> erase_path;
     float eraser_thickness;
-	bool active;
+	bool active = false;
     bool drawing = false;
 };
 
