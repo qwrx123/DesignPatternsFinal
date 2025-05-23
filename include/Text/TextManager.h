@@ -9,20 +9,20 @@
 class TextManager : public ITextManager
 {
    public:
-    TextManager();
-    ~TextManager();
+	TextManager();
+	~TextManager() override;
 
-    void addText(std::shared_ptr<IText> text) override;
-    void removeText(std::shared_ptr<IText> text) override;
+	void addText(std::shared_ptr<IText> text) override;
+	void removeText(std::shared_ptr<IText> text) override;
 
-    const std::vector<std::shared_ptr<IText>>& getTexts() const override;
+	[[nodiscard]] const std::vector<std::shared_ptr<IText>>& getTexts() const override;
 
-    std::shared_ptr<IText> getTextAt(double x, double y) const override;
+	[[nodiscard]] std::shared_ptr<IText> getTextAt(double x, double y) const override;
 
-    void clearAll() override;
+	void clearAll() override;
 
    private:
-    std::vector<std::shared_ptr<IText>> texts;
+	std::vector<std::shared_ptr<IText>> texts;
 };
 
-#endif // TEXTMANAGER_H
+#endif	// TEXTMANAGER_H

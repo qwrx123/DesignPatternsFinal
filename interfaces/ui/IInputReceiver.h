@@ -1,13 +1,13 @@
 #ifndef IINPUTRECEIVER_H
 #define IINPUTRECEIVER_H
 
-enum class MouseButton
+enum class MouseButton : std::uint8_t
 {
 	Left,
 	Right,
 	Middle
 };
-enum class KeyAction
+enum class KeyAction : std::uint8_t
 {
 	Press,
 	Release,

@@ -1,7 +1,7 @@
 #include "TextBox.h"
 
-TextBox::TextBox() : boarderStatus(false), selected(false) {}
-TextBox::~TextBox() {}
+TextBox::TextBox() : boarderStatus(false) {}
+TextBox::~TextBox() = default;
 
 bool TextBox::hasBorder() const
 {

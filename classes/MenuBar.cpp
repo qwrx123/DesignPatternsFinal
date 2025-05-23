@@ -2,19 +2,17 @@
 #include "Bounds.h"
 #include "ButtonClass.h"
 
-MenuBar::MenuBar()
+MenuBar::MenuBar() : label("Menu Bar"), bounds(0, 0, 0, 0)
 {
-	label		  = "Menu Bar";
-	bounds		  = Bounds(0, 0, 0, 0);
-	selectedIndex = 0;
-	addButton(std::make_shared<ButtonClass>("emptyEdge", Bounds(0, 0, 0, 0), bColor(0, 0, 0, 0)));
+	buttons.push_back(
+		std::make_shared<ButtonClass>("emptyEdge", Bounds(0, 0, 0, 0), bColor(0, 0, 0, 0)));
 }
 
 MenuBar::~MenuBar()
 {
 	if (!buttons.empty())
 	{
-		clearButtons();
+		buttons.clear();
 	}
 }
 

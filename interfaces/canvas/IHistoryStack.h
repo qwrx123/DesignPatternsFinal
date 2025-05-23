@@ -10,10 +10,10 @@ class IHistoryStack
 	IHistoryStack()			 = default;
 	virtual ~IHistoryStack() = default;
 
-	virtual void	  push(T)	   = 0;
-	virtual T		  pop()		   = 0;
-	virtual T		  peek()	   = 0;
-	virtual vector<T> getHistory() = 0;
+	virtual void					push(T)		 = 0;
+	[[nodiscard]] virtual T			pop()		 = 0;
+	[[nodiscard]] virtual T			peek()		 = 0;
+	[[nodiscard]] virtual vector<T> getHistory() = 0;
 
    protected:
 	std::vector<T> history;

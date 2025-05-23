@@ -15,6 +15,10 @@ registerFilesToFormat(FILES Text.cpp Font.cpp TextBox.cpp TextManager.cpp)
 target_include_directories(TextClass
     PUBLIC
     ${PROJECT_COMMON_INCLUDE_DIRS}
+)
+
+target_include_directories(TextClass
+    SYSTEM PUBLIC
     ${FREETYPE_INCLUDE_DIRS}
 )
 

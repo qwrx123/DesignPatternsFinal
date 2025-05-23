@@ -5,8 +5,7 @@
 class IExport : IFiles
 {
    public:
-	IExport()		   = default;
 	virtual ~IExport() = default;
 
-	virtual void exportFile(void*, ssize_t) = 0;
+	[[nodiscard]] virtual void exportFile(void*, ssize_t) = 0;
 };
