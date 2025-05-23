@@ -12,7 +12,7 @@ class CanvasRenderer : public ICanvasRenderer
 {
    public:
 	CanvasRenderer(GLFWwindow* window);
-	~CanvasRenderer();
+	~CanvasRenderer() override;
 
 	void resize(int width, int height);
 
