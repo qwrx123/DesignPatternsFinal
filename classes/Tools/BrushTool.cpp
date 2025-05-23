@@ -7,11 +7,10 @@ BrushTool::BrushTool(Color color, float thickness)
 }
 
 BrushTool::BrushTool(std::shared_ptr<IStrokeManager> stroke_manager, Color color, float thickness)
-	: stroke_manager(stroke_manager),
+	: stroke_manager(std::move(stroke_manager)),
 	  brush_color(color),
 	  brush_thickness(thickness),
-	  active(false),
-	  drawing(false)
+	  active(false)
 {
 }
 
