@@ -15,10 +15,10 @@ public:
     void setColor(const Color& color) override;
     void addPoint(const Point& point) override;
 
-    const std::vector<Point>& getPoints() const override;
-    Color getColor() const override;
-	float getThickness() const override;
-    double getLength() const override;
+    [[nodiscard]] const std::vector<Point>& getPoints() const override;
+    [[nodiscard]] Color getColor() const override;
+	[[nodiscard]] float getThickness() const override;
+    [[nodiscard]] double getLength() const override;
 
 private:
     std::vector<Point> points;
