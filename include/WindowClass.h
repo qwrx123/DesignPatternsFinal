@@ -9,7 +9,7 @@ class WindowClass
 	~WindowClass();
 	bool			   CreateWindow(int width, int height, const char* title);
 	[[nodiscard]] bool shouldClose() const;
-	void			   defaultEvent();
+	static void		   defaultEvent();
 	bool			   initCallbacks();
 	void			   render();
 
@@ -55,7 +55,7 @@ class WindowClass
 	// Eraser
 	void   eraseAtCursor(double xpos, double ypos);
 	double eraser_radius = DEFAULT_RADIUS;
-	double prevEraserX;
-	double prevEraserY;
-	bool   isErasing = false;
+	double prevEraserX	 = 0;
+	double prevEraserY	 = 0;
+	bool   isErasing	 = false;
 };
