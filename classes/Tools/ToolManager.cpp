@@ -1,6 +1,6 @@
 #include "ToolManager.h"
 
-ToolManager::ToolManager() : current_tool(nullptr), current_tool_name("") {}
+ToolManager::ToolManager() : current_tool(nullptr) {}
 
 ToolManager::~ToolManager() = default;
 
@@ -66,15 +66,18 @@ void ToolManager::onMouseMove(double x, double y)
 {
 	if (current_tool && current_tool->isDrawing())
 	{
-		addPoint({x, y});
+		addPoint({.x = x, .y = y});
 	}
 }
 
 void ToolManager::onMouseButton(MouseButton button, KeyAction action, double x, double y)
 {
-	if (!current_tool || button != MouseButton::Left) return;
+	if (!current_tool || button != MouseButton::Left)
+	{
+		return;
+	};
 
-	Point p = {x, y};
+	Point p = {.x = x, .y = y};
 
 	if (action == KeyAction::Press)
 	{
