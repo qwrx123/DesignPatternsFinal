@@ -9,7 +9,7 @@ class ToolManager : public IToolManager, public IInputReceiver
 {
 public:
     ToolManager();
-	~ToolManager();
+	~ToolManager() override;
 
 	void registerTool(const std::string& name, std::shared_ptr<IDrawingTool> tool) override;
     bool selectTool(const std::string& name) override;
