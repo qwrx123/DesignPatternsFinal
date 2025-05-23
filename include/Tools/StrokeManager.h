@@ -8,7 +8,7 @@ public:
  StrokeManager();
  ~StrokeManager() override;
  void addStroke(std::shared_ptr<IStroke> stroke) override;
- const std::vector<std::shared_ptr<IStroke>>& getStrokes() const override;
+ [[nodiscard]] const std::vector<std::shared_ptr<IStroke>>& getStrokes() const override;
  void clear() override;
 
 private:
