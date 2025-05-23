@@ -13,10 +13,10 @@ class IDrawingEngine : public IInputReceiver
 	IDrawingEngine()		  = default;
 	virtual ~IDrawingEngine() = default;
 
-	virtual void								 setTool(std::shared_ptr<IDrawingTool> tool) = 0;
-	virtual const std::shared_ptr<IDrawingTool>& getActiveTool() const						 = 0;
+	virtual void setTool(std::shared_ptr<IDrawingTool> tool)						 = 0;
+	[[nodiscard]] virtual const std::shared_ptr<IDrawingTool>& getActiveTool() const = 0;
 
-	virtual const IStrokeManager& getStrokeManager() const = 0;
+	[[nodiscard]] virtual const IStrokeManager& getStrokeManager() const = 0;
 };
 
 #endif	// IDRAWINGENGINE_H
