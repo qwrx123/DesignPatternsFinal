@@ -11,10 +11,19 @@
 #include "MenuBar.h"
 #include "ButtonClass.h"
 
+const int		  defaultWindowWidth  = 800;
+const int		  defaultWindowHeight = 600;
+const char* const defaultWindowTitle  = "Drawing App";
+
+const float defaultThickness	 = 2.0F;
+const int	defaultMenuBarHeight = 39;
+
+const float grayColor = 0.5F;
+
 // --- Main Entry ---
 int main()
 {
-	if (!glfwInit())
+	if (glfwInit() == GLFW_FALSE)
 	{
 		std::cerr << "GLFW failed to initialize\n";
 		return -1;
@@ -24,8 +33,9 @@ int main()
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_COMPAT_PROFILE);
 
-	GLFWwindow* window = glfwCreateWindow(800, 600, "Drawing App", nullptr, nullptr);
-	if (!window)
+	GLFWwindow* window = glfwCreateWindow(defaultWindowWidth, defaultWindowHeight,
+										  defaultWindowTitle, nullptr, nullptr);
+	if (window == nullptr)
 	{
 		std::cerr << "Failed to create GLFW window\n";
 		glfwTerminate();
@@ -53,22 +63,24 @@ int main()
 	inputManager->registerReceiver(toolManager);
 
 	toolManager->registerTool(
-		"brush", std::make_shared<BrushTool>(strokeManager, Color{0.0f, 0.0f, 0.0f, 1.0f},	// Black
-											 2.0f  // Thickness
-											 ));
+		"brush", std::make_shared<BrushTool>(
+					 strokeManager, Color{.r = 0.0F, .g = 0.0F, .b = 0.0F, .a = 1.0F},	// Black
+					 defaultThickness													// Thickness
+					 ));
 
 	inputManager->setResizeCallback([&](int w, int h) { renderer->resize(w, h); });
 
-	menuBar->setBounds(Bounds(0, 39, 0, INT_MAX));
+	menuBar->setBounds(Bounds(0, defaultMenuBarHeight, 0, INT_MAX));
 	menuBar->addButton(std::make_shared<ButtonClass>(
 		"button",
 		Bounds(0, menuBar->getBounds().bottom,
 			   menuBar->getButtons().at(menuBar->getButtons().size() - 1)->getBounds().right + 1,
-			   menuBar->getButtons().at(menuBar->getButtons().size() - 1)->getBounds().right + 40),
-		bColor(0, .5, .5, 1)));
+			   menuBar->getButtons().at(menuBar->getButtons().size() - 1)->getBounds().right + 1 +
+				   defaultMenuBarHeight),
+		bColor(0, grayColor, grayColor, 1)));
 
 	// --- Main Loop ---
-	while (!glfwWindowShouldClose(window))
+	while (glfwWindowShouldClose(window) == 0)
 	{
 		inputManager->beginFrame();
 		glfwPollEvents();
