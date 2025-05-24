@@ -17,6 +17,7 @@ const char* const defaultWindowTitle  = "Drawing App";
 
 const float defaultThickness	 = 2.0F;
 const int	defaultMenuBarHeight = 39;
+const int	defaultButtonWidth	 = 40;
 
 const float grayColor = 0.5F;
 
@@ -75,8 +76,8 @@ int main()
 		"button",
 		Bounds{0, menuBar->getBounds().bottom,
 			   menuBar->getButtons().at(menuBar->getButtons().size() - 1)->getBounds().right + 1,
-			   menuBar->getButtons().at(menuBar->getButtons().size() - 1)->getBounds().right + 1 +
-				   defaultMenuBarHeight},
+			   menuBar->getButtons().at(menuBar->getButtons().size() - 1)->getBounds().right +
+				   defaultButtonWidth},
 		Color(0, grayColor, grayColor, 1)));
 
 	// --- Main Loop ---

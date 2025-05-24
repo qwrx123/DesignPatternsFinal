@@ -47,6 +47,11 @@ std::shared_ptr<IStroke> BrushTool::getCurrentStroke()
 	return current_stroke;
 }
 
+void BrushTool::setColor(const Color& color)
+{
+	brush_color = color;
+}
+
 bool BrushTool::isActive() const
 {
 	return active;

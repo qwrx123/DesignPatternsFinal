@@ -16,6 +16,7 @@ class EraserTool : public IDrawingTool
 
 	std::shared_ptr<IStroke> getCurrentStroke() override;
 	std::string				 getName() override;
+	void					 setColor(const Color& color) override;
 
 	[[nodiscard]] bool isActive() const override;
 	void			   setActive(bool value);

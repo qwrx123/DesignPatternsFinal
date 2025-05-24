@@ -47,7 +47,7 @@ void CanvasRenderer::drawStroke(const IStroke& stroke)
 	}
 
 	glLineWidth(stroke.getThickness());
-	glColor4f(0.0F, 0.0F, 0.0F, 1.0F);
+	glColor4f(stroke.getColor().r, stroke.getColor().g, stroke.getColor().b, stroke.getColor().a);
 	glBegin(GL_LINE_STRIP);
 	for (const auto& p : points)
 	{

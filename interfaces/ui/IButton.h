@@ -18,7 +18,7 @@ class IButton
 
 	// Button color
 	virtual void				setColor(const Color& color) = 0;
-	[[nodiscard]] virtual Color getColor() const			   = 0;
+	[[nodiscard]] virtual Color getColor() const			 = 0;
 
 	// Button state
 	[[nodiscard]] virtual bool isHovered() const		= 0;

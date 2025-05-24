@@ -29,6 +29,7 @@ class BrushTool : public IDrawingTool
 	{
 		return "Brush";
 	}
+	void setColor(const Color& color) override;
 
 	[[nodiscard]] bool isActive() const override;
 	void			   setActive(bool value);
