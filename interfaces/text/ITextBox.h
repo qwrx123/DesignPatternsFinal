@@ -6,7 +6,12 @@
 class ITextBox : public IText
 {
    public:
-	~ITextBox() override = default;
+	ITextBox()							 = default;
+	~ITextBox() override				 = default;
+	ITextBox(const ITextBox&)			 = default;
+	ITextBox& operator=(const ITextBox&) = default;
+	ITextBox(ITextBox&&)				 = default;
+	ITextBox& operator=(ITextBox&&)		 = default;
 
 	[[nodiscard]] virtual bool hasBorder() const		 = 0;
 	virtual void			   setBorder(bool hasBorder) = 0;
