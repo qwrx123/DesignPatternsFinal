@@ -2,7 +2,7 @@
 
 #include "IFiles.h"
 
-class ILoad : IFiles
+class ILoad : public IFiles
 {
    public:
 	ILoad()						   = default;

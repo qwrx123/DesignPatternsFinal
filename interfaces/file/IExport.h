@@ -2,7 +2,7 @@
 
 #include "IFiles.h"
 
-class IExport : IFiles
+class IExport : public IFiles
 {
    public:
 	IExport()						   = default;

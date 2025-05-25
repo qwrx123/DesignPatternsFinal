@@ -2,7 +2,7 @@
 
 #include "IFiles.h"
 
-class IImport : IFiles
+class IImport : public IFiles
 {
    public:
 	IImport()						   = default;

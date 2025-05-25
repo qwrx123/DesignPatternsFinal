@@ -2,7 +2,7 @@
 
 #include "IFiles.h"
 
-class ISave : IFiles
+class ISave : public IFiles
 {
    public:
 	ISave()						   = default;
