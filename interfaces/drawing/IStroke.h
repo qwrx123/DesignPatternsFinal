@@ -8,8 +8,12 @@
 class IStroke
 {
    public:
-	IStroke()		   = default;
-	virtual ~IStroke() = default;
+	IStroke()						   = default;
+	virtual ~IStroke()				   = default;
+	IStroke(const IStroke&)			   = default;
+	IStroke& operator=(const IStroke&) = default;
+	IStroke(IStroke&&)				   = default;
+	IStroke& operator=(IStroke&&)	   = default;
 
 	[[nodiscard]] virtual const std::vector<Point>& getPoints() const			  = 0;
 	virtual void									addPoint(const Point& point)  = 0;
