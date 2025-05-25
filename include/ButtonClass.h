@@ -11,6 +11,10 @@ class ButtonClass : public IButton
    public:
 	ButtonClass(std::string label, Bounds bounds, bColor color);
 	~ButtonClass() override;
+	ButtonClass(const ButtonClass& other)				 = default;
+	ButtonClass& operator=(const ButtonClass& other)	 = default;
+	ButtonClass(ButtonClass&& other) noexcept			 = default;
+	ButtonClass& operator=(ButtonClass&& other) noexcept = default;
 
 	void				 setBounds(const Bounds& bounds) override;
 	[[nodiscard]] Bounds getBounds() const override;

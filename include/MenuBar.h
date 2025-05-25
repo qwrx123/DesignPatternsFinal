@@ -13,6 +13,10 @@ class MenuBar : public IMenu
    public:
 	MenuBar();
 	~MenuBar() override;
+	MenuBar(const MenuBar& other);
+	MenuBar& operator=(const MenuBar& other);
+	MenuBar(MenuBar&& other) noexcept;
+	MenuBar& operator=(MenuBar&& other) noexcept;
 
 	[[nodiscard]] std::string getLabel() const override;
 	void					  setLabel(const std::string& label) override;
@@ -44,6 +48,9 @@ class MenuBar : public IMenu
 	Bounds								  bounds;
 	std::vector<std::shared_ptr<IButton>> buttons;
 	int									  selectedIndex = 0;
+
+	// Functions
+	[[nodiscard]] std::vector<std::shared_ptr<IButton>> cloneButtons() const;
 };
 
 #endif	// MENU_BAR_H
