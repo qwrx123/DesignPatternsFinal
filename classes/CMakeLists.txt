@@ -57,7 +57,9 @@ target_link_libraries(MenuBar
 target_include_directories(MenuBar
 	PUBLIC
 	${PROJECT_SOURCE_DIR}/include
+	${PROJECT_SOURCE_DIR}/include/Tools
 	${PROJECT_SOURCE_DIR}/interfaces/ui
+	${PROJECT_SOURCE_DIR}/interfaces/drawing
 	)
 
 if(WIN32)

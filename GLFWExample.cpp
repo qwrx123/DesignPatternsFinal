@@ -19,7 +19,7 @@ const float defaultThickness	 = 2.0F;
 const int	defaultMenuBarHeight = 39;
 const int	defaultButtonWidth	 = 40;
 
-const float grayColor = 0.5F;
+const Color defaultButtonColor = {0.0F, 0.0F, 0.0F, 1.0F};
 
 // --- Main Entry ---
 int main()
@@ -62,6 +62,7 @@ int main()
 
 	inputManager->bindToWindow(window);
 	inputManager->registerReceiver(toolManager);
+	inputManager->registerReceiver(menuBar);
 
 	toolManager->registerTool(
 		"brush", std::make_shared<BrushTool>(
@@ -72,13 +73,15 @@ int main()
 	inputManager->setResizeCallback([&](int w, int h) { CanvasRenderer::resize(w, h); });
 
 	menuBar->setBounds(Bounds(0, defaultMenuBarHeight, 0, static_cast<float>(INT_MAX)));
+	menuBar->setToolPointer(toolManager);
 	menuBar->addButton(std::make_shared<ButtonClass>(
 		"button",
 		Bounds{0, menuBar->getBounds().bottom,
 			   menuBar->getButtons().at(menuBar->getButtons().size() - 1)->getBounds().right + 1,
 			   menuBar->getButtons().at(menuBar->getButtons().size() - 1)->getBounds().right +
 				   defaultButtonWidth},
-		Color(0, grayColor, grayColor, 1)));
+		Color(defaultButtonColor.r, defaultButtonColor.g, defaultButtonColor.b,
+			  defaultButtonColor.a)));
 
 	// --- Main Loop ---
 	while (glfwWindowShouldClose(window) == 0)

@@ -1,11 +1,17 @@
 #include "MenuBar.h"
 #include "Bounds.h"
 #include "ButtonClass.h"
+#include <iostream>
+#include <cmath>
 
-MenuBar::MenuBar() : label("Menu Bar"), bounds{0, 0, 0, 0}
+MenuBar::MenuBar() : label("Menu Bar"), bounds{0, 0, 0, 0}, tool(nullptr)
 {
 	buttons.push_back(
 		std::make_shared<ButtonClass>("emptyEdge", Bounds{0, 0, 0, 0}, Color(0, 0, 0, 0)));
+	colors.push_back(black);
+	colors.push_back(red);
+	colors.push_back(green);
+	colors.push_back(blue);
 }
 
 MenuBar::~MenuBar()
@@ -86,3 +92,30 @@ bool MenuBar::showSelectedLabelWhenClosed() const
 }
 
 void MenuBar::setShowSelectedLabelWhenClosed(bool show) {}
+
+void MenuBar::onMouseMove(double x, double y) {}
+
+void MenuBar::onMouseButton(MouseButton click, KeyAction action, double x, double y)
+{
+	for (auto& button : buttons)
+	{
+		Bounds boundaries = button->getBounds();
+		if (x >= boundaries.left && x <= boundaries.right && y >= boundaries.top &&
+			y <= boundaries.bottom && action == KeyAction::Press)
+		{
+			std::cout << "click " << button->getLabel() << std::endl;
+			i = (i + 1) % 4;
+			button->setColor(colors.at(i));
+			tool->getActiveTool()->setColor(button->getColor());
+		}
+	}
+}
+
+void MenuBar::onKey(int key, KeyAction action) {}
+
+void MenuBar::onChar(unsigned int codepoint) {}
+
+void MenuBar::setToolPointer(const std::shared_ptr<IToolManager>& ptr)
+{
+	tool = ptr;
+}
