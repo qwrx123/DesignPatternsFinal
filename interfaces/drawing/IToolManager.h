@@ -7,8 +7,12 @@
 class IToolManager
 {
    public:
-	IToolManager()			= default;
-	virtual ~IToolManager() = default;
+	IToolManager()								 = default;
+	virtual ~IToolManager()						 = default;
+	IToolManager(const IToolManager&)			 = default;
+	IToolManager& operator=(const IToolManager&) = default;
+	IToolManager(IToolManager&&)				 = default;
+	IToolManager& operator=(IToolManager&&)		 = default;
 
 	virtual void registerTool(const std::string& name, std::shared_ptr<IDrawingTool> tool) = 0;
 	virtual bool selectTool(const std::string& name)									   = 0;
