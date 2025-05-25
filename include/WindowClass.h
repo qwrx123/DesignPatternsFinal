@@ -7,6 +7,11 @@ class WindowClass
    public:
 	WindowClass();
 	~WindowClass();
+	WindowClass(const WindowClass&)			   = delete;
+	WindowClass& operator=(const WindowClass&) = delete;
+	WindowClass(WindowClass&&)				   = delete;
+	WindowClass& operator=(WindowClass&&)	   = delete;
+
 	bool			   CreateWindow(int width, int height, const char* title);
 	[[nodiscard]] bool shouldClose() const;
 	static void		   defaultEvent();
