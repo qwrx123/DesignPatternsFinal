@@ -20,6 +20,11 @@ class BrushTool : public IDrawingTool
 	BrushTool(Color color, float thickness);
 	~BrushTool() override;
 
+	BrushTool(const BrushTool& other);
+	BrushTool& operator=(const BrushTool& other);
+	BrushTool(BrushTool&& other) noexcept;
+	BrushTool& operator=(BrushTool&& other) noexcept;
+
 	void beginStroke(const Point& start) override;
 	void addPoint(const Point& point) override;
 	void endStroke(const Point& end) override;
