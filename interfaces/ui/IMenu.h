@@ -9,8 +9,12 @@
 class IMenu
 {
    public:
-	IMenu()			 = default;
-	virtual ~IMenu() = default;
+	IMenu()						   = default;
+	virtual ~IMenu()			   = default;
+	IMenu(const IMenu&)			   = default;
+	IMenu& operator=(const IMenu&) = default;
+	IMenu(IMenu&&)				   = default;
+	IMenu& operator=(IMenu&&)	   = default;
 
 	// Menu label
 	[[nodiscard]] virtual std::string getLabel() const					 = 0;

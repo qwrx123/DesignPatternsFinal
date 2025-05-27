@@ -14,6 +14,11 @@ class CanvasRenderer : public ICanvasRenderer
 	CanvasRenderer(GLFWwindow* window);
 	~CanvasRenderer() override;
 
+	CanvasRenderer(const CanvasRenderer&)			 = delete;
+	CanvasRenderer& operator=(const CanvasRenderer&) = delete;
+	CanvasRenderer(CanvasRenderer&&)				 = delete;
+	CanvasRenderer& operator=(CanvasRenderer&&)		 = delete;
+
 	static void resize(int width, int height);
 
 	void		beginFrame() override;

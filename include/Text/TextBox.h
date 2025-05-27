@@ -10,6 +10,11 @@ class TextBox : public ITextBox, public Text
 	TextBox();
 	~TextBox() override;
 
+	TextBox(const TextBox&)			   = default;
+	TextBox(TextBox&&)				   = default;
+	TextBox& operator=(const TextBox&) = default;
+	TextBox& operator=(TextBox&&)	   = default;
+
 	[[nodiscard]] bool hasBorder() const override;
 	void			   setBorder(bool hasBorder) override;
 

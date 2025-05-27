@@ -8,7 +8,12 @@
 class ITextManager
 {
    public:
-	virtual ~ITextManager() = default;
+	ITextManager()								 = default;
+	virtual ~ITextManager()						 = default;
+	ITextManager(const ITextManager&)			 = default;
+	ITextManager& operator=(const ITextManager&) = default;
+	ITextManager(ITextManager&&)				 = default;
+	ITextManager& operator=(ITextManager&&)		 = default;
 
 	virtual void addText(std::shared_ptr<IText> text)	 = 0;
 	virtual void removeText(std::shared_ptr<IText> text) = 0;

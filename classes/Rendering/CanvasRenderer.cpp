@@ -204,7 +204,7 @@ void CanvasRenderer::resize(int width, int height)
 	glLoadIdentity();
 	int right  = width;
 	int bottom = height;
-	glOrtho(0, right, width, 0, -1, 1);	 // Top-left origin
+	glOrtho(0, right, bottom, 0, -1, 1);	 // Top-left origin
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();

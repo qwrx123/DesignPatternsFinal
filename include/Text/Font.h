@@ -9,6 +9,13 @@ class Font
    public:
 	Font(const std::filesystem::path& fontPath);
 	~Font();
+
+	// Freetype library cannot be copied or moved
+	Font(const Font&)			 = delete;
+	Font& operator=(const Font&) = delete;
+	Font(Font&&)				 = delete;
+	Font& operator=(Font&&)		 = delete;
+
 	[[nodiscard]] FT_Face	getFontFace() const;
 	[[nodiscard]] FT_Bitmap getFontBitmap(char c) const;
 
