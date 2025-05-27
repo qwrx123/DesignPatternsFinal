@@ -8,11 +8,19 @@ class StrokeManager : public IStrokeManager
    public:
 	StrokeManager();
 	~StrokeManager() override;
+
+	StrokeManager(const StrokeManager& other);
+	StrokeManager& operator=(const StrokeManager& other);
+	StrokeManager(StrokeManager&& other) noexcept;
+	StrokeManager& operator=(StrokeManager&& other) noexcept;
+
 	void addStroke(std::shared_ptr<IStroke> stroke) override;
 	[[nodiscard]] const std::vector<std::shared_ptr<IStroke>>& getStrokes() const override;
 	void													   clear() override;
 
    private:
+	[[nodiscard]] std::vector<std::shared_ptr<IStroke>> cloneStrokes() const;
+
 	std::vector<std::shared_ptr<IStroke>> strokes_;
 };
 

@@ -1,6 +1,7 @@
 #include "MenuBar.h"
 #include "Bounds.h"
 #include "ButtonClass.h"
+#include <cassert>
 
 MenuBar::MenuBar() : label("Menu Bar"), bounds(0, 0, 0, 0)
 {
@@ -144,7 +145,7 @@ std::vector<std::shared_ptr<IButton>> MenuBar::cloneButtons() const
 		}
 		else
 		{
-			clonedButtons.push_back(btn);  // fallback, should not happen
+			assert(false);	// Welp, fix this
 		}
 	}
 
