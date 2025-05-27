@@ -33,7 +33,7 @@ jobs:
         run: cmake -DCMAKE_BUILD_TYPE=Debug -DBUILD_SHARED_LIBS=ON -DBUILD_TESTING=ON -DBUILD_DOCS=ON -B build
 
       - name: Build-Docs
-        run: cmake --build build --config Debug --parallel 4
+        run: cmake --build build --config Debug --target docs --parallel 4
 
       - name: Tests
         run: xvfb-run ctest --test-dir build --output-on-failure

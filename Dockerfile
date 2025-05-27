@@ -25,8 +25,10 @@ WORKDIR /app
 COPY . .
 
 RUN mkdir build && \
-	cmake -DCMAKE_BUILD_TYPE=Debug -DBUILD_SHARED_LIBS=ON -DBUILD_TESTING=ON -B build && \
-	cmake --build build --config Debug --parallel $(nproc)
+	cmake -DCMAKE_BUILD_TYPE=Debug -DBUILD_SHARED_LIBS=ON -DBUILD_TESTING=ON -DBUILD_DOCS=OFF -B build && \
+	cmake --build build --config Debug --parallel $(nproc) && \
+	cmake -DCMAKE_BUILD_TYPE=Debug -DBUILD_SHARED_LIBS=ON -DBUILD_TESTING=ON -DBUILD_DOCS=ON -B build && \
+	cmake --build build --config Debug --parallel $(nproc) --target docs 
 
 
 ENTRYPOINT ["/usr/bin/tini", "--"]
