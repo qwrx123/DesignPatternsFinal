@@ -1,24 +1,4 @@
- FROM ubuntu:latest
-
- RUN apt-get update && \
- 	apt-get upgrade -y && \
-	apt-get install -y --no-install-recommends \
-	build-essential \
-	cmake \
-	libglfw3 \
-	libglfw3-dev \
-	libgtest-dev \
-	libgmock-dev \
-	libfreetype6 \
-	libfreetype6-dev \
-	libglew-dev \
-	doxygen \
-	xorg \
-	xvfb \
-	xfonts-100dpi \
-	xfonts-75dpi \
-	xfonts-scalable \
-	tini
+FROM ghcr.io/bs-cs410/daisy-docker-image:latest
 
 WORKDIR /app
 

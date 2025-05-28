@@ -241,7 +241,10 @@ sudo cmake --install build
 	brew install docker docker-buildx
 	```
 
-#### 2. **Build the image**
+#### 2. **Login to ghcr.io (Github container registry)**
+https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry#authenticating-to-the-container-registry
+
+#### 3. **Build the image**
 ```bash
 docker buildx build --no-cache -t daisy .
 ```
