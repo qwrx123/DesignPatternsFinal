@@ -42,5 +42,12 @@ target_link_libraries(projectTests
     GTest::gtest_main
 )
 
+# skip linting for test files
+set_target_properties(
+    projectTests
+    PROPERTIES
+        CXX_CLANG_TIDY ""
+)
+
 include(GoogleTest)
 gtest_discover_tests(projectTests)

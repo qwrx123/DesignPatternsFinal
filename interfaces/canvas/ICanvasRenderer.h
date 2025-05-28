@@ -10,7 +10,12 @@
 class ICanvasRenderer
 {
    public:
-	virtual ~ICanvasRenderer() = default;
+	ICanvasRenderer()								   = default;
+	virtual ~ICanvasRenderer()						   = default;
+	ICanvasRenderer(const ICanvasRenderer&)			   = default;
+	ICanvasRenderer& operator=(const ICanvasRenderer&) = default;
+	ICanvasRenderer(ICanvasRenderer&&)				   = default;
+	ICanvasRenderer& operator=(ICanvasRenderer&&)	   = default;
 
 	// Called once per frame
 	virtual void beginFrame()					   = 0;

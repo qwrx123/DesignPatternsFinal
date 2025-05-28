@@ -1,22 +1,28 @@
 #ifndef FONT_H
 #define FONT_H
 #include <filesystem>
-#include <ft2build.h> 
+#include <ft2build.h>
 #include FT_FREETYPE_H
-
 
 class Font
 {
    public:
-    Font(std::filesystem::path fontPath);
-    ~Font();
-    FT_Face getFontFace() const;
-    FT_Bitmap getFontBitmap(char c) const;
+	Font(const std::filesystem::path& fontPath);
+	~Font();
 
-    protected:
-    FT_Library library;
-    FT_Face face;
-    std::filesystem::path fontPath;
+	// Freetype library cannot be copied or moved
+	Font(const Font&)			 = delete;
+	Font& operator=(const Font&) = delete;
+	Font(Font&&)				 = delete;
+	Font& operator=(Font&&)		 = delete;
+
+	[[nodiscard]] FT_Face	getFontFace() const;
+	[[nodiscard]] FT_Bitmap getFontBitmap(char c) const;
+
+   private:
+	FT_Library			  library = nullptr;
+	FT_Face				  face	  = nullptr;
+	std::filesystem::path fontPath;
 };
 
-#endif // FONT_H
+#endif	// FONT_H

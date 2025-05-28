@@ -12,37 +12,45 @@ class MenuBar : public IMenu
 {
    public:
 	MenuBar();
-	~MenuBar();
+	~MenuBar() override;
+	MenuBar(const MenuBar& other);
+	MenuBar& operator=(const MenuBar& other);
+	MenuBar(MenuBar&& other) noexcept;
+	MenuBar& operator=(MenuBar&& other) noexcept;
 
-	std::string getLabel() const override;
-	void		setLabel(const std::string& label) override;
+	[[nodiscard]] std::string getLabel() const override;
+	void					  setLabel(const std::string& label) override;
 
-	Bounds getBounds() const override;
-	void   setBounds(const Bounds& bounds) override;
+	[[nodiscard]] Bounds getBounds() const override;
+	void				 setBounds(const Bounds& bounds) override;
 
 	// MenuBar is being implemented as always open
-	bool isOpen() const override;
-	bool isClosed() const override;	 // wait why is there both, isOpen():false == isClosed():true?
+	[[nodiscard]] bool isOpen() const override;
+	[[nodiscard]] bool isClosed()
+		const override;	 // wait why is there both, isOpen():false == isClosed():true?
 	void open() override;
 	void close() override;
 
 	void addButton(std::shared_ptr<IButton> button) override;
 	void clearButtons() override;
-	const std::vector<std::shared_ptr<IButton>>& getButtons() const override;
+	[[nodiscard]] const std::vector<std::shared_ptr<IButton>>& getButtons() const override;
 
-	int						 getSelectedIndex() const override;
-	void					 setSelectedIndex(int index) override;
-	std::shared_ptr<IButton> getSelectedItem() const override;
+	[[nodiscard]] int					   getSelectedIndex() const override;
+	void								   setSelectedIndex(int index) override;
+	[[nodiscard]] std::shared_ptr<IButton> getSelectedItem() const override;
 
 	// since MenuBar is implemented as always open, these will be false/unused
-	bool showSelectedLabelWhenClosed() const override;
-	void setShowSelectedLabelWhenClosed(bool show) override;
+	[[nodiscard]] bool showSelectedLabelWhenClosed() const override;
+	void			   setShowSelectedLabelWhenClosed(bool show) override;
 
    private:
 	std::string							  label;
 	Bounds								  bounds;
 	std::vector<std::shared_ptr<IButton>> buttons;
-	int									  selectedIndex;
+	int									  selectedIndex = 0;
+
+	// Functions
+	[[nodiscard]] std::vector<std::shared_ptr<IButton>> cloneButtons() const;
 };
 
 #endif	// MENU_BAR_H

@@ -47,9 +47,6 @@ set(PROJECT_COMMON_INCLUDE_DIRS
 	${CMAKE_SOURCE_DIR}/classes/ToolBar
 )
 
-# Make common includes available to subdirectories
-set(PROJECT_COMMON_INCLUDE_DIRS ${PROJECT_COMMON_INCLUDE_DIRS} PARENT_SCOPE)
-
 # Set up installing
 include(GNUInstallDirs)
 set(CMAKE_INSTALL_DOCDIR ${CMAKE_INSTALL_DATAROOTDIR}/doc/${PROJECT_NAME})
@@ -133,8 +130,13 @@ target_link_libraries(GlfwTestApp
 )
 
 target_include_directories(GlfwTestApp
-	PRIVATE ${FREETYPE_INCLUDE_DIRS}
-	${PROJECT_COMMON_INCLUDE_DIRS}
+	PRIVATE
+		${PROJECT_COMMON_INCLUDE_DIRS}
+)
+
+target_include_directories(GlfwTestApp
+	PRIVATE SYSTEM 
+		${FREETYPE_INCLUDE_DIRS}
 )
 
 registerFilesToFormat(FILES GLFWExample.cpp)

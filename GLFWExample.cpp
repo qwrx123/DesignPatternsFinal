@@ -2,6 +2,7 @@
 #include <GLFW/glfw3.h>
 #include <iostream>
 #include <memory>
+#include <optional>
 
 #include "CanvasRenderer.h"
 #include "InputManager.h"
@@ -12,12 +13,19 @@
 #include "MenuBar.h"
 #include "ButtonClass.h"
 
-// --- Main Entry ---
+const int		  defaultWindowWidth  = 800;
+const int		  defaultWindowHeight = 600;
+const char* const defaultWindowTitle  = "Drawing App";
+
+const float defaultThickness	 = 2.0F;
+const int	defaultMenuBarHeight = 100;
+const float buttonWidth			 = 40.0F;
+const float grayColor			 = 0.5F;
+
 int main()
 {
-	if (!glfwInit())
+	if (glfwInit() == GLFW_FALSE)
 	{
-		std::cerr << "GLFW failed to initialize\n";
 		return -1;
 	}
 
@@ -25,10 +33,10 @@ int main()
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_COMPAT_PROFILE);
 
-	GLFWwindow* window = glfwCreateWindow(800, 600, "Drawing App", nullptr, nullptr);
-	if (!window)
+	GLFWwindow* window = glfwCreateWindow(defaultWindowWidth, defaultWindowHeight,
+										  defaultWindowTitle, nullptr, nullptr);
+	if (window == nullptr)
 	{
-		std::cerr << "Failed to create GLFW window\n";
 		glfwTerminate();
 		return -1;
 	}
@@ -37,42 +45,42 @@ int main()
 	glewExperimental = GL_TRUE;
 	if (glewInit() != GLEW_OK)
 	{
-		std::cerr << "Failed to initialize GLEW\n";
 		glfwDestroyWindow(window);
 		glfwTerminate();
 		return -1;
 	}
 
-	// --- Core Systems ---
-	auto renderer	   = std::make_unique<CanvasRenderer>(window);
-	auto strokeManager = std::make_shared<StrokeManager>();
-	auto toolManager   = std::make_shared<ToolManager>();
-	auto inputManager  = std::make_shared<InputManager>();
-	auto menuBar	   = std::make_shared<MenuBar>();
+	auto					   renderer		 = std::make_unique<CanvasRenderer>(window);
+	auto					   strokeManager = std::make_shared<StrokeManager>();
+	auto					   toolManager	 = std::make_shared<ToolManager>();
+	auto					   inputManager	 = std::make_shared<InputManager>();
+	auto					   menuBar		 = std::make_shared<MenuBar>();
+	std::optional<std::string> pendingToolSwitch;
 
 	inputManager->bindToWindow(window);
 	inputManager->registerReceiver(toolManager);
 	inputManager->setResizeCallback([&](int w, int h) { renderer->resize(w, h); });
 
 	toolManager->registerTool(
-		"brush", std::make_shared<BrushTool>(strokeManager, Color{0.0f, 0.0f, 0.0f, 1.0f},	// Black
-											 2.0f  // Thickness
-											 ));
-	toolManager->registerTool("eraser", std::make_shared<EraserTool>(strokeManager, 10.0f));
+		"brush", std::make_shared<BrushTool>(strokeManager, Color{0.0F, 0.0F, 0.0F, 1.0F},
+											 defaultThickness));
+	toolManager->registerTool("eraser", std::make_shared<EraserTool>(strokeManager, 10.0F));
 
-	menuBar->setBounds(Bounds(0, 100, 0, INT_MAX));
-	menuBar->addButton(std::make_shared<ButtonClass>(
-		"brush",
-		Bounds(menuBar->getBounds().top, 50,
-			   menuBar->getButtons().at(menuBar->getButtons().size() - 1)->getBounds().right + 1,
-			   menuBar->getButtons().at(menuBar->getButtons().size() - 1)->getBounds().right + 50),
-		bColor(0, .5, .5, 1)));
-	menuBar->addButton(std::make_shared<ButtonClass>(
-		"eraser",  // This is the unique ID used for tool switching
-		Bounds(50, menuBar->getBounds().bottom, 0, 50), bColor(1, 0.5, 0, 1)  // Orange button
-		));
+	menuBar->setBounds(Bounds(0, defaultMenuBarHeight, 0, static_cast<float>(INT_MAX)));
 
-	// --- Main Loop ---
+	float currentRight = 0.0F;
+
+	menuBar->addButton(std::make_shared<ButtonClass>(
+		"brush", Bounds(0, defaultMenuBarHeight, currentRight, currentRight + buttonWidth),
+		bColor(0, grayColor, grayColor, 1)));
+	currentRight += buttonWidth + 1;
+
+	menuBar->addButton(std::make_shared<ButtonClass>(
+		"eraser", Bounds(0, defaultMenuBarHeight, currentRight, currentRight + buttonWidth),
+		bColor(1, 0.5F, 0.0F, 1)));
+
+	static bool wasPressedLastFrame = false;
+
 	while (!glfwWindowShouldClose(window))
 	{
 		inputManager->beginFrame();
@@ -80,40 +88,62 @@ int main()
 
 		double mouseX, mouseY;
 		glfwGetCursorPos(window, &mouseX, &mouseY);
+		bool isPressedNow = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS;
 
-		if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)
+		if (isPressedNow && !wasPressedLastFrame)
 		{
 			for (const auto& button : menuBar->getButtons())
 			{
 				if (button->getBounds().contains(mouseX, mouseY))
 				{
-					std::string buttonLabel = button->getLabel();
-
-					if (buttonLabel == "eraser")
-					{
-						toolManager->selectTool("eraser");
-					}
-					else if (buttonLabel == "brush")
-					{
-						toolManager->selectTool("brush");
-					}
+					pendingToolSwitch	= button->getLabel();
+					wasPressedLastFrame = isPressedNow;
+					goto render_frame;
 				}
 			}
 		}
 
+		wasPressedLastFrame = isPressedNow;
+
+	render_frame:
 		renderer->beginFrame();
+
 		for (const auto& stroke : strokeManager->getStrokes())
 		{
 			renderer->drawStroke(*stroke);
 		}
 
+		if (pendingToolSwitch)
+		{
+			toolManager->selectTool(*pendingToolSwitch);
+			pendingToolSwitch.reset();
+		}
+
 		auto current_tool = toolManager->getActiveTool();
+
+		if (isPressedNow && !wasPressedLastFrame)
+		{
+			current_tool->beginStroke({mouseX, mouseY});
+		}
+		else if (isPressedNow && wasPressedLastFrame)
+		{
+			current_tool->addPoint({mouseX, mouseY});
+		}
+		else if (!isPressedNow && wasPressedLastFrame)
+		{
+			current_tool->endStroke({mouseX, mouseY});
+		}
+
 		if (current_tool)
 		{
-			auto live_stroke = current_tool->getCurrentStroke();
-			if (live_stroke)
+			auto brush = std::dynamic_pointer_cast<BrushTool>(current_tool);
+			if (brush)
 			{
-				renderer->drawStroke(*live_stroke);
+				auto live_stroke = brush->getCurrentStroke();
+				if (live_stroke && live_stroke->getPoints().size() >= 2)
+				{
+					renderer->drawStroke(*live_stroke);
+				}
 			}
 		}
 
@@ -124,11 +154,9 @@ int main()
 		}
 
 		renderer->endFrame();
-
 		inputManager->endFrame();
 	}
 
-	// --- Shutdown ---
 	glfwDestroyWindow(window);
 	glfwTerminate();
 	return 0;
