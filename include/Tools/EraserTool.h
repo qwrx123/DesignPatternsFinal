@@ -2,11 +2,12 @@
 #define ERASER_TOOL_H
 
 #include "IDrawingTool.h"
+#include "IStrokeManager.h"
 #include "Stroke.h"
 
 class EraserTool : public IDrawingTool {
 public:
-    EraserTool(float thickness);
+    EraserTool(std::shared_ptr<IStrokeManager> stroke_manager, float thickness);
     ~EraserTool() override;
 
     void beginStroke(const Point& start) override;
@@ -23,7 +24,8 @@ public:
 
    private:
     std::shared_ptr<Stroke> erase_path;
-    float eraser_thickness;
+	std::shared_ptr<IStrokeManager> stroke_manager;
+	float eraser_thickness;
 	bool active;
     bool drawing = false;
 };

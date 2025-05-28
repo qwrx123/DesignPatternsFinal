@@ -14,6 +14,8 @@ class IStrokeManager
 	virtual void addStroke(std::shared_ptr<IStroke> stroke)					= 0;
 	virtual const std::vector<std::shared_ptr<IStroke>>& getStrokes() const = 0;
 	virtual void										 clear()			= 0;
+	virtual void splitEraseWithPath(const std::shared_ptr<IStroke>& eraser_path,
+									float							eraser_radius)					= 0;
 };
 
 #endif	// ISTROKEMANAGER_H

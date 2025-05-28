@@ -1,5 +1,6 @@
 #include "BrushTool.h"
 #include "Stroke.h"
+#include <cmath>
 
 BrushTool::BrushTool(Color color, float thickness)
     : brush_color(color), brush_thickness(thickness), active(false) {}
@@ -18,10 +19,34 @@ void BrushTool::beginStroke(const Point& start) {
 }
 
 void BrushTool::addPoint(const Point& point) {
-    if (current_stroke) {
-        current_stroke->addPoint(point);
+    if (!current_stroke) return;
+
+    const auto& pts = current_stroke->getPoints();
+    if (!pts.empty()) {
+        const Point& last = pts.back();
+
+        double dx = point.x - last.x;
+        double dy = point.y - last.y;
+        double dist = std::sqrt(dx * dx + dy * dy);
+
+        const double spacing = 1;  // tune this value for density
+
+        if (dist > spacing) {
+            int steps = static_cast<int>(dist / spacing);
+            for (int i = 1; i <= steps; ++i) {
+                double t = static_cast<double>(i) / steps;
+                Point interp {
+                    last.x + t * dx,
+                    last.y + t * dy
+                };
+                current_stroke->addPoint(interp);
+            }
+        }
     }
+
+    current_stroke->addPoint(point);
 }
+
 
 void BrushTool::endStroke(const Point& end) {
     drawing = false;

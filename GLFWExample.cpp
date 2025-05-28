@@ -8,6 +8,7 @@
 #include "StrokeManager.h"
 #include "ToolManager.h"
 #include "BrushTool.h"
+#include "EraserTool.h"
 #include "MenuBar.h"
 #include "ButtonClass.h"
 
@@ -51,27 +52,54 @@ int main()
 
 	inputManager->bindToWindow(window);
 	inputManager->registerReceiver(toolManager);
+	inputManager->setResizeCallback([&](int w, int h) { renderer->resize(w, h); });
 
 	toolManager->registerTool(
 		"brush", std::make_shared<BrushTool>(strokeManager, Color{0.0f, 0.0f, 0.0f, 1.0f},	// Black
 											 2.0f  // Thickness
 											 ));
+	toolManager->registerTool("eraser", std::make_shared<EraserTool>(strokeManager, 10.0f));
 
-	inputManager->setResizeCallback([&](int w, int h) { renderer->resize(w, h); });
-
-	menuBar->setBounds(Bounds(0, 39, 0, INT_MAX));
+	menuBar->setBounds(Bounds(0, 100, 0, INT_MAX));
 	menuBar->addButton(std::make_shared<ButtonClass>(
-		"button",
-		Bounds(0, menuBar->getBounds().bottom,
+		"brush",
+		Bounds(menuBar->getBounds().top, 50,
 			   menuBar->getButtons().at(menuBar->getButtons().size() - 1)->getBounds().right + 1,
-			   menuBar->getButtons().at(menuBar->getButtons().size() - 1)->getBounds().right + 40),
+			   menuBar->getButtons().at(menuBar->getButtons().size() - 1)->getBounds().right + 50),
 		bColor(0, .5, .5, 1)));
+	menuBar->addButton(std::make_shared<ButtonClass>(
+		"eraser",  // This is the unique ID used for tool switching
+		Bounds(50, menuBar->getBounds().bottom, 0, 50), bColor(1, 0.5, 0, 1)  // Orange button
+		));
 
 	// --- Main Loop ---
 	while (!glfwWindowShouldClose(window))
 	{
 		inputManager->beginFrame();
 		glfwPollEvents();
+
+		double mouseX, mouseY;
+		glfwGetCursorPos(window, &mouseX, &mouseY);
+
+		if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)
+		{
+			for (const auto& button : menuBar->getButtons())
+			{
+				if (button->getBounds().contains(mouseX, mouseY))
+				{
+					std::string buttonLabel = button->getLabel();
+
+					if (buttonLabel == "eraser")
+					{
+						toolManager->selectTool("eraser");
+					}
+					else if (buttonLabel == "brush")
+					{
+						toolManager->selectTool("brush");
+					}
+				}
+			}
+		}
 
 		renderer->beginFrame();
 		for (const auto& stroke : strokeManager->getStrokes())
