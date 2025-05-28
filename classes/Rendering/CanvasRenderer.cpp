@@ -57,15 +57,6 @@ void CanvasRenderer::drawStroke(const IStroke& stroke)
 	glEnd();
 }
 
-void CanvasRenderer::renderText(const IText& text)
-{
-	std::string content = text.getContent();
-	for (char c : content)
-	{
-		std::cout << "Rendering character: " << c << "\n";
-	}
-}
-
 void CanvasRenderer::drawButton(const IButton& button)
 {
 	static const float lighterGray = 0.8F;
@@ -109,8 +100,8 @@ void CanvasRenderer::renderText(const IText& text)
 	std::string			  content  = text.getContent();
 	int					  fontSize = text.getFontSize();
 	Color				  color	   = text.getColor();
-	double				  x		   = text.getBounds().left;
-	double				  y		   = text.getBounds().top;
+	float				  x		   = text.getBounds().left;
+	float				  y		   = text.getBounds().top;
 	std::filesystem::path fontPath = "../include/Delius-Regular.ttf";
 	if (!std::filesystem::exists(fontPath))
 	{
@@ -118,17 +109,18 @@ void CanvasRenderer::renderText(const IText& text)
 	}
 	Font font(fontPath);
 	font.setFontSize(fontSize);
+	int pixleConversionFactor = 6;
 	for (char c : content)
 	{
-		std::cout << "Rendering character: " << c << std::endl;
+		std::cout << "Rendering character: " << c << "\n";
 		if (font.getFontBitmap(c).width == 0)
 		{
-			std::cerr << "Failed to load glyph for character: " << c << std::endl;
+			std::cerr << "Failed to load glyph for character: " << c << "\n";
 			continue;
 		}
 		FT_Face face = font.getFontFace();
 		renderGlyph(face, face->glyph, x, y, color);
-		x += (face->glyph->advance.x >> 6);
+		x += (face->glyph->advance.x >> pixleConversionFactor);
 	}
 }
 
@@ -145,12 +137,10 @@ void CanvasRenderer::renderGlyph(FT_Face face, FT_GlyphSlot glyph, float x, floa
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-	// Upload glyph bitmap as texture
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, static_cast<GLsizei>(glyph->bitmap.width),
-				 static_cast<GLsizei>(glyph->bitmap.rows), 0, GL_RED, GL_UNSIGNED_BYTE,
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA, static_cast<GLsizei>(glyph->bitmap.width),
+				 static_cast<GLsizei>(glyph->bitmap.rows), 0, GL_ALPHA, GL_UNSIGNED_BYTE,
 				 glyph->bitmap.buffer);
 
-	// Calculate vertex positions
 	float x2 = x + static_cast<float>(glyph->bitmap_left);
 	float y2 = y - static_cast<float>(glyph->bitmap_top);
 	auto  w	 = static_cast<float>(glyph->bitmap.width);
@@ -159,20 +149,19 @@ void CanvasRenderer::renderGlyph(FT_Face face, FT_GlyphSlot glyph, float x, floa
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	// Set color to white (will be modulated with texture)
 	glColor4f(color.r, color.g, color.b, color.a);
 
 	glEnable(GL_TEXTURE_2D);
 	glBindTexture(GL_TEXTURE_2D, texture);
 
 	glBegin(GL_QUADS);
-	glTexCoord2f(0.0f, 1.0f);
+	glTexCoord2f(0.0F, 1.0F);
 	glVertex2f(x2, y2 + h);
-	glTexCoord2f(1.0f, 1.0f);
+	glTexCoord2f(1.0F, 1.0F);
 	glVertex2f(x2 + w, y2 + h);
-	glTexCoord2f(1.0f, 0.0f);
+	glTexCoord2f(1.0F, 0.0F);
 	glVertex2f(x2 + w, y2);
-	glTexCoord2f(0.0f, 0.0f);
+	glTexCoord2f(0.0F, 0.0F);
 	glVertex2f(x2, y2);
 	glEnd();
 
@@ -204,9 +193,9 @@ void CanvasRenderer::textRenderTest()
 {
 	std::string text = "Daisy";
 	// glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
-	double x	 = 100.0f;
-	double y	 = 150.0f;
-	Color  color = {0.0f, 0.0f, 0.0f, 1.0f};
+	float x		= 100.0F;
+	float y		= 150.0F;
+	Color color = {0.0F, 0.0F, 0.0F, 1.0F};
 	glRasterPos2f(x, y);
 	std::filesystem::path fontPath =
 		"../include/Delius-Regular.ttf";  // why the position of terminal matters for if text
@@ -216,12 +205,14 @@ void CanvasRenderer::textRenderTest()
 		return;
 	}
 	Font font(fontPath);
-	font.setFontSize(100);
+	int	 size = 100;
+	font.setFontSize(size);
+	int pixleConversion = 6;
 	for (char c : text)
 	{
 		if (font.getFontBitmap(c).width == 0)
 		{
-			std::cerr << "Failed to load glyph for character: " << c << std::endl;
+			std::cerr << "Failed to load glyph for character: " << c << "\n";
 			continue;
 		}
 
@@ -229,6 +220,6 @@ void CanvasRenderer::textRenderTest()
 		renderGlyph(face, face->glyph, x, y, color);
 
 		// Advance cursor
-		x += (face->glyph->advance.x >> 6);	 // Convert from 1/64th pixels to pixels
+		x += (face->glyph->advance.x >> pixleConversion);  // Convert from 1/64th pixels to pixels
 	}
 }

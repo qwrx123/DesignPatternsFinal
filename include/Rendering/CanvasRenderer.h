@@ -30,7 +30,7 @@ class CanvasRenderer : public ICanvasRenderer
 	void		endFrame() override;
 
 	static void textRenderTest();
-	static void renderGlyph(FT_Face face, FT_GlyphSlot glyph, float x, float y);
+	static void renderGlyph(FT_Face face, FT_GlyphSlot glyph, float x, float y, Color color);
 
    private:
 	GLFWwindow* window_;
