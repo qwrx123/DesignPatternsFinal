@@ -11,17 +11,13 @@ on:
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/bs-cs410/daisy-docker-image
     timeout-minutes: 5
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-
-      - name: Install dependencies
-        run: sudo apt-get update && sudo apt-get install -y libglfw3 libglfw3-dev libgtest-dev libgmock-dev libfreetype6 libfreetype6-dev libglew-dev doxygen
-      
-      - name: Install xvfb dependencies
-        run: sudo apt-get install -y xorg xvfb xfonts-100dpi xfonts-75dpi xfonts-scalable xfonts-cyrillic
 
       - name: Configure
         run: cmake -DCMAKE_BUILD_TYPE=Debug -DBUILD_SHARED_LIBS=ON -DBUILD_TESTING=ON -DBUILD_DOCS=OFF -B build
