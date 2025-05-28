@@ -9,8 +9,12 @@
 class IButton
 {
    public:
-	IButton()		   = default;
-	virtual ~IButton() = default;
+	IButton()						   = default;
+	virtual ~IButton()				   = default;
+	IButton(const IButton&)			   = default;
+	IButton& operator=(const IButton&) = default;
+	IButton(IButton&&)				   = default;
+	IButton& operator=(IButton&&)	   = default;
 
 	// Button bounds
 	virtual void				 setBounds(const Bounds& bounds) = 0;

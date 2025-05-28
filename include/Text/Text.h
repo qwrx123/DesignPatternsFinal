@@ -9,6 +9,11 @@ class Text : public IText
 	Text();
 	~Text() override;
 
+	Text(const Text& other)				   = default;
+	Text& operator=(const Text& other)	   = default;
+	Text(Text&& other) noexcept			   = default;
+	Text& operator=(Text&& other) noexcept = default;
+
 	[[nodiscard]] std::string getContent() const override;
 	void					  setContent(const std::string& text) override;
 

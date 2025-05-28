@@ -11,6 +11,11 @@ class Stroke : public IStroke
 	Stroke();
 	~Stroke() override;
 
+	Stroke(const Stroke& other)				   = default;
+	Stroke& operator=(const Stroke& other)	   = default;
+	Stroke(Stroke&& other) noexcept			   = default;
+	Stroke& operator=(Stroke&& other) noexcept = default;
+
 	void setThickness(float thickness) override;
 	void setColor(const Color& color) override;
 	void addPoint(const Point& point) override;

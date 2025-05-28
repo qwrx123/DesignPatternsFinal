@@ -4,8 +4,12 @@
 class ITool
 {
    public:
-	ITool()			 = default;
-	virtual ~ITool() = default;
+	ITool()						   = default;
+	virtual ~ITool()			   = default;
+	ITool(const ITool&)			   = default;
+	ITool& operator=(const ITool&) = default;
+	ITool(ITool&&)				   = default;
+	ITool& operator=(ITool&&)	   = default;
 
 	[[nodiscard]] virtual bool isActive() const = 0;
 };

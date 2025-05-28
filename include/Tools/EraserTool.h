@@ -10,6 +10,11 @@ class EraserTool : public IDrawingTool
 	EraserTool(float thickness);
 	~EraserTool() override;
 
+	EraserTool(const EraserTool&)			 = default;
+	EraserTool& operator=(const EraserTool&) = default;
+	EraserTool(EraserTool&&)				 = default;
+	EraserTool& operator=(EraserTool&&)		 = default;
+
 	void beginStroke(const Point& start) override;
 	void addPoint(const Point& point) override;
 	void endStroke(const Point& end) override;

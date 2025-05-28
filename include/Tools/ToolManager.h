@@ -11,6 +11,11 @@ class ToolManager : public IToolManager, public IInputReceiver
 	ToolManager();
 	~ToolManager() override;
 
+	ToolManager(const ToolManager&)			   = default;
+	ToolManager& operator=(const ToolManager&) = default;
+	ToolManager(ToolManager&&)				   = default;
+	ToolManager& operator=(ToolManager&&)	   = default;
+
 	void registerTool(const std::string& name, std::shared_ptr<IDrawingTool> tool) override;
 	bool selectTool(const std::string& name) override;
 

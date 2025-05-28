@@ -12,6 +12,11 @@ class TextManager : public ITextManager
 	TextManager();
 	~TextManager() override;
 
+	TextManager(const TextManager& other);
+	TextManager& operator=(const TextManager& other);
+	TextManager(TextManager&& other) noexcept;
+	TextManager& operator=(TextManager&& other) noexcept;
+
 	void addText(std::shared_ptr<IText> text) override;
 	void removeText(std::shared_ptr<IText> text) override;
 
@@ -23,6 +28,8 @@ class TextManager : public ITextManager
 
    private:
 	std::vector<std::shared_ptr<IText>> texts;
+
+	[[nodiscard]] std::vector<std::shared_ptr<IText>> copyTexts() const;
 };
 
 #endif	// TEXTMANAGER_H

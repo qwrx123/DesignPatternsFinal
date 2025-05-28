@@ -7,8 +7,12 @@
 class IInputManager
 {
    public:
-	IInputManager()			 = default;
-	virtual ~IInputManager() = default;
+	IInputManager()								   = default;
+	virtual ~IInputManager()					   = default;
+	IInputManager(const IInputManager&)			   = default;
+	IInputManager& operator=(const IInputManager&) = default;
+	IInputManager(IInputManager&&)				   = default;
+	IInputManager& operator=(IInputManager&&)	   = default;
 
 	virtual void registerReceiver(std::shared_ptr<IInputReceiver> receiver)	  = 0;
 	virtual void unregisterReceiver(std::shared_ptr<IInputReceiver> receiver) = 0;

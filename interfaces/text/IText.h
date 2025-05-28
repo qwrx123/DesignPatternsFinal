@@ -8,7 +8,12 @@
 class IText
 {
    public:
-	virtual ~IText() = default;
+	IText()						   = default;
+	virtual ~IText()			   = default;
+	IText(const IText&)			   = default;
+	IText& operator=(const IText&) = default;
+	IText(IText&&)				   = default;
+	IText& operator=(IText&&)	   = default;
 
 	[[nodiscard]] virtual std::string getContent() const				  = 0;
 	virtual void					  setContent(const std::string& text) = 0;

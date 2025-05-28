@@ -15,6 +15,10 @@ class MenuBar : public IMenu, public IInputReceiver
    public:
 	MenuBar();
 	~MenuBar() override;
+	MenuBar(const MenuBar& other);
+	MenuBar& operator=(const MenuBar& other);
+	MenuBar(MenuBar&& other) noexcept;
+	MenuBar& operator=(MenuBar&& other) noexcept;
 
 	[[nodiscard]] std::string getLabel() const override;
 	void					  setLabel(const std::string& label) override;
@@ -61,6 +65,8 @@ class MenuBar : public IMenu, public IInputReceiver
 	Color			   blue	 = {0.0F, 0.0F, 1.0F, 1.0F};
 	std::vector<Color> colors;
 	int				   i = 0;
+	// Functions
+	[[nodiscard]] std::vector<std::shared_ptr<IButton>> cloneButtons() const;
 };
 
 #endif	// MENU_BAR_H
