@@ -33,6 +33,7 @@ class MenuBar : public IMenu, public IInputReceiver
 	void open() override;
 	void close() override;
 
+	void setDefaultButtons();
 	void addButton(std::shared_ptr<IButton> button) override;
 	void clearButtons() override;
 	[[nodiscard]] const std::vector<std::shared_ptr<IButton>>& getButtons() const override;
@@ -59,12 +60,6 @@ class MenuBar : public IMenu, public IInputReceiver
 	std::shared_ptr<IToolManager>		  tool;
 	int									  selectedIndex = 0;
 
-	Color			   black = {0.0F, 0.0F, 0.0F, 1.0F};
-	Color			   red	 = {1.0F, 0.0F, 0.0F, 1.0F};
-	Color			   green = {0.0F, 1.0F, 0.0F, 1.0F};
-	Color			   blue	 = {0.0F, 0.0F, 1.0F, 1.0F};
-	std::vector<Color> colors;
-	int				   i = 0;
 	// Functions
 	[[nodiscard]] std::vector<std::shared_ptr<IButton>> cloneButtons() const;
 };
