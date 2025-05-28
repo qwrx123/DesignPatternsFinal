@@ -15,7 +15,7 @@ jobs:
       image: ghcr.io/bs-cs410/daisy-docker-image
       credentials:
         username: ${{ github.actor }}
-        password: ${{ secrets.github_token }}
+        password: ${{ secrets.GITHUB_TOKEN }}
     timeout-minutes: 5
 
     steps:
