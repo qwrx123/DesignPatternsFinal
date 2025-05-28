@@ -1,6 +1,7 @@
 #include "TextManager.h"
 #include <algorithm>
 #include <cassert>
+#include <GLFW/glfw3.h>
 
 TextManager::TextManager() = default;
 
@@ -28,6 +29,21 @@ TextManager& TextManager::operator=(TextManager&& other) noexcept
 	return *this;
 }
 
+void TextManager::registerTextTool(std::shared_ptr<IText> text)
+{
+	addText(text);
+}
+
+bool TextManager::isTextToolActive()
+{
+	return active;
+}
+
+void TextManager::setTextToolActive()
+{
+	active = true;
+}
+
 void TextManager::addText(std::shared_ptr<IText> text)
 {
 	texts.push_back(text);
@@ -35,7 +51,7 @@ void TextManager::addText(std::shared_ptr<IText> text)
 
 void TextManager::removeText(std::shared_ptr<IText> text)
 {
-	auto it = std::ranges::remove(texts, text).begin();
+	auto it = std::remove(texts.begin(), texts.end(), text);
 	if (it != texts.end())
 	{
 		texts.erase(it, texts.end());
@@ -83,4 +99,55 @@ std::vector<std::shared_ptr<IText>> TextManager::copyTexts() const
 	}
 
 	return clonedTexts;
+}
+
+void TextManager::onMouseMove(double x, double y) {}
+void TextManager::onMouseButton(MouseButton button, KeyAction action, double x, double y) {}
+void TextManager::onKey(int key, KeyAction action)
+{
+	// Handle key input
+	if (active && action == KeyAction::Press)
+	{
+		if (key == GLFW_KEY_ESCAPE)	 // Example: deactivate text tool on Escape key
+		{
+			active = false;
+		}
+		else if (key == GLFW_KEY_BACKSPACE)	 // Example: handle backspace
+		{
+			for (const auto& text : texts)
+			{
+				if (text->isEditable())
+				{
+					std::string content = text->getContent();
+					if (!content.empty())
+					{
+						content.pop_back();	 // Remove last character
+						text->setContent(content);
+					}
+					break;	// Only modify the first editable text
+				}
+			}
+		}
+	}
+	else if (active && action == KeyAction::Release)
+	{
+		// Handle other key releases if needed
+	}
+}
+void TextManager::onChar(unsigned int codepoint)
+{
+	// Handle character input
+	if (active)
+	{
+		for (const auto& text : texts)
+		{
+			if (text->isEditable())
+			{
+				std::string content = text->getContent();
+				content += static_cast<char>(codepoint);
+				text->setContent(content);
+				break;	// Only modify the first editable text
+			}
+		}
+	}
 }

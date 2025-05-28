@@ -10,6 +10,7 @@
 #include "BrushTool.h"
 #include "MenuBar.h"
 #include "ButtonClass.h"
+#include "TextManager.h"
 
 const int		  defaultWindowWidth  = 800;
 const int		  defaultWindowHeight = 600;
@@ -17,6 +18,8 @@ const char* const defaultWindowTitle  = "Drawing App";
 
 const float defaultThickness	 = 2.0F;
 const int	defaultMenuBarHeight = 39;
+
+const int defaultFontSize = 48;
 
 const float grayColor = 0.5F;
 
@@ -58,16 +61,20 @@ int main()
 	auto toolManager   = std::make_shared<ToolManager>();
 	auto inputManager  = std::make_shared<InputManager>();
 	auto menuBar	   = std::make_shared<MenuBar>();
+	auto textManager   = std::make_shared<TextManager>();
 
 	inputManager->bindToWindow(window);
 	inputManager->registerReceiver(toolManager);
+	inputManager->registerReceiver(textManager);
 
 	toolManager->registerTool(
 		"brush", std::make_shared<BrushTool>(
 					 strokeManager, Color{.r = 0.0F, .g = 0.0F, .b = 0.0F, .a = 1.0F},	// Black
 					 defaultThickness													// Thickness
 					 ));
-
+	textManager->registerTextTool(std::make_shared<Text>(
+		"baby daisy", Bounds(2 * defaultMenuBarHeight, defaultWindowHeight, 0, defaultWindowWidth),
+		"Delius", defaultFontSize, Color{.r = 0.0F, .g = 0.0F, .b = 0.0F, .a = 1.0F}, true));
 	inputManager->setResizeCallback([&](int w, int h) { CanvasRenderer::resize(w, h); });
 
 	menuBar->setBounds(Bounds(0, defaultMenuBarHeight, 0, static_cast<float>(INT_MAX)));
@@ -89,6 +96,11 @@ int main()
 		for (const auto& stroke : strokeManager->getStrokes())
 		{
 			renderer->drawStroke(*stroke);
+		}
+
+		for (const auto& text : textManager->getTexts())
+		{
+			renderer->renderText(*text);
 		}
 
 		auto current_tool = toolManager->getActiveTool();

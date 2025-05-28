@@ -5,8 +5,9 @@
 #include <vector>
 #include "ITextManager.h"
 #include "Text.h"
+#include "IInputReceiver.h"
 
-class TextManager : public ITextManager
+class TextManager : public ITextManager, public IInputReceiver
 {
    public:
 	TextManager();
@@ -20,16 +21,27 @@ class TextManager : public ITextManager
 	void addText(std::shared_ptr<IText> text) override;
 	void removeText(std::shared_ptr<IText> text) override;
 
+	void registerTextTool(std::shared_ptr<IText> text) override;
+	bool isTextToolActive();
+	void setTextToolActive();
+
 	[[nodiscard]] const std::vector<std::shared_ptr<IText>>& getTexts() const override;
 
 	[[nodiscard]] std::shared_ptr<IText> getTextAt(double x, double y) const override;
 
 	void clearAll() override;
 
+	void onMouseMove(double x, double y) override;
+	void onMouseButton(MouseButton button, KeyAction action, double x, double y) override;
+	void onKey(int key, KeyAction action) override;
+	void onChar(unsigned int codepoint) override;
+
    private:
 	std::vector<std::shared_ptr<IText>> texts;
 
 	[[nodiscard]] std::vector<std::shared_ptr<IText>> copyTexts() const;
+
+	bool active = false;
 };
 
 #endif	// TEXTMANAGER_H

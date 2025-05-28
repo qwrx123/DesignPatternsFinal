@@ -112,10 +112,10 @@ void CanvasRenderer::renderText(const IText& text)
 	int pixleConversionFactor = 6;
 	for (char c : content)
 	{
-		std::cout << "Rendering character: " << c << "\n";
+		// std::cout << "Rendering character: " << c << "\n";
 		if (font.getFontBitmap(c).width == 0)
 		{
-			std::cerr << "Failed to load glyph for character: " << c << "\n";
+			// std::cerr << "Failed to load glyph for character: " << c << "\n";
 			continue;
 		}
 		FT_Face face = font.getFontFace();
