@@ -1,21 +1,64 @@
 #include "MenuBar.h"
 #include "Bounds.h"
 #include "ButtonClass.h"
+#include <cassert>
 
-MenuBar::MenuBar()
+MenuBar::MenuBar() : label("Menu Bar"), bounds(0, 0, 0, 0)
 {
-	label		  = "Menu Bar";
-	bounds		  = Bounds(0, 0, 0, 0);
-	selectedIndex = 0;
-	addButton(std::make_shared<ButtonClass>("emptyEdge", Bounds(0, 0, 0, 0), bColor(0, 0, 0, 0)));
+	buttons.push_back(
+		std::make_shared<ButtonClass>("emptyEdge", Bounds(0, 0, 0, 0), bColor(0, 0, 0, 0)));
 }
 
 MenuBar::~MenuBar()
 {
 	if (!buttons.empty())
 	{
-		clearButtons();
+		buttons.clear();
 	}
+}
+
+MenuBar::MenuBar(const MenuBar& other)
+	: label(other.label),
+	  bounds(other.bounds),
+	  selectedIndex(other.selectedIndex),
+	  buttons(std::move(other.cloneButtons()))
+{
+}
+
+MenuBar& MenuBar::operator=(const MenuBar& other)
+{
+	if (this != &other)
+	{
+		label		  = other.label;
+		bounds		  = other.bounds;
+		selectedIndex = other.selectedIndex;
+		buttons.clear();
+
+		buttons = std::move(other.cloneButtons());
+	}
+	return *this;
+}
+
+MenuBar::MenuBar(MenuBar&& other) noexcept
+	: label(std::move(other.label)),
+	  bounds(other.bounds),
+	  selectedIndex(other.selectedIndex),
+	  buttons(std::move(other.buttons))
+{
+}
+
+MenuBar& MenuBar::operator=(MenuBar&& other) noexcept
+{
+	if (this != &other)
+	{
+		label		  = std::move(other.label);
+		bounds		  = other.bounds;
+		selectedIndex = other.selectedIndex;
+		buttons		  = std::move(other.buttons);
+
+		other.selectedIndex = 0;  // Reset moved-from state
+	}
+	return *this;
 }
 
 std::string MenuBar::getLabel() const
@@ -88,3 +131,23 @@ bool MenuBar::showSelectedLabelWhenClosed() const
 }
 
 void MenuBar::setShowSelectedLabelWhenClosed(bool show) {}
+
+std::vector<std::shared_ptr<IButton>> MenuBar::cloneButtons() const
+{
+	std::vector<std::shared_ptr<IButton>> clonedButtons;
+
+	for (const auto& btn : buttons)
+	{
+		auto btnPtr = std::dynamic_pointer_cast<ButtonClass>(btn);	// C++ be like that
+		if (btnPtr)
+		{
+			clonedButtons.push_back(std::make_shared<ButtonClass>(*btnPtr));
+		}
+		else
+		{
+			assert(false);	// Welp, fix this
+		}
+	}
+
+	return clonedButtons;
+}

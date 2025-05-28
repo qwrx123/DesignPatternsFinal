@@ -7,14 +7,18 @@
 class IToolManager
 {
    public:
-	IToolManager()			= default;
-	virtual ~IToolManager() = default;
+	IToolManager()								 = default;
+	virtual ~IToolManager()						 = default;
+	IToolManager(const IToolManager&)			 = default;
+	IToolManager& operator=(const IToolManager&) = default;
+	IToolManager(IToolManager&&)				 = default;
+	IToolManager& operator=(IToolManager&&)		 = default;
 
 	virtual void registerTool(const std::string& name, std::shared_ptr<IDrawingTool> tool) = 0;
 	virtual bool selectTool(const std::string& name)									   = 0;
 
-	virtual std::string					  getActiveToolName() const = 0;
-	virtual std::shared_ptr<IDrawingTool> getActiveTool() const		= 0;
+	[[nodiscard]] virtual std::string					getActiveToolName() const = 0;
+	[[nodiscard]] virtual std::shared_ptr<IDrawingTool> getActiveTool() const	  = 0;
 
 	virtual void beginStroke(const Point& start) = 0;
 	virtual void addPoint(const Point& point)	 = 0;

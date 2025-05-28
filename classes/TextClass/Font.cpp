@@ -1,9 +1,9 @@
 #include "Font.h"
 
-Font::Font(std::filesystem::path fontPath) : fontPath(fontPath)
+Font::Font(const std::filesystem::path& fontPath) : fontPath(fontPath)
 {
 	// Initialize FreeType library
-	if (FT_Init_FreeType(&library))
+	if (FT_Init_FreeType(&library) != 0)
 	{
 		return;
 	}
@@ -19,6 +19,10 @@ Font::Font(std::filesystem::path fontPath) : fontPath(fontPath)
 	{
 		return;
 	}
+
+	const int fontSize = 100;
+
+	FT_Set_Pixel_Sizes(face, 0, fontSize);
 }
 
 Font::~Font()
@@ -36,15 +40,15 @@ FT_Bitmap Font::getFontBitmap(char c) const
 {
 	// Load the glyph for the character
 	FT_UInt glyph_index = FT_Get_Char_Index(face, c);
-	if (FT_Load_Glyph(face, glyph_index, FT_LOAD_DEFAULT))
+	if (FT_Load_Glyph(face, glyph_index, FT_LOAD_DEFAULT) != 0)
 	{
-		return FT_Bitmap();
+		return {};
 	}
 
 	// Render the glyph to a bitmap
-	if (FT_Render_Glyph(face->glyph, FT_RENDER_MODE_NORMAL))
+	if (FT_Render_Glyph(face->glyph, FT_RENDER_MODE_NORMAL) != 0)
 	{
-		return FT_Bitmap();
+		return {};
 	}
 
 	return face->glyph->bitmap;

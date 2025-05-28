@@ -2,11 +2,15 @@
 
 #include "IFiles.h"
 
-class IImport : IFiles
+class IImport : public IFiles
 {
    public:
-	IImport()		   = default;
-	virtual ~IImport() = default;
+	IImport()						   = default;
+	virtual ~IImport()				   = default;
+	IImport(const IImport&)			   = default;
+	IImport& operator=(const IImport&) = default;
+	IImport(IImport&&)				   = default;
+	IImport& operator=(IImport&&)	   = default;
 
-	virtual void importFile(void*, ssize_t) = 0;
+	[[nodiscard]] virtual void importFile(void*, ssize_t) = 0;
 };

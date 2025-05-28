@@ -9,26 +9,32 @@
 #include "Color.h"
 #include <GLFW/glfw3.h>
 
-class CanvasRenderer : public ICanvasRenderer {
-public:
-    CanvasRenderer(GLFWwindow* window);
-    ~CanvasRenderer();
+class CanvasRenderer : public ICanvasRenderer
+{
+   public:
+	CanvasRenderer(GLFWwindow* window);
+	~CanvasRenderer() override;
 
-    void resize(int width, int height);
+	CanvasRenderer(const CanvasRenderer&)			 = delete;
+	CanvasRenderer& operator=(const CanvasRenderer&) = delete;
+	CanvasRenderer(CanvasRenderer&&)				 = delete;
+	CanvasRenderer& operator=(CanvasRenderer&&)		 = delete;
 
-    void beginFrame() override;
-    void drawStroke(const IStroke& stroke) override;
-    void renderText(const IText& text);
-    void drawButton(const IButton& button) override;
-    void drawMenu(const IMenu& menu) override;
-    void endFrame() override;
+	static void resize(int width, int height);
 
-    void textRenderTest();
-    void renderGlyph(FT_Face face, FT_GlyphSlot glyph, float x, float y, Color color);
+	void		beginFrame() override;
+	void		drawStroke(const IStroke& stroke) override;
+	static void renderText(const IText& text);
+	void		drawButton(const IButton& button) override;
+	void		drawMenu(const IMenu& menu) override;
+	void		endFrame() override;
 
-private:
-    GLFWwindow* window_;
-    GLuint textureID_;  // Add texture ID for font rendering 
+	static void textRenderTest();
+	static void renderGlyph(FT_Face face, FT_GlyphSlot glyph, float x, float y);
+
+   private:
+	GLFWwindow* window_;
+	GLuint		textureID_ = 0;	 // Add texture ID for font rendering
 };
 
-#endif // CANVASRENDERER_H
+#endif	// CANVASRENDERER_H

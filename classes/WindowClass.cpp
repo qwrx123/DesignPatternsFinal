@@ -7,11 +7,11 @@
 #include "ButtonClass.h"
 #include "MenuBar.h"
 
-WindowClass::WindowClass() : width(0), height(0), title(nullptr), window(nullptr) {}
+WindowClass::WindowClass() : width(0), height(0), title(nullptr) {}
 
 WindowClass::~WindowClass()
 {
-	if (window)
+	if (window != nullptr)
 	{
 		glfwDestroyWindow(window);
 	}
@@ -32,16 +32,16 @@ bool WindowClass::CreateWindow(int width, int height, const char* title)
 	buttonBounds = Bounds(0, toolBar.getBounds().bottom, edge + 1, edge + 40);
 	toolBar.addButton(std::make_shared<ButtonClass>(ButtonClass(buttonBounds, 0, 0, 0)));*/
 
-	if (!glfwInit())
+	if (glfwInit() == GLFW_FALSE)
 	{
 		return false;
 	}
 
 	window = glfwCreateWindow(width, height, title, nullptr, nullptr);
 
-	if (!window)
+	if (window == nullptr)
 	{
-		std::cerr << "Failed to create window" << std::endl;
+		std::cerr << "Failed to create window\n";
 		return false;
 	}
 
@@ -54,7 +54,7 @@ bool WindowClass::CreateWindow(int width, int height, const char* title)
 
 bool WindowClass::shouldClose() const
 {
-	return glfwWindowShouldClose(window);
+	return glfwWindowShouldClose(window) != 0;
 }
 
 void WindowClass::defaultEvent()
@@ -73,26 +73,22 @@ bool WindowClass::initCallbacks()
 
 void WindowClass::windowSizeCallback(GLFWwindow* window, int width, int height)
 {
-	WindowClass* myWindow = static_cast<WindowClass*>(glfwGetWindowUserPointer(window));
+	auto* myWindow = static_cast<WindowClass*>(glfwGetWindowUserPointer(window));
 
-	if (myWindow)
+	if (myWindow != nullptr)
 	{
 		myWindow->handleWindowSize(width, height);
 	}
-
-	return;
 }
 
-void WindowClass::handleWindowSize(int width, int height)
-{
-	return;
-}
+void WindowClass::handleWindowSize(int width, int height) {}
 
 void WindowClass::render()
 {
 	// Preps the widnow for rendering
 	// Sets the canvas of the window starting at the top left
-	int width, height;
+	int width  = 0;
+	int height = 0;
 	glfwGetFramebufferSize(window, &width, &height);
 	glViewport(0, 0, width, height);
 	glClear(GL_COLOR_BUFFER_BIT);
@@ -106,15 +102,19 @@ void WindowClass::render()
 	glLoadIdentity();
 
 	// Brush tool
-	glLineWidth(5.0f);
+	static const float defaultThickness = 5.0F;
+	static const float defaultNorm		= 2.0F;
+	glLineWidth(defaultThickness);
 	for (const auto& stroke : strokes)
 	{
 		glBegin(GL_LINE_STRIP);
-		glColor3f(1.0f, 1.0f, 1.0f);  // White
+		glColor3f(1.0F, 1.0F, 1.0F);  // White
 		for (const auto& pt : stroke)
 		{
-			double normX = (pt.first / width) * 2.0f - 1.0f;
-			double normY = 1.0f - (pt.second / height) * 2.0f;
+			float normX =
+				((static_cast<float>(pt.first) / static_cast<float>(width)) * defaultNorm) - 1.0F;
+			float normY =
+				1.0F - ((static_cast<float>(pt.second) / static_cast<float>(height)) * defaultNorm);
 			glVertex2f(normX, normY);
 		}
 		glEnd();
@@ -124,7 +124,9 @@ void WindowClass::render()
 	// Origin at top-left
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	glOrtho(0, width, height, 0, -1, 1);
+	int right  = width;
+	int bottom = height;
+	glOrtho(0, right, bottom, 0, -1, 1);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
@@ -150,9 +152,9 @@ void WindowClass::render()
 
 void WindowClass::cursorPositionCallback(GLFWwindow* window, double xpos, double ypos)
 {
-	WindowClass* myWindow = static_cast<WindowClass*>(glfwGetWindowUserPointer(window));
+	auto* myWindow = static_cast<WindowClass*>(glfwGetWindowUserPointer(window));
 
-	if (myWindow)
+	if (myWindow != nullptr)
 	{
 		myWindow->handleMouseMove(xpos, ypos);
 	}
@@ -160,9 +162,9 @@ void WindowClass::cursorPositionCallback(GLFWwindow* window, double xpos, double
 
 void WindowClass::mouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
 {
-	WindowClass* myWindow = static_cast<WindowClass*>(glfwGetWindowUserPointer(window));
+	auto* myWindow = static_cast<WindowClass*>(glfwGetWindowUserPointer(window));
 
-	if (myWindow)
+	if (myWindow != nullptr)
 	{
 		myWindow->handleMouseButton(button, action, mods);
 	}
@@ -185,7 +187,8 @@ void WindowClass::handleMouseButton(int button, int action, int mods)
 {
 	if (button == GLFW_MOUSE_BUTTON_LEFT)
 	{
-		double xpos, ypos;
+		double xpos = 0;
+		double ypos = 0;
 		glfwGetCursorPos(window, &xpos, &ypos);
 
 		// checks through every button to see if it was pressed
@@ -231,9 +234,9 @@ void WindowClass::handleMouseButton(int button, int action, int mods)
 			isErasing	  = false;
 			currentStroke = nullptr;
 
-			for (int i = 0; i < toolBar.getButtons().size(); i++)
+			for (const auto& button : toolBar.getButtons())
 			{
-				toolBar.getButtons().at(i)->setPressed(false);
+				button->setPressed(false);
 			}
 		}
 	}
@@ -241,9 +244,9 @@ void WindowClass::handleMouseButton(int button, int action, int mods)
 
 void WindowClass::characterCallback(GLFWwindow* window, unsigned int codepoint)
 {
-	WindowClass* myWindow = static_cast<WindowClass*>(glfwGetWindowUserPointer(window));
+	auto* myWindow = static_cast<WindowClass*>(glfwGetWindowUserPointer(window));
 
-	if (myWindow)
+	if (myWindow != nullptr)
 	{
 		myWindow->handleCharacterInput(codepoint);
 	}
@@ -265,7 +268,7 @@ void WindowClass::eraseAtCursor(double xpos, double ypos)
 		{
 			double dx		= pt.first - xpos;
 			double dy		= pt.second - ypos;
-			bool   isErased = std::sqrt(dx * dx + dy * dy) <= eraser_radius;
+			bool   isErased = std::sqrt((dx * dx) + (dy * dy)) <= eraser_radius;
 
 			if (isErased)
 			{

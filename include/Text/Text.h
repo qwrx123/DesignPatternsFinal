@@ -6,34 +6,39 @@
 class Text : public IText
 {
    public:
-    Text();
-    ~Text();
+	Text();
+	~Text() override;
 
-    std::string getContent() const override;
-    void		setContent(const std::string& text) override;
+	Text(const Text& other)				   = default;
+	Text& operator=(const Text& other)	   = default;
+	Text(Text&& other) noexcept			   = default;
+	Text& operator=(Text&& other) noexcept = default;
 
-    Bounds getBounds() const override;
-    void   setPosition(double x, double y) override;
+	[[nodiscard]] std::string getContent() const override;
+	void					  setContent(const std::string& text) override;
 
-    std::string getFontName() const override;
-    void		setFontName(const std::string& fontName) override;
+	[[nodiscard]] Bounds getBounds() const override;
+	void				 setPosition(float x, float y) override;
 
-    int	 getFontSize() const override;
-    void setFontSize(int size) override;
+	[[nodiscard]] std::string getFontName() const override;
+	void					  setFontName(const std::string& fontName) override;
 
-    Color getColor() const override;
-    void  setColor(const Color& color) override;
+	[[nodiscard]] int getFontSize() const override;
+	void			  setFontSize(int size) override;
 
-    bool isEditable() const override;
-    void setEditable(bool editable) override;
+	[[nodiscard]] Color getColor() const override;
+	void				setColor(const Color& color) override;
 
-    private:
-    std::string content;
-    Bounds		bounds;
-    std::string fontName;
-    int			fontSize;
-    Color		color;
-    bool		editable;
+	[[nodiscard]] bool isEditable() const override;
+	void			   setEditable(bool editable) override;
+
+   private:
+	std::string content;
+	Bounds		bounds;
+	std::string fontName;
+	int			fontSize = 0;
+	Color		color;
+	bool		editable = false;
 };
 
-#endif // TEXT_H
+#endif	// TEXT_H

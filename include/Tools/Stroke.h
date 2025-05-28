@@ -4,26 +4,31 @@
 #include "IStroke.h"
 #include "Point.h"
 
-class Stroke : public IStroke 
+class Stroke : public IStroke
 {
-public:
-    Stroke(Color color, float thickness);
+   public:
+	Stroke(Color color, float thickness);
 	Stroke();
 	~Stroke() override;
 
-    void setThickness(float thickness) override;
-    void setColor(const Color& color) override;
-    void addPoint(const Point& point) override;
+	Stroke(const Stroke& other)				   = default;
+	Stroke& operator=(const Stroke& other)	   = default;
+	Stroke(Stroke&& other) noexcept			   = default;
+	Stroke& operator=(Stroke&& other) noexcept = default;
 
-    const std::vector<Point>& getPoints() const override;
-    Color getColor() const override;
-	float getThickness() const override;
-    double getLength() const override;
+	void setThickness(float thickness) override;
+	void setColor(const Color& color) override;
+	void addPoint(const Point& point) override;
 
-private:
-    std::vector<Point> points;
-    Color stroke_color;
-    float stroke_thickness;
+	[[nodiscard]] const std::vector<Point>& getPoints() const override;
+	[[nodiscard]] Color						getColor() const override;
+	[[nodiscard]] float						getThickness() const override;
+	[[nodiscard]] double					getLength() const override;
+
+   private:
+	std::vector<Point> points;
+	Color			   stroke_color;
+	float			   stroke_thickness;
 };
 
 #endif	// STROKE_H

@@ -10,5 +10,7 @@ install(FILES
     DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/daisy
 )
 
-# Make this directory visible to targets needing headers from include/
-# (No targets are defined here, so nothing else is needed)
+add_subdirectory(Tools)
+add_subdirectory(Text)
+add_subdirectory(Rendering)
+add_subdirectory(Input)

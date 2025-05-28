@@ -7,19 +7,23 @@
 class TextBox : public ITextBox, public Text
 {
    public:
-    TextBox();
-    ~TextBox();
+	TextBox();
+	~TextBox() override;
 
-    bool hasBorder() const override;
-    void setBorder(bool hasBorder) override;
+	TextBox(const TextBox&)			   = default;
+	TextBox(TextBox&&)				   = default;
+	TextBox& operator=(const TextBox&) = default;
+	TextBox& operator=(TextBox&&)	   = default;
 
-    bool isSelected() const override;
-    void setSelected(bool selected) override;
+	[[nodiscard]] bool hasBorder() const override;
+	void			   setBorder(bool hasBorder) override;
 
-    private:
-    bool boarderStatus;
-    bool selected;
+	[[nodiscard]] bool isSelected() const override;
+	void			   setSelected(bool selected) override;
 
+   private:
+	bool boarderStatus = true;
+	bool selected	   = false;
 };
 
-#endif    // TEXTBOX_H
+#endif	// TEXTBOX_H

@@ -1,8 +1,8 @@
 #include "Text.h"
 
-Text::Text() {}
+Text::Text() : color({.r = 0, .g = 0, .b = 0, .a = 0}) {}
 
-Text::~Text() {}
+Text::~Text() = default;
 
 std::string Text::getContent() const
 {
@@ -19,7 +19,7 @@ Bounds Text::getBounds() const
 	return bounds;
 }
 
-void Text::setPosition(double x, double y)
+void Text::setPosition(float x, float y)
 {
 	bounds.left	  = x;
 	bounds.right  = x + bounds.right - bounds.left;
