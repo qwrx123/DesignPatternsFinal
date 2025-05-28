@@ -16,10 +16,7 @@ const int		  defaultWindowHeight = 600;
 const char* const defaultWindowTitle  = "Drawing App";
 
 const float defaultThickness	 = 2.0F;
-const int	defaultMenuBarHeight = 39;
-const int	defaultButtonWidth	 = 40;
-
-const Color defaultButtonColor = {0.0F, 0.0F, 0.0F, 1.0F};
+const int	defaultMenuBarHeight = 100;
 
 // --- Main Entry ---
 int main()
@@ -74,14 +71,7 @@ int main()
 
 	menuBar->setBounds(Bounds(0, defaultMenuBarHeight, 0, static_cast<float>(INT_MAX)));
 	menuBar->setToolPointer(toolManager);
-	menuBar->addButton(std::make_shared<ButtonClass>(
-		"button",
-		Bounds{0, menuBar->getBounds().bottom,
-			   menuBar->getButtons().at(menuBar->getButtons().size() - 1)->getBounds().right + 1,
-			   menuBar->getButtons().at(menuBar->getButtons().size() - 1)->getBounds().right +
-				   defaultButtonWidth},
-		Color(defaultButtonColor.r, defaultButtonColor.g, defaultButtonColor.b,
-			  defaultButtonColor.a)));
+	menuBar->setDefaultButtons();
 
 	// --- Main Loop ---
 	while (glfwWindowShouldClose(window) == 0)
