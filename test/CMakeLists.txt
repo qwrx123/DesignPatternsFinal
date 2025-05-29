@@ -20,6 +20,8 @@ add_executable(projectTests
     projectTests.cpp
     CanvasRendererTest.cpp
     StrokeManagerTest.cpp
+    TextManagerTest.cpp
+    TextTest.cpp
 
     ${CMAKE_SOURCE_DIR}/classes/Tools/ToolManager.cpp
     ${CMAKE_SOURCE_DIR}/classes/Tools/BrushTool.cpp
@@ -28,6 +30,10 @@ add_executable(projectTests
     ${CMAKE_SOURCE_DIR}/classes/Tools/EraserTool.cpp
 
     ${CMAKE_SOURCE_DIR}/classes/Rendering/CanvasRenderer.cpp
+
+    ${CMAKE_SOURCE_DIR}/classes/TextClass/Text.cpp
+    ${CMAKE_SOURCE_DIR}/classes/TextClass/TextManager.cpp
+    ${CMAKE_SOURCE_DIR}/classes/TextClass/TextBox.cpp
 )
 
 target_include_directories(projectTests PRIVATE ${PROJECT_COMMON_INCLUDE_DIRS})
