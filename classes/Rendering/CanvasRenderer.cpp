@@ -109,7 +109,7 @@ void CanvasRenderer::renderText(const IText& text)
 	}
 	Font font(fontPath);
 	font.setFontSize(fontSize);
-	int pixleConversionFactor = 6;
+	const int pixleConversionFactor = 6;
 	for (char c : content)
 	{
 		if (font.getFontBitmap(c).width == 0 && c != ' ' && c != '\t')
@@ -119,7 +119,7 @@ void CanvasRenderer::renderText(const IText& text)
 		}
 		FT_Face face = font.getFontFace();
 		renderGlyph(face, face->glyph, x, y, color);
-		x += (face->glyph->advance.x >> pixleConversionFactor);
+		x += static_cast<float>(face->glyph->advance.x >> pixleConversionFactor);
 	}
 }
 
