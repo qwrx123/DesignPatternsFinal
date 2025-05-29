@@ -71,7 +71,7 @@ void ToolManager::onMouseMove(double x, double y)
 {
 	if (current_tool && current_tool->isDrawing())
 	{
-		// addPoint({.x = x, .y = y});
+		addPoint({.x = x, .y = y});
 	}
 }
 

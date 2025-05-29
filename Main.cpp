@@ -88,17 +88,6 @@ int main()
 		inputManager->beginFrame();
 		glfwPollEvents();
 
-		double mouseX = 0;
-		double mouseY = 0;
-		glfwGetCursorPos(window, &mouseX, &mouseY);
-
-		// smooth by-frame point adding, didn't figure out how to add to ToolManager
-		auto current_tool = toolManager->getActiveTool();
-		if (current_tool->isDrawing())
-		{
-			current_tool->addPoint({.x = mouseX, .y = mouseY});
-		}
-
 		// begin rendering
 		renderer->beginFrame();
 
@@ -112,6 +101,7 @@ int main()
 			renderer->renderText(*text);
 		}
 
+		auto current_tool = toolManager->getActiveTool();
 		if (current_tool)
 		{
 			auto brush = std::dynamic_pointer_cast<BrushTool>(current_tool);
