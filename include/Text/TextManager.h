@@ -21,10 +21,10 @@ class TextManager : public ITextManager, public IInputReceiver
 	void addText(std::shared_ptr<IText> text) override;
 	void removeText(std::shared_ptr<IText> text) override;
 
-	void registerTextTool(std::shared_ptr<IText> text) override;
-	bool isTextToolActive() const;
-	void setTextToolActive();
-	void setTextToolInactive();
+	void			   registerTextTool(std::shared_ptr<IText> text) override;
+	[[nodiscard]] bool isTextToolActive() const;
+	void			   setTextToolActive();
+	void			   setTextToolInactive();
 
 	[[nodiscard]] const std::vector<std::shared_ptr<IText>>& getTexts() const override;
 
