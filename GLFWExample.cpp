@@ -25,7 +25,8 @@ const int	defaultMenuBarHeight = 100;
 const float buttonWidth			 = 40.0F;
 const int	defaultFontSize		 = 48;
 
-const float grayColor = 0.5F;
+const float grayColor	  = 0.5F;
+const float darkGrayColor = 0.3F;
 
 int main()
 {
@@ -69,14 +70,15 @@ int main()
 	inputManager->registerReceiver(textManager);
 
 	toolManager->registerTool(
-		"brush", std::make_shared<BrushTool>(strokeManager, Color{0.0F, 0.0F, 0.0F, 1.0F},
-											 defaultThickness));
+		"brush",
+		std::make_shared<BrushTool>(
+			strokeManager, Color{.r = 0.0F, .g = 0.0F, .b = 0.0F, .a = 1.0F}, defaultThickness));
 	textManager->registerTextTool(std::make_shared<Text>(
 		"",
 		Bounds(defaultFontSize + defaultMenuBarHeight, defaultWindowHeight, 0, defaultWindowWidth),
 		"Delius", defaultFontSize, Color{.r = 0.0F, .g = 0.0F, .b = 0.0F, .a = 1.0F}, true));
 	// textManager->setTextToolActive();
-	toolManager->registerTool("eraser", std::make_shared<EraserTool>(strokeManager, 10.0F));
+	toolManager->registerTool("eraser", std::make_shared<EraserTool>(strokeManager, defaultEraserSize));
 
 	menuBar->setBounds(Bounds(0, defaultMenuBarHeight, 0, static_cast<float>(INT_MAX)));
 
@@ -94,7 +96,7 @@ int main()
 
 	menuBar->addButton(std::make_shared<ButtonClass>(
 		"text", Bounds(0, defaultMenuBarHeight, currentRight, currentRight + buttonWidth),
-		bColor(0.3F, 0.5F, 0, 1)));
+		bColor(darkGrayColor, grayColor, 0, 1)));
 	static bool wasPressedLastFrame = false;
 
 	while (glfwWindowShouldClose(window) == 0)
@@ -152,7 +154,7 @@ int main()
 
 		for (const auto& text : textManager->getTexts())
 		{
-			renderer->renderText(*text);
+			CanvasRenderer::renderText(*text);
 		}
 
 		auto current_tool = toolManager->getActiveTool();
