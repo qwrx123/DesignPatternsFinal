@@ -92,6 +92,8 @@ Bounds MenuBar::getBounds() const
 void MenuBar::setBounds(const Bounds& bounds)
 {
 	this->bounds = bounds;
+	halfHeight = (bounds.bottom / 2) - bounds.top;
+	quarterHeight = (bounds.bottom / 4) - bounds.top;
 }
 
 bool MenuBar::isOpen() const
@@ -111,15 +113,43 @@ void MenuBar::close() {}
 void MenuBar::setDefaultButtons()
 {
 	addButton(std::make_shared<ButtonClass>(
+		"brush",
+		Bounds{.top	   = bounds.top,
+			   .bottom = bounds.top + (float) halfHeight,
+			   .left   = buttons.at(buttons.size() - 1)->getBounds().right + 1,
+			   .right  = buttons.at(buttons.size() - 1)->getBounds().right + defaultButtonWidth},
+		black));
+	addButton(std::make_shared<ButtonClass>(
+		"eraser",
+		Bounds{.top	   = bounds.top + (float) halfHeight,
+			   .bottom = bounds.bottom,
+			   .left   = buttons.at(buttons.size() - 1)->getBounds().left,
+			   .right  = buttons.at(buttons.size() - 1)->getBounds().right},
+		white));
+	addButton(std::make_shared<ButtonClass>(
+		"text",
+		Bounds{.top	   = bounds.top,
+			   .bottom = bounds.top + (float) halfHeight,
+			   .left   = buttons.at(buttons.size() - 1)->getBounds().right + 1,
+			   .right  = buttons.at(buttons.size() - 1)->getBounds().right + defaultButtonWidth},
+		black));
+	addButton(std::make_shared<ButtonClass>(
+		"emptyButton",
+		Bounds{.top	   = bounds.top + (float) halfHeight,
+			   .bottom = bounds.bottom,
+			   .left   = buttons.at(buttons.size() - 1)->getBounds().left,
+			   .right  = buttons.at(buttons.size() - 1)->getBounds().right},
+		white));
+	addButton(std::make_shared<ButtonClass>(
 		"black",
 		Bounds{.top	   = bounds.top,
-			   .bottom = bounds.bottom / 2,
+			   .bottom = bounds.top + (float) halfHeight,
 			   .left   = buttons.at(buttons.size() - 1)->getBounds().right + 1,
 			   .right  = buttons.at(buttons.size() - 1)->getBounds().right + defaultButtonWidth},
 		black));
 	addButton(std::make_shared<ButtonClass>(
 		"white",
-		Bounds{.top	   = bounds.top + (bounds.bottom / 2),
+		Bounds{.top	   = bounds.top + (float) halfHeight,
 			   .bottom = bounds.bottom,
 			   .left   = buttons.at(buttons.size() - 1)->getBounds().left,
 			   .right  = buttons.at(buttons.size() - 1)->getBounds().right},
@@ -127,13 +157,13 @@ void MenuBar::setDefaultButtons()
 	addButton(std::make_shared<ButtonClass>(
 		"red",
 		Bounds{.top	   = bounds.top,
-			   .bottom = bounds.bottom / 2,
+			   .bottom = bounds.top + (float) halfHeight,
 			   .left   = buttons.at(buttons.size() - 1)->getBounds().right + 1,
 			   .right  = buttons.at(buttons.size() - 1)->getBounds().right + defaultButtonWidth},
 		red));
 	addButton(std::make_shared<ButtonClass>(
 		"orange",
-		Bounds{.top	   = bounds.top + (bounds.bottom / 2),
+		Bounds{.top	   = bounds.top + (float) halfHeight,
 			   .bottom = bounds.bottom,
 			   .left   = buttons.at(buttons.size() - 1)->getBounds().left,
 			   .right  = buttons.at(buttons.size() - 1)->getBounds().right},
@@ -141,13 +171,13 @@ void MenuBar::setDefaultButtons()
 	addButton(std::make_shared<ButtonClass>(
 		"yellow",
 		Bounds{.top	   = bounds.top,
-			   .bottom = bounds.bottom / 2,
+			   .bottom = bounds.top + (float) halfHeight,
 			   .left   = buttons.at(buttons.size() - 1)->getBounds().right + 1,
 			   .right  = buttons.at(buttons.size() - 1)->getBounds().right + defaultButtonWidth},
 		yellow));
 	addButton(std::make_shared<ButtonClass>(
 		"green",
-		Bounds{.top	   = bounds.top + (bounds.bottom / 2),
+		Bounds{.top	   = bounds.top + (float) halfHeight,
 			   .bottom = bounds.bottom,
 			   .left   = buttons.at(buttons.size() - 1)->getBounds().left,
 			   .right  = buttons.at(buttons.size() - 1)->getBounds().right},
@@ -155,13 +185,13 @@ void MenuBar::setDefaultButtons()
 	addButton(std::make_shared<ButtonClass>(
 		"blue",
 		Bounds{.top	   = bounds.top,
-			   .bottom = bounds.bottom / 2,
+			   .bottom = bounds.top + (float) halfHeight,
 			   .left   = buttons.at(buttons.size() - 1)->getBounds().right + 1,
 			   .right  = buttons.at(buttons.size() - 1)->getBounds().right + defaultButtonWidth},
 		blue));
 	addButton(std::make_shared<ButtonClass>(
 		"purple",
-		Bounds{.top	   = bounds.top + (bounds.bottom / 2),
+		Bounds{.top	   = bounds.top + (float) halfHeight,
 			   .bottom = bounds.bottom,
 			   .left   = buttons.at(buttons.size() - 1)->getBounds().left,
 			   .right  = buttons.at(buttons.size() - 1)->getBounds().right},
@@ -212,8 +242,7 @@ void MenuBar::onMouseButton(MouseButton click, KeyAction action, double x, doubl
 	for (auto& button : buttons)
 	{
 		Bounds boundaries = button->getBounds();
-		if (x >= boundaries.left && x <= boundaries.right && y >= boundaries.top &&
-			y <= boundaries.bottom && action == KeyAction::Press)
+		if (button->getBounds().contains(x, y) && action == KeyAction::Press)
 		{
 			std::cout << "click " << button->getLabel() << std::endl;
 			tool->getActiveTool()->setColor(button->getColor());
@@ -229,6 +258,7 @@ void MenuBar::setToolPointer(const std::shared_ptr<IToolManager>& ptr)
 {
 	tool = ptr;
 }
+
 std::vector<std::shared_ptr<IButton>> MenuBar::cloneButtons() const
 {
 	std::vector<std::shared_ptr<IButton>> clonedButtons;

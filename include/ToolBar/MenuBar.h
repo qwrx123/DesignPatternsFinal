@@ -47,7 +47,7 @@ class MenuBar : public IMenu, public IInputReceiver
 	void			   setShowSelectedLabelWhenClosed(bool show) override;
 
 	void onMouseMove(double x, double y) override;
-	void onMouseButton(MouseButton button, KeyAction action, double x, double y) override;
+	void onMouseButton(MouseButton click, KeyAction action, double x, double y) override;
 	void onKey(int key, KeyAction action) override;
 	void onChar(unsigned int codepoint) override;
 
@@ -59,6 +59,9 @@ class MenuBar : public IMenu, public IInputReceiver
 	std::vector<std::shared_ptr<IButton>> buttons;
 	std::shared_ptr<IToolManager>		  tool;
 	int									  selectedIndex = 0;
+
+	int halfHeight;
+	int quarterHeight;
 
 	// Functions
 	[[nodiscard]] std::vector<std::shared_ptr<IButton>> cloneButtons() const;

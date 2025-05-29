@@ -78,21 +78,6 @@ int main()
 	menuBar->setToolPointer(toolManager);
 	menuBar->setDefaultButtons();
 
-	float currentRight = 0.0F;
-
-	menuBar->addButton(std::make_shared<ButtonClass>(
-		"brush", Bounds(0, defaultMenuBarHeight, currentRight, currentRight + buttonWidth),
-		bColor(0, grayColor, grayColor, 1)));
-	currentRight += buttonWidth + 1;
-
-	menuBar->addButton(std::make_shared<ButtonClass>(
-		"eraser", Bounds(0, defaultMenuBarHeight, currentRight, currentRight + buttonWidth),
-		bColor(1, 0.5F, 0.0F, 1)));
-	currentRight += buttonWidth + 1;
-
-	menuBar->addButton(std::make_shared<ButtonClass>(
-		"text", Bounds(0, defaultMenuBarHeight, currentRight, currentRight + buttonWidth),
-		bColor(0.3F, 0.5F, 0, 1)));
 	static bool wasPressedLastFrame = false;
 
 	while (!glfwWindowShouldClose(window))
