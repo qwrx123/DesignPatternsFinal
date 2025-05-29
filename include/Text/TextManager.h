@@ -22,7 +22,7 @@ class TextManager : public ITextManager, public IInputReceiver
 	void removeText(std::shared_ptr<IText> text) override;
 
 	void registerTextTool(std::shared_ptr<IText> text) override;
-	bool isTextToolActive();
+	bool isTextToolActive() const;
 	void setTextToolActive();
 	void setTextToolInactive();
 
@@ -46,7 +46,7 @@ class TextManager : public ITextManager, public IInputReceiver
 	Bounds		bounds;
 	std::string fontName;
 	int			fontSize = 0;
-	Color		color;
+	Color		color	 = {.r = 0.0F, .g = 0.0F, .b = 0.0F, .a = 1.0F};
 };
 
 #endif	// TEXTMANAGER_H

@@ -1,5 +1,6 @@
 #include "TextManager.h"
 #include <algorithm>
+#include <ranges>
 #include <cassert>
 #include <iostream>
 #include <GLFW/glfw3.h>
@@ -39,7 +40,7 @@ void TextManager::registerTextTool(std::shared_ptr<IText> text)
 	color	 = text->getColor();
 }
 
-bool TextManager::isTextToolActive()
+bool TextManager::isTextToolActive() const
 {
 	return active;
 }
@@ -61,7 +62,7 @@ void TextManager::addText(std::shared_ptr<IText> text)
 
 void TextManager::removeText(std::shared_ptr<IText> text)
 {
-	auto it = std::remove(texts.begin(), texts.end(), text);
+	auto it = std::ranges::remove(texts, text).begin();
 	if (it != texts.end())
 	{
 		texts.erase(it, texts.end());
@@ -124,9 +125,8 @@ void TextManager::onKey(int key, KeyAction action)
 		}
 		else if (key == GLFW_KEY_BACKSPACE)
 		{
-			for (auto it = texts.rbegin(); it != texts.rend(); ++it)
+			for (auto& text : std::ranges::reverse_view(texts))
 			{
-				auto& text = *it;
 				if (text->isEditable())
 				{
 					std::string content = text->getContent();
@@ -154,15 +154,15 @@ void TextManager::onKey(int key, KeyAction action)
 			{
 				prevBounds = bounds;
 			}
-			addText(std::make_shared<Text>(
-				"", Bounds((fontSize + prevBounds.top), bounds.bottom, bounds.left, bounds.right),
-				fontName, fontSize, color, true));
+			addText(std::make_shared<Text>("",
+										   Bounds((static_cast<float>(fontSize) + prevBounds.top),
+												  bounds.bottom, bounds.left, bounds.right),
+										   fontName, fontSize, color, true));
 		}
 		else if (key == GLFW_KEY_TAB)
 		{
-			for (auto it = texts.rbegin(); it != texts.rend(); ++it)
+			for (auto& text : std::ranges::reverse_view(texts))
 			{
-				auto& text = *it;
 				if (text->isEditable())
 				{
 					std::string content = text->getContent();
@@ -178,9 +178,8 @@ void TextManager::onChar(unsigned int codepoint)
 {
 	if (active)
 	{
-		for (auto it = texts.rbegin(); it != texts.rend(); ++it)
+		for (auto& text : std::ranges::reverse_view(texts))
 		{
-			auto& text = *it;
 			if (text->isEditable())
 			{
 				std::string content = text->getContent();
