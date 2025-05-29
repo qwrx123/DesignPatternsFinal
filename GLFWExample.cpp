@@ -97,7 +97,7 @@ int main()
 		bColor(0.3F, 0.5F, 0, 1)));
 	static bool wasPressedLastFrame = false;
 
-	while (glfwWindowShouldClose(window) != 0)
+	while (glfwWindowShouldClose(window) == 0)
 	{
 		inputManager->beginFrame();
 		glfwPollEvents();
