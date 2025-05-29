@@ -49,6 +49,11 @@ void TextManager::setTextToolActive()
 	active = true;
 }
 
+void TextManager::setTextToolInactive()
+{
+	active = false;
+}
+
 void TextManager::addText(std::shared_ptr<IText> text)
 {
 	texts.push_back(text);

@@ -21,9 +21,9 @@ const char* const defaultWindowTitle  = "Drawing App";
 const float defaultThickness	 = 2.0F;
 const int	defaultMenuBarHeight = 100;
 const float buttonWidth			 = 40.0F;
-const int defaultFontSize = 48;
+const int	defaultFontSize		 = 48;
 
-const float grayColor			 = 0.5F;
+const float grayColor = 0.5F;
 
 int main()
 {
@@ -59,7 +59,7 @@ int main()
 	auto					   inputManager	 = std::make_shared<InputManager>();
 	auto					   menuBar		 = std::make_shared<MenuBar>();
 	std::optional<std::string> pendingToolSwitch;
-	auto textManager   = std::make_shared<TextManager>();
+	auto					   textManager = std::make_shared<TextManager>();
 
 	inputManager->bindToWindow(window);
 	inputManager->registerReceiver(toolManager);
@@ -70,9 +70,11 @@ int main()
 		"brush", std::make_shared<BrushTool>(strokeManager, Color{0.0F, 0.0F, 0.0F, 1.0F},
 											 defaultThickness));
 	textManager->registerTextTool(std::make_shared<Text>(
-		"", Bounds(2 * defaultMenuBarHeight, defaultWindowHeight, 0, defaultWindowWidth), "Delius",
-		defaultFontSize, Color{.r = 0.0F, .g = 0.0F, .b = 0.0F, .a = 1.0F}, true));
-	textManager->setTextToolActive();	toolManager->registerTool("eraser", std::make_shared<EraserTool>(strokeManager, 10.0F));
+		"",
+		Bounds(defaultFontSize + defaultMenuBarHeight, defaultWindowHeight, 0, defaultWindowWidth),
+		"Delius", defaultFontSize, Color{.r = 0.0F, .g = 0.0F, .b = 0.0F, .a = 1.0F}, true));
+	// textManager->setTextToolActive();
+	toolManager->registerTool("eraser", std::make_shared<EraserTool>(strokeManager, 10.0F));
 
 	menuBar->setBounds(Bounds(0, defaultMenuBarHeight, 0, static_cast<float>(INT_MAX)));
 
@@ -86,7 +88,11 @@ int main()
 	menuBar->addButton(std::make_shared<ButtonClass>(
 		"eraser", Bounds(0, defaultMenuBarHeight, currentRight, currentRight + buttonWidth),
 		bColor(1, 0.5F, 0.0F, 1)));
+	currentRight += buttonWidth + 1;
 
+	menuBar->addButton(std::make_shared<ButtonClass>(
+		"text", Bounds(0, defaultMenuBarHeight, currentRight, currentRight + buttonWidth),
+		bColor(0.3F, 0.5F, 0, 1)));
 	static bool wasPressedLastFrame = false;
 
 	while (!glfwWindowShouldClose(window))
@@ -119,6 +125,20 @@ int main()
 		for (const auto& stroke : strokeManager->getStrokes())
 		{
 			renderer->drawStroke(*stroke);
+		}
+
+		if (pendingToolSwitch == "text")
+		{
+			if (textManager->isTextToolActive())
+			{
+				textManager->setTextToolInactive();
+				pendingToolSwitch.reset();
+			}
+			else
+			{
+				textManager->setTextToolActive();
+				pendingToolSwitch.reset();
+			}
 		}
 
 		if (pendingToolSwitch)

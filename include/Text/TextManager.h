@@ -24,6 +24,7 @@ class TextManager : public ITextManager, public IInputReceiver
 	void registerTextTool(std::shared_ptr<IText> text) override;
 	bool isTextToolActive();
 	void setTextToolActive();
+	void setTextToolInactive();
 
 	[[nodiscard]] const std::vector<std::shared_ptr<IText>>& getTexts() const override;
 

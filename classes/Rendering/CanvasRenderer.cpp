@@ -1,6 +1,7 @@
 #include "CanvasRenderer.h"
 #include "Font.h"
 #include "Color.h"
+#include <iostream>
 #ifdef _WIN32
 #include <GL/glext.h>
 #endif
@@ -107,7 +108,7 @@ void CanvasRenderer::renderText(const IText& text)
 	{
 		if (font.getFontBitmap(c).width == 0 && c != ' ' && c != '\t')
 		{
-			std::cerr << "Failed to load glyph for character: " << c << "\n";
+			std::cout << "Failed to load glyph for character: " << c << "\n";
 			continue;
 		}
 		FT_Face face = font.getFontFace();
