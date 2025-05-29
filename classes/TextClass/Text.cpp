@@ -4,11 +4,11 @@ Text::Text() : color({.r = 0, .g = 0, .b = 0, .a = 1}) {}
 
 Text::~Text() = default;
 
-Text::Text(const std::string& text, const Bounds& bounds, const std::string& fontName, int fontSize,
+Text::Text(std::string text, const Bounds& bounds, std::string fontName, int fontSize,
 		   const Color& color, bool editable)
-	: content(text),
+	: content(std::move(text)),
 	  bounds(bounds),
-	  fontName(fontName),
+	  fontName(std::move(fontName)),
 	  fontSize(fontSize),
 	  color(color),
 	  editable(editable)
