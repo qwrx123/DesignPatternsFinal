@@ -1,5 +1,7 @@
 #include "CanvasRenderer.h"
 #include "Font.h"
+#include "Color.h"
+#include <iostream>
 #ifdef _WIN32
 #include <GL/glext.h>
 #endif
@@ -33,7 +35,6 @@ void CanvasRenderer::beginFrame()
 {
 	glClearColor(1.0F, 1.0F, 1.0F, 1.0F);
 	glClear(GL_COLOR_BUFFER_BIT);
-	textRenderTest();
 }
 
 void CanvasRenderer::drawStroke(const IStroke& stroke)
@@ -54,15 +55,6 @@ void CanvasRenderer::drawStroke(const IStroke& stroke)
 		glVertex2f(static_cast<float>(p.x), static_cast<float>(p.y));
 	}
 	glEnd();
-}
-
-void CanvasRenderer::renderText(const IText& text)
-{
-	std::string content = text.getContent();
-	for (char c : content)	// NOLINT(clang-analyzer-deadcode.DeadStores)
-	{
-		// Placeholder for future glyph rendering
-	}
 }
 
 void CanvasRenderer::drawButton(const IButton& button)
@@ -103,7 +95,35 @@ void CanvasRenderer::drawMenu(const IMenu& menu)
 	glEnd();
 }
 
-void CanvasRenderer::renderGlyph(FT_Face face, FT_GlyphSlot glyph, float x, float y)
+void CanvasRenderer::renderText(const IText& text)
+{
+	std::string			  content  = text.getContent();
+	int					  fontSize = text.getFontSize();
+	Color				  color	   = text.getColor();
+	float				  x		   = text.getBounds().left;
+	float				  y		   = text.getBounds().top;
+	std::filesystem::path fontPath = "../include/Delius-Regular.ttf";
+	if (!std::filesystem::exists(fontPath))
+	{
+		return;
+	}
+	Font font(fontPath);
+	font.setFontSize(fontSize);
+	int pixleConversionFactor = 6;
+	for (char c : content)
+	{
+		if (font.getFontBitmap(c).width == 0 && c != ' ' && c != '\t')
+		{
+			std::cout << "Failed to load glyph for character: " << c << "\n";
+			continue;
+		}
+		FT_Face face = font.getFontFace();
+		renderGlyph(face, face->glyph, x, y, color);
+		x += (face->glyph->advance.x >> pixleConversionFactor);
+	}
+}
+
+void CanvasRenderer::renderGlyph(FT_Face face, FT_GlyphSlot glyph, float x, float y, Color color)
 {
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
@@ -116,8 +136,8 @@ void CanvasRenderer::renderGlyph(FT_Face face, FT_GlyphSlot glyph, float x, floa
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, static_cast<GLsizei>(glyph->bitmap.width),
-				 static_cast<GLsizei>(glyph->bitmap.rows), 0, GL_RED, GL_UNSIGNED_BYTE,
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA, static_cast<GLsizei>(glyph->bitmap.width),
+				 static_cast<GLsizei>(glyph->bitmap.rows), 0, GL_ALPHA, GL_UNSIGNED_BYTE,
 				 glyph->bitmap.buffer);
 
 	float x2 = x + static_cast<float>(glyph->bitmap_left);
@@ -128,7 +148,7 @@ void CanvasRenderer::renderGlyph(FT_Face face, FT_GlyphSlot glyph, float x, floa
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+	glColor4f(color.r, color.g, color.b, color.a);
 
 	glEnable(GL_TEXTURE_2D);
 	glBindTexture(GL_TEXTURE_2D, texture);
@@ -148,34 +168,6 @@ void CanvasRenderer::renderGlyph(FT_Face face, FT_GlyphSlot glyph, float x, floa
 	glDisable(GL_BLEND);
 	glDeleteTextures(1, &texture);
 }
-
-void CanvasRenderer::textRenderTest()
-{
-	std::string text	 = "Daisy";
-	const float defaultX = 100.0F;
-	const float defaultY = 150.0F;
-	float		x		 = defaultX;
-	float		y		 = defaultY;
-	glRasterPos2f(x, y);
-	std::filesystem::path fontPath = "../include/Delius-Regular.ttf";
-	if (!std::filesystem::exists(fontPath))
-	{
-		return;
-	}
-	Font font(fontPath);
-	for (char c : text)
-	{
-		if (font.getFontBitmap(c).width == 0)
-		{
-			continue;
-		}
-		FT_Face face = font.getFontFace();
-		renderGlyph(face, face->glyph, x, y);
-		const int shiftNum = 6;
-		x += static_cast<float>(face->glyph->advance.x >> shiftNum);
-	}
-}
-
 void CanvasRenderer::endFrame()
 {
 	glfwSwapBuffers(window_);

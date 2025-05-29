@@ -18,10 +18,13 @@ class Font
 
 	[[nodiscard]] FT_Face	getFontFace() const;
 	[[nodiscard]] FT_Bitmap getFontBitmap(char c) const;
+	void					setFontSize(int size);
+	int						getFontSize();
 
    private:
-	FT_Library			  library = nullptr;
-	FT_Face				  face	  = nullptr;
+	FT_Library			  library  = nullptr;
+	FT_Face				  face	   = nullptr;
+	int					  fontSize = 0;
 	std::filesystem::path fontPath;
 };
 

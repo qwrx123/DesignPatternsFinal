@@ -8,6 +8,8 @@ class Text : public IText
    public:
 	Text();
 	~Text() override;
+	Text(const std::string& text, const Bounds& bounds, const std::string& fontName, int fontSize,
+		 const Color& color, bool editable);
 
 	Text(const Text& other)				   = default;
 	Text& operator=(const Text& other)	   = default;
