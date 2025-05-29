@@ -7,19 +7,19 @@
 
 const int defaultButtonWidth = 50;
 
-Color black	 = {.r = 0.0F, .g = 0.0F, .b = 0.0F, .a = 1.0F};
-Color red	 = {.r = 1.0F, .g = 0.0F, .b = 0.0F, .a = 1.0F};
-Color orange = {.r = 1.0F, .g = 0.6F, .b = 0.1F, .a = 1.0F};
-Color yellow = {.r = 0.9F, .g = 0.9F, .b = 0.0F, .a = 1.0F};
-Color green	 = {.r = 0.0F, .g = 0.7F, .b = 0.1F, .a = 1.0F};
-Color blue	 = {.r = 0.0F, .g = 0.2F, .b = 0.9F, .a = 1.0F};
-Color purple = {.r = 0.6F, .g = 0.0F, .b = 0.6F, .a = 1.0F};
-Color white	 = {.r = 1.0F, .g = 1.0F, .b = 1.0F, .a = 1.0F};
+const Color black	 = {.r = 0.0F, .g = 0.0F, .b = 0.0F, .a = 1.0F};
+const Color red	 = {.r = 1.0F, .g = 0.0F, .b = 0.0F, .a = 1.0F};
+const Color orange = {.r = 1.0F, .g = 0.6F, .b = 0.1F, .a = 1.0F};
+const Color yellow = {.r = 0.9F, .g = 0.9F, .b = 0.0F, .a = 1.0F};
+const Color green	 = {.r = 0.0F, .g = 0.7F, .b = 0.1F, .a = 1.0F};
+const Color blue	 = {.r = 0.0F, .g = 0.2F, .b = 0.9F, .a = 1.0F};
+const Color purple = {.r = 0.6F, .g = 0.0F, .b = 0.6F, .a = 1.0F};
+const Color white	 = {.r = 1.0F, .g = 1.0F, .b = 1.0F, .a = 1.0F};
 
-MenuBar::MenuBar() : label("Menu Bar"), bounds{0, 0, 0, 0}, tool(nullptr)
+MenuBar::MenuBar() : label("Menu Bar"), bounds{.top = 0,.bottom = 0,.left = 0,.right = 0}, tool(nullptr)
 {
 	buttons.push_back(
-		std::make_shared<ButtonClass>("emptyEdge", Bounds{0, 0, 0, 0}, Color{0, 0, 0, 0}));
+		std::make_shared<ButtonClass>("emptyEdge", Bounds{.top = 0,.bottom = 0,.left = 0,.right = 0}, Color{.r = 0,.g = 0,.b = 0,.a = 0}));
 }
 
 MenuBar::~MenuBar()
@@ -34,7 +34,7 @@ MenuBar::MenuBar(const MenuBar& other)
 	: label(other.label),
 	  bounds(other.bounds),
 	  selectedIndex(other.selectedIndex),
-	  buttons(std::move(other.cloneButtons()))
+	  buttons(std::move(other.cloneButtons())), halfHeight(other.halfHeight), quarterHeight(other.quarterHeight)
 {
 }
 
@@ -56,7 +56,9 @@ MenuBar::MenuBar(MenuBar&& other) noexcept
 	: label(std::move(other.label)),
 	  bounds(other.bounds),
 	  selectedIndex(other.selectedIndex),
-	  buttons(std::move(other.buttons))
+	  buttons(std::move(other.buttons)),
+	  halfHeight(other.halfHeight),
+	  quarterHeight(other.quarterHeight)
 {
 }
 
@@ -115,13 +117,13 @@ void MenuBar::setDefaultButtons()
 	addButton(std::make_shared<ButtonClass>(
 		"brush",
 		Bounds{.top	   = bounds.top,
-			   .bottom = bounds.top + (float) halfHeight,
+			   .bottom = bounds.top + halfHeight,
 			   .left   = buttons.at(buttons.size() - 1)->getBounds().right + 1,
 			   .right  = buttons.at(buttons.size() - 1)->getBounds().right + defaultButtonWidth},
 		black));
 	addButton(std::make_shared<ButtonClass>(
 		"eraser",
-		Bounds{.top	   = bounds.top + (float) halfHeight,
+		Bounds{.top	   = bounds.top + halfHeight,
 			   .bottom = bounds.bottom,
 			   .left   = buttons.at(buttons.size() - 1)->getBounds().left,
 			   .right  = buttons.at(buttons.size() - 1)->getBounds().right},
@@ -129,20 +131,20 @@ void MenuBar::setDefaultButtons()
 	addButton(std::make_shared<ButtonClass>(
 		"text",
 		Bounds{.top	   = bounds.top,
-			   .bottom = bounds.top + (float) halfHeight,
+			   .bottom = bounds.top + halfHeight,
 			   .left   = buttons.at(buttons.size() - 1)->getBounds().right + 1,
 			   .right  = buttons.at(buttons.size() - 1)->getBounds().right + defaultButtonWidth},
 		black));
 	addButton(std::make_shared<ButtonClass>(
 		"color",
 		Bounds{.top	   = bounds.top,
-			   .bottom = bounds.top + (float) halfHeight,
+			   .bottom = bounds.top + halfHeight,
 			   .left   = buttons.at(buttons.size() - 1)->getBounds().right + 1,
 			   .right  = buttons.at(buttons.size() - 1)->getBounds().right + defaultButtonWidth},
 		black));
 	addButton(std::make_shared<ButtonClass>(
 		"color",
-		Bounds{.top	   = bounds.top + (float) halfHeight,
+		Bounds{.top	   = bounds.top + halfHeight,
 			   .bottom = bounds.bottom,
 			   .left   = buttons.at(buttons.size() - 1)->getBounds().left,
 			   .right  = buttons.at(buttons.size() - 1)->getBounds().right},
@@ -150,13 +152,13 @@ void MenuBar::setDefaultButtons()
 	addButton(std::make_shared<ButtonClass>(
 		"color",
 		Bounds{.top	   = bounds.top,
-			   .bottom = bounds.top + (float) halfHeight,
+			   .bottom = bounds.top + halfHeight,
 			   .left   = buttons.at(buttons.size() - 1)->getBounds().right + 1,
 			   .right  = buttons.at(buttons.size() - 1)->getBounds().right + defaultButtonWidth},
 		red));
 	addButton(std::make_shared<ButtonClass>(
 		"color",
-		Bounds{.top	   = bounds.top + (float) halfHeight,
+		Bounds{.top	   = bounds.top + halfHeight,
 			   .bottom = bounds.bottom,
 			   .left   = buttons.at(buttons.size() - 1)->getBounds().left,
 			   .right  = buttons.at(buttons.size() - 1)->getBounds().right},
@@ -164,13 +166,13 @@ void MenuBar::setDefaultButtons()
 	addButton(std::make_shared<ButtonClass>(
 		"color",
 		Bounds{.top	   = bounds.top,
-			   .bottom = bounds.top + (float) halfHeight,
+			   .bottom = bounds.top + halfHeight,
 			   .left   = buttons.at(buttons.size() - 1)->getBounds().right + 1,
 			   .right  = buttons.at(buttons.size() - 1)->getBounds().right + defaultButtonWidth},
 		yellow));
 	addButton(std::make_shared<ButtonClass>(
 		"color",
-		Bounds{.top	   = bounds.top + (float) halfHeight,
+		Bounds{.top	   = bounds.top + halfHeight,
 			   .bottom = bounds.bottom,
 			   .left   = buttons.at(buttons.size() - 1)->getBounds().left,
 			   .right  = buttons.at(buttons.size() - 1)->getBounds().right},
@@ -178,13 +180,13 @@ void MenuBar::setDefaultButtons()
 	addButton(std::make_shared<ButtonClass>(
 		"color",
 		Bounds{.top	   = bounds.top,
-			   .bottom = bounds.top + (float) halfHeight,
+			   .bottom = bounds.top + halfHeight,
 			   .left   = buttons.at(buttons.size() - 1)->getBounds().right + 1,
 			   .right  = buttons.at(buttons.size() - 1)->getBounds().right + defaultButtonWidth},
 		blue));
 	addButton(std::make_shared<ButtonClass>(
 		"color",
-		Bounds{.top	   = bounds.top + (float) halfHeight,
+		Bounds{.top	   = bounds.top + halfHeight,
 			   .bottom = bounds.bottom,
 			   .left   = buttons.at(buttons.size() - 1)->getBounds().left,
 			   .right  = buttons.at(buttons.size() - 1)->getBounds().right},
