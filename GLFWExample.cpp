@@ -75,6 +75,7 @@ int main()
 	textManager->registerTextTool(std::make_shared<Text>(
 		"baby daisy", Bounds(2 * defaultMenuBarHeight, defaultWindowHeight, 0, defaultWindowWidth),
 		"Delius", defaultFontSize, Color{.r = 0.0F, .g = 0.0F, .b = 0.0F, .a = 1.0F}, true));
+	textManager->setTextToolActive();
 	inputManager->setResizeCallback([&](int w, int h) { CanvasRenderer::resize(w, h); });
 
 	menuBar->setBounds(Bounds(0, defaultMenuBarHeight, 0, static_cast<float>(INT_MAX)));

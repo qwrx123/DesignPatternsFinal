@@ -161,10 +161,7 @@ void InputManager::bindToWindow(GLFWwindow* window)
 								return;
 							}
 
-							// Handle character input here if needed
 							self->handleChar(codepoint);
-							std::cout << "Character input: " << static_cast<char>(codepoint)
-									  << "\n";
 						});
 
 	glfwSetFramebufferSizeCallback(

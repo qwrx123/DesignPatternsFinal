@@ -41,7 +41,11 @@ class TextManager : public ITextManager, public IInputReceiver
 
 	[[nodiscard]] std::vector<std::shared_ptr<IText>> copyTexts() const;
 
-	bool active = false;
+	bool		active = false;
+	Bounds		bounds;
+	std::string fontName;
+	int			fontSize = 0;
+	Color		color;
 };
 
 #endif	// TEXTMANAGER_H

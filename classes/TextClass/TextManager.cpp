@@ -1,6 +1,7 @@
 #include "TextManager.h"
 #include <algorithm>
 #include <cassert>
+#include <iostream>
 #include <GLFW/glfw3.h>
 
 TextManager::TextManager() = default;
@@ -32,6 +33,10 @@ TextManager& TextManager::operator=(TextManager&& other) noexcept
 void TextManager::registerTextTool(std::shared_ptr<IText> text)
 {
 	addText(text);
+	bounds	 = text->getBounds();
+	fontName = text->getFontName();
+	fontSize = text->getFontSize();
+	color	 = text->getColor();
 }
 
 bool TextManager::isTextToolActive()
@@ -105,48 +110,78 @@ void TextManager::onMouseMove(double x, double y) {}
 void TextManager::onMouseButton(MouseButton button, KeyAction action, double x, double y) {}
 void TextManager::onKey(int key, KeyAction action)
 {
-	// Handle key input
 	if (active && action == KeyAction::Press)
 	{
-		if (key == GLFW_KEY_ESCAPE)	 // Example: deactivate text tool on Escape key
+		if (key == GLFW_KEY_ESCAPE)
 		{
 			active = false;
+			std::cout << "Text tool deactivated.\n";
 		}
-		else if (key == GLFW_KEY_BACKSPACE)	 // Example: handle backspace
+		else if (key == GLFW_KEY_BACKSPACE)
 		{
-			for (const auto& text : texts)
+			for (auto it = texts.rbegin(); it != texts.rend(); ++it)
 			{
+				auto& text = *it;
 				if (text->isEditable())
 				{
 					std::string content = text->getContent();
 					if (!content.empty())
 					{
-						content.pop_back();	 // Remove last character
+						content.pop_back();
 						text->setContent(content);
 					}
-					break;	// Only modify the first editable text
+					else if (texts.size() > 1)
+					{
+						removeText(text);
+					}
+					break;
+				}
+			}
+		}
+		else if (key == GLFW_KEY_ENTER)
+		{
+			Bounds prevBounds;
+			if (!texts.empty())
+			{
+				prevBounds = texts.back()->getBounds();
+			}
+			else
+			{
+				prevBounds = bounds;
+			}
+			addText(std::make_shared<Text>(
+				"", Bounds((fontSize + prevBounds.top), bounds.bottom, bounds.left, bounds.right),
+				fontName, fontSize, color, true));
+		}
+		else if (key == GLFW_KEY_TAB)
+		{
+			for (auto it = texts.rbegin(); it != texts.rend(); ++it)
+			{
+				auto& text = *it;
+				if (text->isEditable())
+				{
+					std::string content = text->getContent();
+					content += '\t';
+					text->setContent(content);
+					break;
 				}
 			}
 		}
 	}
-	else if (active && action == KeyAction::Release)
-	{
-		// Handle other key releases if needed
-	}
 }
 void TextManager::onChar(unsigned int codepoint)
 {
-	// Handle character input
 	if (active)
 	{
-		for (const auto& text : texts)
+		for (auto it = texts.rbegin(); it != texts.rend(); ++it)
 		{
+			auto& text = *it;
 			if (text->isEditable())
 			{
 				std::string content = text->getContent();
 				content += static_cast<char>(codepoint);
 				text->setContent(content);
-				break;	// Only modify the first editable text
+				break;
 			}
 		}
 	}
