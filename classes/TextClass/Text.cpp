@@ -1,8 +1,19 @@
 #include "Text.h"
 
-Text::Text() : color({.r = 0, .g = 0, .b = 0, .a = 0}) {}
+Text::Text() : color({.r = 0, .g = 0, .b = 0, .a = 1}) {}
 
 Text::~Text() = default;
+
+Text::Text(const std::string& text, const Bounds& bounds, const std::string& fontName, int fontSize,
+		   const Color& color, bool editable)
+	: content(text),
+	  bounds(bounds),
+	  fontName(fontName),
+	  fontSize(fontSize),
+	  color(color),
+	  editable(editable)
+{
+}
 
 std::string Text::getContent() const
 {

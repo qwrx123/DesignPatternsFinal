@@ -6,6 +6,7 @@
 #include "IStroke.h"
 #include "IText.h"
 #include "Font.h"
+#include "Color.h"
 #include <GLFW/glfw3.h>
 
 class CanvasRenderer : public ICanvasRenderer
@@ -29,7 +30,7 @@ class CanvasRenderer : public ICanvasRenderer
 	void		endFrame() override;
 
 	static void textRenderTest();
-	static void renderGlyph(FT_Face face, FT_GlyphSlot glyph, float x, float y);
+	static void renderGlyph(FT_Face face, FT_GlyphSlot glyph, float x, float y, Color color);
 
    private:
 	GLFWwindow* window_;
