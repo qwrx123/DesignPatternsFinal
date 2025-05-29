@@ -6,9 +6,14 @@ ToolManager::~ToolManager() = default;
 
 void ToolManager::registerTool(const std::string& name, std::shared_ptr<IDrawingTool> tool)
 {
-	tools[name] = tool;
+	bool overwriting_active_tool = (current_tool_name == name);
+	tools[name]					 = tool;
 
-	// Optionally auto-select the first registered tool
+	if (overwriting_active_tool)
+	{
+		current_tool = tool;
+	}
+
 	if (!current_tool)
 	{
 		current_tool	  = tool;
@@ -75,7 +80,7 @@ void ToolManager::onMouseButton(MouseButton button, KeyAction action, double x, 
 	if (!current_tool || button != MouseButton::Left)
 	{
 		return;
-	};
+	}
 
 	Point p = {.x = x, .y = y};
 
@@ -92,12 +97,9 @@ void ToolManager::onMouseButton(MouseButton button, KeyAction action, double x, 
 void ToolManager::onKey(int key, KeyAction action)
 {
 	// Optional: switch tools with keys
-	// Example:
-	// if (action == KeyAction::Press && key == GLFW_KEY_E) selectTool("eraser");
 }
 
 void ToolManager::onChar(unsigned int codepoint)
 {
 	// Optional: handle character input
-	// Example: if (codepoint == 'B') selectTool("brush");
 }

@@ -2,12 +2,14 @@
 #include <GLFW/glfw3.h>
 #include <iostream>
 #include <memory>
+#include <optional>
 
 #include "CanvasRenderer.h"
 #include "InputManager.h"
 #include "StrokeManager.h"
 #include "ToolManager.h"
 #include "BrushTool.h"
+#include "EraserTool.h"
 #include "MenuBar.h"
 #include "ButtonClass.h"
 
@@ -16,16 +18,14 @@ const int		  defaultWindowHeight = 600;
 const char* const defaultWindowTitle  = "Drawing App";
 
 const float defaultThickness	 = 2.0F;
-const int	defaultMenuBarHeight = 39;
+const int	defaultMenuBarHeight = 100;
+const float buttonWidth			 = 40.0F;
+const float grayColor			 = 0.5F;
 
-const float grayColor = 0.5F;
-
-// --- Main Entry ---
 int main()
 {
 	if (glfwInit() == GLFW_FALSE)
 	{
-		std::cerr << "GLFW failed to initialize\n";
 		return -1;
 	}
 
@@ -37,7 +37,6 @@ int main()
 										  defaultWindowTitle, nullptr, nullptr);
 	if (window == nullptr)
 	{
-		std::cerr << "Failed to create GLFW window\n";
 		glfwTerminate();
 		return -1;
 	}
@@ -46,58 +45,105 @@ int main()
 	glewExperimental = GL_TRUE;
 	if (glewInit() != GLEW_OK)
 	{
-		std::cerr << "Failed to initialize GLEW\n";
 		glfwDestroyWindow(window);
 		glfwTerminate();
 		return -1;
 	}
 
-	// --- Core Systems ---
-	auto renderer	   = std::make_unique<CanvasRenderer>(window);
-	auto strokeManager = std::make_shared<StrokeManager>();
-	auto toolManager   = std::make_shared<ToolManager>();
-	auto inputManager  = std::make_shared<InputManager>();
-	auto menuBar	   = std::make_shared<MenuBar>();
+	auto					   renderer		 = std::make_unique<CanvasRenderer>(window);
+	auto					   strokeManager = std::make_shared<StrokeManager>();
+	auto					   toolManager	 = std::make_shared<ToolManager>();
+	auto					   inputManager	 = std::make_shared<InputManager>();
+	auto					   menuBar		 = std::make_shared<MenuBar>();
+	std::optional<std::string> pendingToolSwitch;
 
 	inputManager->bindToWindow(window);
 	inputManager->registerReceiver(toolManager);
+	inputManager->setResizeCallback([&](int w, int h) { renderer->resize(w, h); });
 
 	toolManager->registerTool(
-		"brush", std::make_shared<BrushTool>(
-					 strokeManager, Color{.r = 0.0F, .g = 0.0F, .b = 0.0F, .a = 1.0F},	// Black
-					 defaultThickness													// Thickness
-					 ));
-
-	inputManager->setResizeCallback([&](int w, int h) { CanvasRenderer::resize(w, h); });
+		"brush", std::make_shared<BrushTool>(strokeManager, Color{0.0F, 0.0F, 0.0F, 1.0F},
+											 defaultThickness));
+	toolManager->registerTool("eraser", std::make_shared<EraserTool>(strokeManager, 10.0F));
 
 	menuBar->setBounds(Bounds(0, defaultMenuBarHeight, 0, static_cast<float>(INT_MAX)));
-	menuBar->addButton(std::make_shared<ButtonClass>(
-		"button",
-		Bounds(0, menuBar->getBounds().bottom,
-			   menuBar->getButtons().at(menuBar->getButtons().size() - 1)->getBounds().right + 1,
-			   menuBar->getButtons().at(menuBar->getButtons().size() - 1)->getBounds().right + 1 +
-				   defaultMenuBarHeight),
-		bColor(0, grayColor, grayColor, 1)));
 
-	// --- Main Loop ---
-	while (glfwWindowShouldClose(window) == 0)
+	float currentRight = 0.0F;
+
+	menuBar->addButton(std::make_shared<ButtonClass>(
+		"brush", Bounds(0, defaultMenuBarHeight, currentRight, currentRight + buttonWidth),
+		bColor(0, grayColor, grayColor, 1)));
+	currentRight += buttonWidth + 1;
+
+	menuBar->addButton(std::make_shared<ButtonClass>(
+		"eraser", Bounds(0, defaultMenuBarHeight, currentRight, currentRight + buttonWidth),
+		bColor(1, 0.5F, 0.0F, 1)));
+
+	static bool wasPressedLastFrame = false;
+
+	while (!glfwWindowShouldClose(window))
 	{
 		inputManager->beginFrame();
 		glfwPollEvents();
 
+		double mouseX, mouseY;
+		glfwGetCursorPos(window, &mouseX, &mouseY);
+		bool isPressedNow = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS;
+
+		if (isPressedNow && !wasPressedLastFrame)
+		{
+			for (const auto& button : menuBar->getButtons())
+			{
+				if (button->getBounds().contains(mouseX, mouseY))
+				{
+					pendingToolSwitch	= button->getLabel();
+					wasPressedLastFrame = isPressedNow;
+					goto render_frame;
+				}
+			}
+		}
+
+		wasPressedLastFrame = isPressedNow;
+
+	render_frame:
 		renderer->beginFrame();
+
 		for (const auto& stroke : strokeManager->getStrokes())
 		{
 			renderer->drawStroke(*stroke);
 		}
 
+		if (pendingToolSwitch)
+		{
+			toolManager->selectTool(*pendingToolSwitch);
+			pendingToolSwitch.reset();
+		}
+
 		auto current_tool = toolManager->getActiveTool();
+
+		if (isPressedNow && !wasPressedLastFrame)
+		{
+			current_tool->beginStroke({mouseX, mouseY});
+		}
+		else if (isPressedNow && wasPressedLastFrame)
+		{
+			current_tool->addPoint({mouseX, mouseY});
+		}
+		else if (!isPressedNow && wasPressedLastFrame)
+		{
+			current_tool->endStroke({mouseX, mouseY});
+		}
+
 		if (current_tool)
 		{
-			auto live_stroke = current_tool->getCurrentStroke();
-			if (live_stroke)
+			auto brush = std::dynamic_pointer_cast<BrushTool>(current_tool);
+			if (brush)
 			{
-				renderer->drawStroke(*live_stroke);
+				auto live_stroke = brush->getCurrentStroke();
+				if (live_stroke && live_stroke->getPoints().size() >= 2)
+				{
+					renderer->drawStroke(*live_stroke);
+				}
 			}
 		}
 
@@ -108,11 +154,9 @@ int main()
 		}
 
 		renderer->endFrame();
-
 		inputManager->endFrame();
 	}
 
-	// --- Shutdown ---
 	glfwDestroyWindow(window);
 	glfwTerminate();
 	return 0;
