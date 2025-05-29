@@ -1,6 +1,29 @@
 #include "StrokeManager.h"
 #include "Stroke.h"
 #include <cassert>
+#include <cmath>
+
+static float pointToSegmentDistance(const Point& p, const Point& a, const Point& b)
+{
+	Point ab			 = {b.x - a.x, b.y - a.y};
+	Point ap			 = {p.x - a.x, p.y - a.y};
+	float ab_len_squared = ab.x * ab.x + ab.y * ab.y;
+
+	if (ab_len_squared == 0.0f)
+	{
+		float dx = p.x - a.x;
+		float dy = p.y - a.y;
+		return std::sqrt(dx * dx + dy * dy);
+	}
+
+	float projection = (ap.x * ab.x + ap.y * ab.y) / ab_len_squared;
+	float t			 = std::max(0.0f, std::min(1.0f, projection));
+	Point closest	 = {a.x + ab.x * t, a.y + ab.y * t};
+
+	float dx = p.x - closest.x;
+	float dy = p.y - closest.y;
+	return std::sqrt(dx * dx + dy * dy);
+}
 
 StrokeManager::StrokeManager() = default;
 
@@ -59,22 +82,47 @@ void StrokeManager::splitEraseWithPath(const std::shared_ptr<IStroke>& eraser_pa
 {
 	std::vector<std::shared_ptr<IStroke>> updated_strokes;
 
+	// For each existing stroke
 	for (const auto& stroke : strokes_)
 	{
 		std::vector<Point> current_segment;
 		const auto&		   stroke_pts = stroke->getPoints();
 
-		for (const auto& pt : stroke_pts)
+		for (size_t i = 0; i < stroke_pts.size(); ++i)
 		{
 			bool is_erased = false;
-			for (const auto& ept : eraser_path->getPoints())
+
+			if (i + 1 < stroke_pts.size())
 			{
-				double dx = pt.x - ept.x;
-				double dy = pt.y - ept.y;
-				if ((dx * dx + dy * dy) <= (eraser_radius * eraser_radius))
+				Point a = stroke_pts[i];
+				Point b = stroke_pts[i + 1];
+
+				// Check each eraser segment against this stroke segment
+				const auto& erase_pts = eraser_path->getPoints();
+				for (size_t j = 0; j + 1 < erase_pts.size(); ++j)
 				{
-					is_erased = true;
-					break;
+					Point e_center = erase_pts[j];
+
+					// Erase if segment is within eraser radius
+					if (pointToSegmentDistance(e_center, a, b) <= eraser_radius)
+					{
+						is_erased = true;
+						break;
+					}
+				}
+			}
+			else
+			{
+				// Last point in stroke: do point-to-point erasing
+				for (const auto& ep : eraser_path->getPoints())
+				{
+					float dx = stroke_pts[i].x - ep.x;
+					float dy = stroke_pts[i].y - ep.y;
+					if ((dx * dx + dy * dy) <= (eraser_radius * eraser_radius))
+					{
+						is_erased = true;
+						break;
+					}
 				}
 			}
 
@@ -91,7 +139,7 @@ void StrokeManager::splitEraseWithPath(const std::shared_ptr<IStroke>& eraser_pa
 			}
 			else
 			{
-				current_segment.push_back(pt);
+				current_segment.push_back(stroke_pts[i]);
 			}
 		}
 
