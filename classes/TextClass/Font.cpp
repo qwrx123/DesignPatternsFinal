@@ -59,7 +59,7 @@ void Font::setFontSize(int size)
 	FT_Set_Pixel_Sizes(face, 0, size);
 }
 
-int Font::getFontSize()
+int Font::getFontSize() const
 {
 	return fontSize;
 }

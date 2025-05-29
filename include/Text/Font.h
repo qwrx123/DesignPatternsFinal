@@ -19,7 +19,7 @@ class Font
 	[[nodiscard]] FT_Face	getFontFace() const;
 	[[nodiscard]] FT_Bitmap getFontBitmap(char c) const;
 	void					setFontSize(int size);
-	int						getFontSize();
+	[[nodiscard]] int		getFontSize() const;
 
    private:
 	FT_Library			  library  = nullptr;
