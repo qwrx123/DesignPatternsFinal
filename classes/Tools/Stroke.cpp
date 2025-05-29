@@ -1,5 +1,6 @@
 #include "Stroke.h"
 #include <cmath>
+#include <iostream>
 
 Stroke::Stroke(Color color, float thickness) : stroke_color(color), stroke_thickness(thickness) {}
 

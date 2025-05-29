@@ -1,5 +1,4 @@
 #include "CanvasRenderer.h"
-#include <iostream>
 #include "Font.h"
 #include "Color.h"
 #ifdef _WIN32
@@ -8,24 +7,20 @@
 
 CanvasRenderer::CanvasRenderer(GLFWwindow* window) : window_(window)
 {
-	int width  = 0;
-	int height = 0;
-	glfwGetFramebufferSize(window, &width, &height);
+	int width = 0, height = 0;
+	glfwGetFramebufferSize(window_, &width, &height);
 
 	glViewport(0, 0, width, height);
 
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	int right  = width;
-	int bottom = height;
-	glOrtho(0, right, bottom, 0, -1, 1);  // ← Top-left is (0,0)
+	glOrtho(0, width, height, 0, -1, 1);
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
 	glEnable(GL_LINE_SMOOTH);
 	glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
-
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
@@ -34,24 +29,23 @@ CanvasRenderer::~CanvasRenderer() = default;
 
 void CanvasRenderer::beginFrame()
 {
-	glClearColor(1.0F, 1.0F, 1.0F, 1.0F);  // White background
+	glClearColor(1.0F, 1.0F, 1.0F, 1.0F);
 	glClear(GL_COLOR_BUFFER_BIT);
 }
 
 void CanvasRenderer::drawStroke(const IStroke& stroke)
 {
 	const auto& points = stroke.getPoints();
-	if (points.size() < 2)
-	{
-		return;
-	}
+	if (points.size() < 2) return;
+
+	Color color = stroke.getColor();
+	glColor4f(color.r, color.g, color.b, color.a);
 
 	glLineWidth(stroke.getThickness());
-	glColor4f(0.0F, 0.0F, 0.0F, 1.0F);
 	glBegin(GL_LINE_STRIP);
 	for (const auto& p : points)
 	{
-		glVertex2d(p.x, p.y);
+		glVertex2f(static_cast<float>(p.x), static_cast<float>(p.y));
 	}
 	glEnd();
 }
@@ -167,7 +161,6 @@ void CanvasRenderer::renderGlyph(FT_Face face, FT_GlyphSlot glyph, float x, floa
 	glDisable(GL_BLEND);
 	glDeleteTextures(1, &texture);
 }
-
 void CanvasRenderer::endFrame()
 {
 	glfwSwapBuffers(window_);
@@ -179,9 +172,7 @@ void CanvasRenderer::resize(int width, int height)
 
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	int right  = width;
-	int bottom = height;
-	glOrtho(0, right, bottom, 0, -1, 1);  // Top-left origin
+	glOrtho(0, width, height, 0, -1, 1);
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();

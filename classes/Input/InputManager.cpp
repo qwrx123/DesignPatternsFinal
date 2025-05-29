@@ -1,6 +1,5 @@
 #include "InputManager.h"
 #include <algorithm>
-#include <iostream>
 
 InputManager::InputManager() = default;
 
@@ -174,7 +173,6 @@ void InputManager::bindToWindow(GLFWwindow* window)
 				return;
 			}
 
-			// Broadcast resize to renderer (needs access to it)
 			if (self->resize_callback)
 			{
 				self->resize_callback(width, height);

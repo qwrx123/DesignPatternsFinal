@@ -1,5 +1,6 @@
 #include "BrushTool.h"
 #include "Stroke.h"
+#include <cmath>
 
 BrushTool::BrushTool(Color color, float thickness)
 	: brush_color(color), brush_thickness(thickness), active(false)
