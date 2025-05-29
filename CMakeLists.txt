@@ -30,17 +30,21 @@ set(PROJECT_COMMON_INCLUDE_DIRS
 	${CMAKE_SOURCE_DIR}/include/Rendering
 	${CMAKE_SOURCE_DIR}/include/Text
 	${CMAKE_SOURCE_DIR}/include/Tools
+	${CMAKE_SOURCE_DIR}/include/ToolBar
+
 	${CMAKE_SOURCE_DIR}/interfaces
 	${CMAKE_SOURCE_DIR}/interfaces/canvas
 	${CMAKE_SOURCE_DIR}/interfaces/drawing
 	${CMAKE_SOURCE_DIR}/interfaces/file
 	${CMAKE_SOURCE_DIR}/interfaces/text
 	${CMAKE_SOURCE_DIR}/interfaces/ui
+	
 	${CMAKE_SOURCE_DIR}/classes
 	${CMAKE_SOURCE_DIR}/classes/Input
 	${CMAKE_SOURCE_DIR}/classes/Rendering
 	${CMAKE_SOURCE_DIR}/classes/TextClass
 	${CMAKE_SOURCE_DIR}/classes/Tools
+	${CMAKE_SOURCE_DIR}/classes/ToolBar
 )
 
 # Set up installing
@@ -122,8 +126,7 @@ target_link_libraries(GlfwTestApp
 	Rendering
 	Tools
 	Input
-	MenuBar
-	ButtonClass
+	ToolBar
 )
 
 target_include_directories(GlfwTestApp

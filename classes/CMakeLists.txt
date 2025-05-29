@@ -3,74 +3,38 @@ add_library(WindowClass
 	WindowClass.cpp
 )
 
-add_library(ButtonClass
-	SHARED
-	ButtonClass.cpp
-)
-
-add_library(MenuBar
-	SHARED
-	MenuBar.cpp
-)
-
 add_subdirectory(TextClass)
 add_subdirectory(Tools)
 add_subdirectory(Rendering)
 add_subdirectory(Input)
+add_subdirectory(ToolBar)
 
 find_package(OpenGL REQUIRED)
 find_package(glfw3 3.3 REQUIRED)
 
-registerFilesToFormat(FILES WindowClass.cpp ButtonClass.cpp MenuBar.cpp)
+registerFilesToFormat(FILES WindowClass.cpp)
 
 target_link_libraries(WindowClass
 	PRIVATE
 	${GLEW_LIBRARIES}
 	glfw
 	OpenGL::GL
-	ButtonClass
-	MenuBar
+	ToolBar
 )
 
 target_include_directories(WindowClass
 	PUBLIC
-	${PROJECT_SOURCE_DIR}/include
-	${PROJECT_SOURCE_DIR}/interfaces/ui
+	${PROJECT_COMMON_INCLUDE_DIRS}
 )
-
-target_link_libraries(ButtonClass
-	${GLEW_LIBRARIES}
-	glfw
-	OpenGL::GL
-)
-
-target_include_directories(ButtonClass
-	PUBLIC
-	${PROJECT_SOURCE_DIR}/include
-	${PROJECT_SOURCE_DIR}/interfaces/ui
-)
-
-target_link_libraries(MenuBar
-	ButtonClass
-)
-
-target_include_directories(MenuBar
-	PUBLIC
-	${PROJECT_SOURCE_DIR}/include
-	${PROJECT_SOURCE_DIR}/include/Tools
-	${PROJECT_SOURCE_DIR}/interfaces/ui
-	${PROJECT_SOURCE_DIR}/interfaces/drawing
-	)
 
 if(WIN32)
-	install(TARGETS WindowClass ButtonClass MenuBar
+	install(TARGETS WindowClass
 	RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 	ARCHIVE DESTINATION ${CMAKE_INSTALL_BINDIR}
 	)
 else()
-	install(TARGETS WindowClass ButtonClass MenuBar
+	install(TARGETS WindowClass
 	LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
 	ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
 	)
 endif()
-

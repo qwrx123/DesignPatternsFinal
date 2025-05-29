@@ -1,6 +1,5 @@
 #include "InputManager.h"
 #include <algorithm>
-#include <iostream>
 
 InputManager::InputManager() = default;
 
@@ -161,10 +160,7 @@ void InputManager::bindToWindow(GLFWwindow* window)
 								return;
 							}
 
-							// Handle character input here if needed
 							self->handleChar(codepoint);
-							std::cout << "Character input: " << static_cast<char>(codepoint)
-									  << "\n";
 						});
 
 	glfwSetFramebufferSizeCallback(
@@ -177,7 +173,6 @@ void InputManager::bindToWindow(GLFWwindow* window)
 				return;
 			}
 
-			// Broadcast resize to renderer (needs access to it)
 			if (self->resize_callback)
 			{
 				self->resize_callback(width, height);
