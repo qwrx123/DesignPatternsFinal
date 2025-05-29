@@ -113,7 +113,7 @@ find_package(OpenGL REQUIRED)
 find_package(Freetype REQUIRED)
 find_package(GLEW REQUIRED)
 
-add_executable(GlfwTestApp GLFWExample.cpp)
+add_executable(GlfwTestApp Main.cpp)
 
 target_link_libraries(GlfwTestApp
     WindowClass
@@ -139,7 +139,7 @@ target_include_directories(GlfwTestApp
 		${FREETYPE_INCLUDE_DIRS}
 )
 
-registerFilesToFormat(FILES GLFWExample.cpp)
+registerFilesToFormat(FILES Main.cpp)
 
 install(TARGETS GlfwTestApp
 	DESTINATION ${CMAKE_INSTALL_BINDIR}
