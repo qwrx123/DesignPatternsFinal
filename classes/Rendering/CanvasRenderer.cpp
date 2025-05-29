@@ -6,14 +6,17 @@
 
 CanvasRenderer::CanvasRenderer(GLFWwindow* window) : window_(window)
 {
-	int width = 0, height = 0;
+	int width  = 0;
+	int height = 0;
 	glfwGetFramebufferSize(window_, &width, &height);
 
 	glViewport(0, 0, width, height);
 
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	glOrtho(0, width, height, 0, -1, 1);
+	int right  = width;
+	int bottom = height;
+	glOrtho(0, right, bottom, 0, -1, 1);
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
@@ -36,7 +39,10 @@ void CanvasRenderer::beginFrame()
 void CanvasRenderer::drawStroke(const IStroke& stroke)
 {
 	const auto& points = stroke.getPoints();
-	if (points.size() < 2) return;
+	if (points.size() < 2)
+	{
+		return;
+	}
 
 	Color color = stroke.getColor();
 	glColor4f(color.r, color.g, color.b, color.a);
@@ -53,7 +59,7 @@ void CanvasRenderer::drawStroke(const IStroke& stroke)
 void CanvasRenderer::renderText(const IText& text)
 {
 	std::string content = text.getContent();
-	for (char c : content)
+	for (char c : content)	// NOLINT(clang-analyzer-deadcode.DeadStores)
 	{
 		// Placeholder for future glyph rendering
 	}
@@ -165,7 +171,8 @@ void CanvasRenderer::textRenderTest()
 		}
 		FT_Face face = font.getFontFace();
 		renderGlyph(face, face->glyph, x, y);
-		x += static_cast<float>(face->glyph->advance.x >> 6);
+		const int shiftNum = 6;
+		x += static_cast<float>(face->glyph->advance.x >> shiftNum);
 	}
 }
 
@@ -180,7 +187,9 @@ void CanvasRenderer::resize(int width, int height)
 
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	glOrtho(0, width, height, 0, -1, 1);
+	int right  = width;
+	int bottom = height;
+	glOrtho(0, right, bottom, 0, -1, 1);
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
