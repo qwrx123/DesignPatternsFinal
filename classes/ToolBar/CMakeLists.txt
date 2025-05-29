@@ -3,6 +3,7 @@ add_library(
     SHARED
     MenuBar.cpp
     ButtonClass.cpp
+    SubMenu.cpp
 )
 
 find_package(OpenGL REQUIRED)
