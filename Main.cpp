@@ -80,9 +80,8 @@ int main()
 
 	menuBar->setBounds(Bounds(0, defaultMenuBarHeight, 0, static_cast<float>(INT_MAX)));
 	menuBar->setToolPointer(toolManager);
+	menuBar->setTextPointer(textManager);
 	menuBar->setDefaultButtons();
-
-	static bool wasPressedLastFrame = false;
 
 	while (glfwWindowShouldClose(window) == 0)
 	{
@@ -92,24 +91,15 @@ int main()
 		double mouseX = 0;
 		double mouseY = 0;
 		glfwGetCursorPos(window, &mouseX, &mouseY);
-		bool isPressedNow = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS;
 
-		if (isPressedNow && !wasPressedLastFrame)
+		// smooth by-frame point adding, didn't figure out how to add to ToolManager
+		auto current_tool = toolManager->getActiveTool();
+		if (current_tool->isDrawing())
 		{
-			for (const auto& button : menuBar->getButtons())
-			{
-				if (button->getBounds().contains(mouseX, mouseY))
-				{
-					pendingToolSwitch	= button->getLabel();
-					wasPressedLastFrame = isPressedNow;
-					goto render_frame;
-				}
-			}
+			current_tool->addPoint({.x = mouseX, .y = mouseY});
 		}
 
-		wasPressedLastFrame = isPressedNow;
-
-	render_frame:
+		// begin rendering
 		renderer->beginFrame();
 
 		for (const auto& stroke : strokeManager->getStrokes())
@@ -117,44 +107,9 @@ int main()
 			renderer->drawStroke(*stroke);
 		}
 
-		if (pendingToolSwitch == "text")
-		{
-			if (textManager->isTextToolActive())
-			{
-				textManager->setTextToolInactive();
-				pendingToolSwitch.reset();
-			}
-			else
-			{
-				textManager->setTextToolActive();
-				pendingToolSwitch.reset();
-			}
-		}
-
-		if (pendingToolSwitch)
-		{
-			toolManager->selectTool(*pendingToolSwitch);
-			pendingToolSwitch.reset();
-		}
-
 		for (const auto& text : textManager->getTexts())
 		{
-			CanvasRenderer::renderText(*text);
-		}
-
-		auto current_tool = toolManager->getActiveTool();
-
-		if (isPressedNow && !wasPressedLastFrame)
-		{
-			current_tool->beginStroke({.x = mouseX, .y = mouseY});
-		}
-		else if (isPressedNow && wasPressedLastFrame)
-		{
-			current_tool->addPoint({.x = mouseX, .y = mouseY});
-		}
-		else if (!isPressedNow && wasPressedLastFrame)
-		{
-			current_tool->endStroke({.x = mouseX, .y = mouseY});
+			renderer->renderText(*text);
 		}
 
 		if (current_tool)

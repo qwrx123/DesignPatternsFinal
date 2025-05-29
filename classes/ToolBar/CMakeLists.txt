@@ -11,6 +11,7 @@ find_package(glfw3 3.3 REQUIRED)
 target_include_directories(ToolBar
     PUBLIC
     ${PROJECT_COMMON_INCLUDE_DIRS}
+	${CMAKE_SOURCE_DIR}/include/Text
 )
 
 target_link_libraries(

@@ -9,6 +9,7 @@
 #include "IMenu.h"
 #include "IInputReceiver.h"
 #include "IToolManager.h"
+#include "ITextManager.h"
 
 class MenuBar : public IMenu, public IInputReceiver
 {
@@ -52,12 +53,14 @@ class MenuBar : public IMenu, public IInputReceiver
 	void onChar(unsigned int codepoint) override;
 
 	void setToolPointer(const std::shared_ptr<IToolManager>& ptr);
+	void setTextPointer(const std::shared_ptr<ITextManager>& ptr);
 
    private:
 	std::string							  label;
 	Bounds								  bounds;
 	std::vector<std::shared_ptr<IButton>> buttons;
 	std::shared_ptr<IToolManager>		  tool;
+	std::shared_ptr<ITextManager>		  text;
 	int									  selectedIndex = 0;
 
 	int halfHeight;
