@@ -17,6 +17,8 @@ const int		  defaultWindowWidth  = 800;
 const int		  defaultWindowHeight = 600;
 const char* const defaultWindowTitle  = "Drawing App";
 
+const float defaultEraserSize = 10;
+
 const float defaultThickness	 = 2.0F;
 const int	defaultMenuBarHeight = 100;
 const float buttonWidth			 = 40.0F;
@@ -59,12 +61,14 @@ int main()
 
 	inputManager->bindToWindow(window);
 	inputManager->registerReceiver(toolManager);
-	inputManager->setResizeCallback([&](int w, int h) { renderer->resize(w, h); });
+	inputManager->setResizeCallback([&](int w, int h) { CanvasRenderer::resize(w, h); });
 
 	toolManager->registerTool(
-		"brush", std::make_shared<BrushTool>(strokeManager, Color{0.0F, 0.0F, 0.0F, 1.0F},
-											 defaultThickness));
-	toolManager->registerTool("eraser", std::make_shared<EraserTool>(strokeManager, 10.0F));
+		"brush",
+		std::make_shared<BrushTool>(
+			strokeManager, Color{.r = 0.0F, .g = 0.0F, .b = 0.0F, .a = 1.0F}, defaultThickness));
+	toolManager->registerTool("eraser",
+							  std::make_shared<EraserTool>(strokeManager, defaultEraserSize));
 
 	menuBar->setBounds(Bounds(0, defaultMenuBarHeight, 0, static_cast<float>(INT_MAX)));
 
@@ -77,16 +81,17 @@ int main()
 
 	menuBar->addButton(std::make_shared<ButtonClass>(
 		"eraser", Bounds(0, defaultMenuBarHeight, currentRight, currentRight + buttonWidth),
-		bColor(1, 0.5F, 0.0F, 1)));
+		bColor(1, grayColor, 0.0F, 1)));
 
 	static bool wasPressedLastFrame = false;
 
-	while (!glfwWindowShouldClose(window))
+	while (glfwWindowShouldClose(window) != 0)
 	{
 		inputManager->beginFrame();
 		glfwPollEvents();
 
-		double mouseX, mouseY;
+		double mouseX = 0;
+		double mouseY = 0;
 		glfwGetCursorPos(window, &mouseX, &mouseY);
 		bool isPressedNow = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS;
 
@@ -123,15 +128,15 @@ int main()
 
 		if (isPressedNow && !wasPressedLastFrame)
 		{
-			current_tool->beginStroke({mouseX, mouseY});
+			current_tool->beginStroke({.x = mouseX, .y = mouseY});
 		}
 		else if (isPressedNow && wasPressedLastFrame)
 		{
-			current_tool->addPoint({mouseX, mouseY});
+			current_tool->addPoint({.x = mouseX, .y = mouseY});
 		}
 		else if (!isPressedNow && wasPressedLastFrame)
 		{
-			current_tool->endStroke({mouseX, mouseY});
+			current_tool->endStroke({.x = mouseX, .y = mouseY});
 		}
 
 		if (current_tool)
