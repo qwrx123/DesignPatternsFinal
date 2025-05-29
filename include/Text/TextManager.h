@@ -47,6 +47,10 @@ class TextManager : public ITextManager, public IInputReceiver
 	std::string fontName;
 	int			fontSize = 0;
 	Color		color	 = {.r = 0.0F, .g = 0.0F, .b = 0.0F, .a = 1.0F};
+
+	void insertTab();
+	void handleBackspace();
+	void handleEnter();
 };
 
 #endif	// TEXTMANAGER_H
