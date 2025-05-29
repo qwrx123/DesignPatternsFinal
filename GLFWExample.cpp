@@ -78,7 +78,8 @@ int main()
 		Bounds(defaultFontSize + defaultMenuBarHeight, defaultWindowHeight, 0, defaultWindowWidth),
 		"Delius", defaultFontSize, Color{.r = 0.0F, .g = 0.0F, .b = 0.0F, .a = 1.0F}, true));
 	// textManager->setTextToolActive();
-	toolManager->registerTool("eraser", std::make_shared<EraserTool>(strokeManager, defaultEraserSize));
+	toolManager->registerTool("eraser",
+							  std::make_shared<EraserTool>(strokeManager, defaultEraserSize));
 
 	menuBar->setBounds(Bounds(0, defaultMenuBarHeight, 0, static_cast<float>(INT_MAX)));
 
