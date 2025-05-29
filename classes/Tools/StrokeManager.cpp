@@ -92,59 +92,8 @@ void StrokeManager::splitEraseWithPath(const std::shared_ptr<IStroke>& eraser_pa
 		for (size_t i = 0; i < stroke_pts.size(); ++i)
 		{
 			bool is_erased = false;
-
-			if (i + 1 < stroke_pts.size())
-			{
-				Point a = stroke_pts[i];
-				Point b = stroke_pts[i + 1];
-
-				// Check each eraser segment against this stroke segment
-				const auto& erase_pts = eraser_path->getPoints();
-				for (size_t j = 0; j + 1 < erase_pts.size(); ++j)
-				{
-					Point e_center = erase_pts[j];
-
-					// Erase if segment is within eraser radius
-					if (pointToSegmentDistance(e_center, a, b) <= eraser_radius)
-					{
-						is_erased = true;
-						break;
-					}
-				}
-			}
-			else
-			{
-				// Last point in stroke: do point-to-point erasing
-				for (const auto& ep : eraser_path->getPoints())
-				{
-					auto dx = static_cast<float>(stroke_pts[i].x - ep.x);
-					auto dy = static_cast<float>(stroke_pts[i].y - ep.y);
-					if ((dx * dx + dy * dy) <= (eraser_radius * eraser_radius))
-					{
-						is_erased = true;
-						break;
-					}
-				}
-			}
-
-			if (is_erased)
-			{
-				if (!current_segment.empty())
-				{
-					auto new_stroke =
-						std::make_shared<Stroke>(stroke->getColor(), stroke->getThickness());
-					for (const auto& p : current_segment)
-					{
-						new_stroke->addPoint(p);
-					}
-					updated_strokes.push_back(new_stroke);
-					current_segment.clear();
-				}
-			}
-			else
-			{
-				current_segment.push_back(stroke_pts[i]);
-			}
+			isErased(stroke_pts, i, is_erased, updated_strokes, current_segment, eraser_path,
+					 eraser_radius, stroke);
 		}
 
 		if (!current_segment.empty())
@@ -179,4 +128,65 @@ std::vector<std::shared_ptr<IStroke>> StrokeManager::cloneStrokes() const
 	}
 
 	return clonedStrokes;
+}
+
+void StrokeManager::isErased(const auto& stroke_pts, size_t i, bool& is_erased,
+							 std::vector<std::shared_ptr<IStroke>>& updated_strokes,
+							 std::vector<Point>&					current_segment,
+							 const std::shared_ptr<IStroke>& eraser_path, float eraser_radius,
+							 const std::shared_ptr<IStroke>& stroke)
+{
+	// This function is a placeholder for any additional logic needed when a stroke is erased.
+	// Currently, it does nothing but can be extended in the future if needed.
+	if (i + 1 < stroke_pts.size())
+	{
+		Point a = stroke_pts[i];
+		Point b = stroke_pts[i + 1];
+
+		// Check each eraser segment against this stroke segment
+		const auto& erase_pts = eraser_path->getPoints();
+		for (size_t j = 0; j + 1 < erase_pts.size(); ++j)
+		{
+			Point e_center = erase_pts[j];
+
+			// Erase if segment is within eraser radius
+			if (pointToSegmentDistance(e_center, a, b) <= eraser_radius)
+			{
+				is_erased = true;
+				break;
+			}
+		}
+	}
+	else
+	{
+		// Last point in stroke: do point-to-point erasing
+		for (const auto& ep : eraser_path->getPoints())
+		{
+			auto dx = static_cast<float>(stroke_pts[i].x - ep.x);
+			auto dy = static_cast<float>(stroke_pts[i].y - ep.y);
+			if ((dx * dx + dy * dy) <= (eraser_radius * eraser_radius))
+			{
+				is_erased = true;
+				break;
+			}
+		}
+	}
+
+	if (is_erased)
+	{
+		if (!current_segment.empty())
+		{
+			auto new_stroke = std::make_shared<Stroke>(stroke->getColor(), stroke->getThickness());
+			for (const auto& p : current_segment)
+			{
+				new_stroke->addPoint(p);
+			}
+			updated_strokes.push_back(new_stroke);
+			current_segment.clear();
+		}
+	}
+	else
+	{
+		current_segment.push_back(stroke_pts[i]);
+	}
 }
