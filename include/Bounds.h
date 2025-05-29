@@ -8,7 +8,7 @@ struct Bounds
 	float left;
 	float right;
 
-	bool contains(double x, double y) const
+	[[nodiscard]] bool contains(double x, double y) const
 	{
 		return x >= left && x <= right && y >= top && y <= bottom;
 	}

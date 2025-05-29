@@ -5,24 +5,25 @@
 
 static float pointToSegmentDistance(const Point& p, const Point& a, const Point& b)
 {
-	Point ab			 = {b.x - a.x, b.y - a.y};
-	Point ap			 = {p.x - a.x, p.y - a.y};
-	float ab_len_squared = ab.x * ab.x + ab.y * ab.y;
+	Point ab			 = {.x = (b.x - a.x), .y = (b.y - a.y)};
+	Point ap			 = {.x = (p.x - a.x), .y = (p.y - a.y)};
+	auto  ab_len_squared = ((ab.x * ab.x) + (ab.y * ab.y));
 
-	if (ab_len_squared == 0.0f)
+	if (ab_len_squared == 0.0F)
 	{
-		float dx = p.x - a.x;
-		float dy = p.y - a.y;
-		return std::sqrt(dx * dx + dy * dy);
+		auto dx = static_cast<float>(p.x - a.x);
+		auto dy = static_cast<float>(p.y - a.y);
+		return std::sqrt((dx * dx) + (dy * dy));
 	}
 
-	float projection = (ap.x * ab.x + ap.y * ab.y) / ab_len_squared;
-	float t			 = std::max(0.0f, std::min(1.0f, projection));
-	Point closest	 = {a.x + ab.x * t, a.y + ab.y * t};
+	float projection =
+		static_cast<float>(((ap.x * ab.x) + (ap.y * ab.y))) / static_cast<float>(ab_len_squared);
+	float t		  = std::max(0.0F, std::min(1.0F, projection));
+	Point closest = {.x = (a.x + (ab.x * t)), .y = (a.y + (ab.y * t))};
 
-	float dx = p.x - closest.x;
-	float dy = p.y - closest.y;
-	return std::sqrt(dx * dx + dy * dy);
+	auto dx = static_cast<float>(p.x - closest.x);
+	auto dy = static_cast<float>(p.y - closest.y);
+	return std::sqrt((dx * dx) + (dy * dy));
 }
 
 StrokeManager::StrokeManager() = default;
@@ -116,8 +117,8 @@ void StrokeManager::splitEraseWithPath(const std::shared_ptr<IStroke>& eraser_pa
 				// Last point in stroke: do point-to-point erasing
 				for (const auto& ep : eraser_path->getPoints())
 				{
-					float dx = stroke_pts[i].x - ep.x;
-					float dy = stroke_pts[i].y - ep.y;
+					auto dx = static_cast<float>(stroke_pts[i].x - ep.x);
+					auto dy = static_cast<float>(stroke_pts[i].y - ep.y);
 					if ((dx * dx + dy * dy) <= (eraser_radius * eraser_radius))
 					{
 						is_erased = true;
@@ -132,7 +133,10 @@ void StrokeManager::splitEraseWithPath(const std::shared_ptr<IStroke>& eraser_pa
 				{
 					auto new_stroke =
 						std::make_shared<Stroke>(stroke->getColor(), stroke->getThickness());
-					for (const auto& p : current_segment) new_stroke->addPoint(p);
+					for (const auto& p : current_segment)
+					{
+						new_stroke->addPoint(p);
+					}
 					updated_strokes.push_back(new_stroke);
 					current_segment.clear();
 				}
@@ -146,7 +150,10 @@ void StrokeManager::splitEraseWithPath(const std::shared_ptr<IStroke>& eraser_pa
 		if (!current_segment.empty())
 		{
 			auto new_stroke = std::make_shared<Stroke>(stroke->getColor(), stroke->getThickness());
-			for (const auto& p : current_segment) new_stroke->addPoint(p);
+			for (const auto& p : current_segment)
+			{
+				new_stroke->addPoint(p);
+			}
 			updated_strokes.push_back(new_stroke);
 		}
 	}

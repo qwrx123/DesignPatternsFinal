@@ -33,7 +33,7 @@ class EraserTool : public IDrawingTool
 	std::shared_ptr<Stroke>			erase_path;
 	std::shared_ptr<IStrokeManager> stroke_manager;
 	float							eraser_thickness;
-	bool							active;
+	bool							active	= false;
 	bool							drawing = false;
 };
 

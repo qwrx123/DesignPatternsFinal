@@ -5,28 +5,29 @@
 // Helper: Distance from a point to a line segment
 static float pointToSegmentDistance(const Point& p, const Point& a, const Point& b)
 {
-	Point ab			 = {b.x - a.x, b.y - a.y};
-	Point ap			 = {p.x - a.x, p.y - a.y};
-	float ab_len_squared = ab.x * ab.x + ab.y * ab.y;
+	Point ab			 = {.x = (b.x - a.x), .y = (b.y - a.y)};
+	Point ap			 = {.x = (p.x - a.x), .y = (p.y - a.y)};
+	auto  ab_len_squared = ((ab.x * ab.x) + (ab.y * ab.y));
 
-	if (ab_len_squared == 0.0f)
+	if (ab_len_squared == 0.0F)
 	{
-		float dx = p.x - a.x;
-		float dy = p.y - a.y;
-		return std::sqrt(dx * dx + dy * dy);
+		auto dx = static_cast<float>(p.x - a.x);
+		auto dy = static_cast<float>(p.y - a.y);
+		return std::sqrt((dx * dx) + (dy * dy));
 	}
 
-	float projection = (ap.x * ab.x + ap.y * ab.y) / ab_len_squared;
-	float t			 = std::max(0.0f, std::min(1.0f, projection));
-	Point closest	 = {a.x + ab.x * t, a.y + ab.y * t};
+	float projection =
+		static_cast<float>(((ap.x * ab.x) + (ap.y * ab.y))) / static_cast<float>(ab_len_squared);
+	float t		  = std::max(0.0F, std::min(1.0F, projection));
+	Point closest = {.x = (a.x + (ab.x * t)), .y = (a.y + (ab.y * t))};
 
-	float dx = p.x - closest.x;
-	float dy = p.y - closest.y;
-	return std::sqrt(dx * dx + dy * dy);
+	auto dx = static_cast<float>(p.x - closest.x);
+	auto dy = static_cast<float>(p.y - closest.y);
+	return std::sqrt((dx * dx) + (dy * dy));
 }
 
 EraserTool::EraserTool(std::shared_ptr<IStrokeManager> stroke_manager, float thickness)
-	: stroke_manager(stroke_manager), eraser_thickness(thickness), active(false), drawing(false)
+	: stroke_manager(std::move(stroke_manager)), eraser_thickness(thickness)
 {
 }
 
@@ -35,19 +36,26 @@ EraserTool::~EraserTool() = default;
 void EraserTool::beginStroke(const Point& start)
 {
 	drawing	   = true;
-	erase_path = std::make_shared<Stroke>(Color{1.0f, 1.0f, 1.0f, 0.0f}, eraser_thickness);
+	erase_path = std::make_shared<Stroke>(Color{.r = 1.0F, .g = 1.0F, .b = 1.0F, .a = 0.0F},
+										  eraser_thickness);
 	erase_path->addPoint(start);
 }
 
 void EraserTool::addPoint(const Point& point)
 {
-	if (!erase_path) return;
+	if (!erase_path)
+	{
+		return;
+	}
 
 	// Add point to visual eraser path
 	erase_path->addPoint(point);
 
 	const auto& points = erase_path->getPoints();
-	if (points.size() < 2) return;
+	if (points.size() < 2)
+	{
+		return;
+	}
 
 	const Point& a = points[points.size() - 2];
 	const Point& b = points[points.size() - 1];
@@ -76,14 +84,17 @@ void EraserTool::addPoint(const Point& point)
 			}
 		}
 
-		if (intersects) break;
+		if (intersects)
+		{
+			break;
+		}
 	}
 
 	// If intersection is likely, send mini path to stroke manager
 	if (intersects)
 	{
-		auto segment_path =
-			std::make_shared<Stroke>(Color{1.0f, 1.0f, 1.0f, 0.0f}, eraser_thickness);
+		auto segment_path = std::make_shared<Stroke>(
+			Color{.r = 1.0F, .g = 1.0F, .b = 1.0F, .a = 0.0F}, eraser_thickness);
 		segment_path->addPoint(a);
 		segment_path->addPoint(b);
 		stroke_manager->splitEraseWithPath(segment_path, eraser_thickness);
