@@ -8,13 +8,17 @@
 const int defaultButtonWidth = 50;
 
 const Color black	 = {.r = 0.0F, .g = 0.0F, .b = 0.0F, .a = 1.0F};
+const Color brown = {.r = 0.5F, .g = 0.2F, .b = 0.0F, .a = 1.0F};
 const Color red	 = {.r = 1.0F, .g = 0.0F, .b = 0.0F, .a = 1.0F};
-const Color orange = {.r = 1.0F, .g = 0.6F, .b = 0.1F, .a = 1.0F};
+const Color orange = {.r = 1.0F, .g = 0.5F, .b = 0.1F, .a = 1.0F};
 const Color yellow = {.r = 0.9F, .g = 0.9F, .b = 0.0F, .a = 1.0F};
 const Color green	 = {.r = 0.0F, .g = 0.7F, .b = 0.1F, .a = 1.0F};
+const Color teal = {.r = 0.0F, .g = 0.51F, .b = 0.51F, .a = 1.0F};
 const Color blue	 = {.r = 0.0F, .g = 0.2F, .b = 0.9F, .a = 1.0F};
 const Color purple = {.r = 0.6F, .g = 0.0F, .b = 0.6F, .a = 1.0F};
+const Color pink = {.r = 1.0F, .g = 0.5F, .b = 0.8F, .a = 1.0F};
 const Color white	 = {.r = 1.0F, .g = 1.0F, .b = 1.0F, .a = 1.0F};
+const Color gray = {.r = 0.5F, .g = 0.5F, .b = 0.5F, .a = 1.0F};
 
 MenuBar::MenuBar() : label("Menu Bar"), bounds{.top = 0,.bottom = 0,.left = 0,.right = 0}, tool(nullptr)
 {
@@ -114,84 +118,122 @@ void MenuBar::close() {}
 
 void MenuBar::setDefaultButtons()
 {
+	float firstDiv = bounds.top + quarterHeight;
+	float midDiv = bounds.top + halfHeight;
+	float thirdDiv = bounds.top + halfHeight + quarterHeight;
 	selectedIndex = 1;
+
+	//regular, half-menubar height buttons
 	addButton(std::make_shared<ButtonClass>(
 		"brush",
 		Bounds{.top	   = bounds.top,
-			   .bottom = bounds.top + halfHeight,
+			   .bottom = midDiv,
 			   .left   = buttons.at(buttons.size() - 1)->getBounds().right + 1,
 			   .right  = buttons.at(buttons.size() - 1)->getBounds().right + defaultButtonWidth},
 		black));
 	addButton(std::make_shared<ButtonClass>(
 		"eraser",
-		Bounds{.top	   = bounds.top + halfHeight,
+		Bounds{.top	   = midDiv,
 			   .bottom = bounds.bottom,
 			   .left   = buttons.at(buttons.size() - 1)->getBounds().left,
 			   .right  = buttons.at(buttons.size() - 1)->getBounds().right},
 		white));
+
 	addButton(std::make_shared<ButtonClass>(
 		"text",
 		Bounds{.top	   = bounds.top,
-			   .bottom = bounds.top + halfHeight,
+			   .bottom = midDiv,
 			   .left   = buttons.at(buttons.size() - 1)->getBounds().right + 1,
 			   .right  = buttons.at(buttons.size() - 1)->getBounds().right + defaultButtonWidth},
 		black));
+
+	//small, quarter size buttons
 	addButton(std::make_shared<ButtonClass>(
 		"color",
 		Bounds{.top	   = bounds.top,
-			   .bottom = bounds.top + halfHeight,
+			   .bottom = firstDiv,
 			   .left   = buttons.at(buttons.size() - 1)->getBounds().right + 1,
-			   .right  = buttons.at(buttons.size() - 1)->getBounds().right + defaultButtonWidth},
+			   .right  = buttons.at(buttons.size() - 1)->getBounds().right + quarterHeight},
 		black));
 	addButton(std::make_shared<ButtonClass>(
 		"color",
-		Bounds{.top	   = bounds.top + halfHeight,
-			   .bottom = bounds.bottom,
+		Bounds{.top	   = firstDiv,
+			   .bottom = midDiv,
 			   .left   = buttons.at(buttons.size() - 1)->getBounds().left,
 			   .right  = buttons.at(buttons.size() - 1)->getBounds().right},
-		white));
+		brown));
 	addButton(std::make_shared<ButtonClass>(
 		"color",
-		Bounds{.top	   = bounds.top,
-			   .bottom = bounds.top + halfHeight,
-			   .left   = buttons.at(buttons.size() - 1)->getBounds().right + 1,
-			   .right  = buttons.at(buttons.size() - 1)->getBounds().right + defaultButtonWidth},
+		Bounds{.top	   = midDiv,
+			   .bottom = thirdDiv,
+			   .left   = buttons.at(buttons.size() - 1)->getBounds().left,
+			   .right  = buttons.at(buttons.size() - 1)->getBounds().right},
 		red));
 	addButton(std::make_shared<ButtonClass>(
 		"color",
-		Bounds{.top	   = bounds.top + halfHeight,
+		Bounds{.top	   = thirdDiv,
 			   .bottom = bounds.bottom,
 			   .left   = buttons.at(buttons.size() - 1)->getBounds().left,
 			   .right  = buttons.at(buttons.size() - 1)->getBounds().right},
 		orange));
+
 	addButton(std::make_shared<ButtonClass>(
 		"color",
 		Bounds{.top	   = bounds.top,
-			   .bottom = bounds.top + halfHeight,
+			   .bottom = firstDiv,
 			   .left   = buttons.at(buttons.size() - 1)->getBounds().right + 1,
-			   .right  = buttons.at(buttons.size() - 1)->getBounds().right + defaultButtonWidth},
+			   .right  = buttons.at(buttons.size() - 1)->getBounds().right + quarterHeight},
 		yellow));
 	addButton(std::make_shared<ButtonClass>(
 		"color",
-		Bounds{.top	   = bounds.top + halfHeight,
-			   .bottom = bounds.bottom,
+		Bounds{.top	   = firstDiv,
+			   .bottom = midDiv,
 			   .left   = buttons.at(buttons.size() - 1)->getBounds().left,
 			   .right  = buttons.at(buttons.size() - 1)->getBounds().right},
 		green));
 	addButton(std::make_shared<ButtonClass>(
 		"color",
-		Bounds{.top	   = bounds.top,
-			   .bottom = bounds.top + halfHeight,
-			   .left   = buttons.at(buttons.size() - 1)->getBounds().right + 1,
-			   .right  = buttons.at(buttons.size() - 1)->getBounds().right + defaultButtonWidth},
-		blue));
+		Bounds{.top	   = midDiv,
+			   .bottom = thirdDiv,
+			   .left   = buttons.at(buttons.size() - 1)->getBounds().left,
+			   .right  = buttons.at(buttons.size() - 1)->getBounds().right},
+		teal));
 	addButton(std::make_shared<ButtonClass>(
 		"color",
-		Bounds{.top	   = bounds.top + halfHeight,
+		Bounds{.top	   = thirdDiv,
 			   .bottom = bounds.bottom,
 			   .left   = buttons.at(buttons.size() - 1)->getBounds().left,
 			   .right  = buttons.at(buttons.size() - 1)->getBounds().right},
+		blue));
+
+	addButton(std::make_shared<ButtonClass>(
+		"color",
+		Bounds{.top	   = bounds.top,
+			   .bottom = firstDiv,
+			   .left   = buttons.at(buttons.size() - 1)->getBounds().right + 1,
+			   .right  = buttons.at(buttons.size() - 1)->getBounds().right + quarterHeight},
 		purple));
+	addButton(std::make_shared<ButtonClass>(
+		"color",
+		Bounds{.top	   = firstDiv,
+			   .bottom = midDiv,
+			   .left   = buttons.at(buttons.size() - 1)->getBounds().left,
+			   .right  = buttons.at(buttons.size() - 1)->getBounds().right},
+		pink));
+	addButton(std::make_shared<ButtonClass>(
+		"color",
+		Bounds{.top	   = midDiv,
+			   .bottom = thirdDiv,
+			   .left   = buttons.at(buttons.size() - 1)->getBounds().left,
+			   .right  = buttons.at(buttons.size() - 1)->getBounds().right},
+		white));
+	addButton(std::make_shared<ButtonClass>(
+		"color",
+		Bounds{.top	   = thirdDiv,
+			   .bottom = bounds.bottom,
+			   .left   = buttons.at(buttons.size() - 1)->getBounds().left,
+			   .right  = buttons.at(buttons.size() - 1)->getBounds().right},
+		gray));
 }
 
 void MenuBar::addButton(std::shared_ptr<IButton> button)
