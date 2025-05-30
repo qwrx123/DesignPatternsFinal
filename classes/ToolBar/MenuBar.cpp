@@ -114,6 +114,7 @@ void MenuBar::close() {}
 
 void MenuBar::setDefaultButtons()
 {
+	selectedIndex = 1;
 	addButton(std::make_shared<ButtonClass>(
 		"brush",
 		Bounds{.top	   = bounds.top,
@@ -234,6 +235,7 @@ void MenuBar::onMouseMove(double x, double y) {}
 
 void MenuBar::onMouseButton(MouseButton click, KeyAction action, double x, double y)
 {
+	int itCount = 0;
 	for (auto& button : buttons)
 	{
 		if (button->getBounds().contains(x, y) && action == KeyAction::Press)
@@ -242,6 +244,10 @@ void MenuBar::onMouseButton(MouseButton click, KeyAction action, double x, doubl
 			if (label == "color")
 			{
 				tool->getActiveTool()->setColor(button->getColor());
+				if (text->isTextToolActive())
+				{
+					text->getTexts().at(text->getTexts().size() - 1)->setColor(button->getColor());
+				}
 			}
 			else if (label == "text")
 			{
@@ -259,8 +265,17 @@ void MenuBar::onMouseButton(MouseButton click, KeyAction action, double x, doubl
 			else
 			{
 				tool->selectTool(label);
+				selectedIndex = itCount;
 			}
 		}
+
+		//change tool button color as long as it is not the eraser
+		if (button->getBounds().contains(x, y) && button->getLabel() == "color" && buttons.at(selectedIndex)->getLabel() != "eraser" && action == KeyAction::Release)
+		{
+			buttons.at(selectedIndex)->setColor(button->getColor());
+		}
+
+		itCount++;
 	}
 }
 
