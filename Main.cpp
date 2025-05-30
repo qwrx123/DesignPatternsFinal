@@ -64,7 +64,7 @@ int main()
 	inputManager->registerReceiver(toolManager);
 	inputManager->registerReceiver(menuBar);
 	inputManager->registerReceiver(textManager);
-	inputManager->setResizeCallback([&](int w, int h) { renderer->resize(w, h); });
+	inputManager->setResizeCallback([&](int w, int h) { CanvasRenderer::resize(w, h); });
 
 	toolManager->registerTool(
 		"brush",
@@ -98,7 +98,7 @@ int main()
 
 		for (const auto& text : textManager->getTexts())
 		{
-			renderer->renderText(*text);
+			CanvasRenderer::renderText(*text);
 		}
 
 		auto current_tool = toolManager->getActiveTool();
