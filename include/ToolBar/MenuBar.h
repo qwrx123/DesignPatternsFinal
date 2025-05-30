@@ -63,7 +63,7 @@ class MenuBar : public IMenu, public IInputReceiver
 	std::shared_ptr<ITextManager>		  text;
 	int									  selectedIndex = 0;
 
-	float halfHeight = 0;
+	float halfHeight	= 0;
 	float quarterHeight = 0;
 
 	// Functions
