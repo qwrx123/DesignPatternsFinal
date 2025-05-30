@@ -22,15 +22,15 @@ class CanvasRenderer : public ICanvasRenderer
 
 	static void resize(int width, int height);
 
-	void beginFrame() override;
-	void drawStroke(const IStroke& stroke) override;
-	void renderText(const IText& text);
-	void drawButton(const IButton& button) override;
-	void drawMenu(const IMenu& menu) override;
-	void endFrame() override;
+	void		beginFrame() override;
+	void		drawStroke(const IStroke& stroke) override;
+	static void renderText(const IText& text);
+	void		drawButton(const IButton& button) override;
+	void		drawMenu(const IMenu& menu) override;
+	void		endFrame() override;
 
-	void textRenderTest();
-	void renderGlyph(FT_Face face, FT_GlyphSlot glyph, float x, float y, Color color);
+	static void textRenderTest();
+	static void renderGlyph(FT_Face face, FT_GlyphSlot glyph, float x, float y, Color color);
 
    private:
 	GLFWwindow* window_;
