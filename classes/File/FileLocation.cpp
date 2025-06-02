@@ -49,7 +49,7 @@ std::string FileLocation::getDownloadLocation()
 	}
 
 	std::array<char, 256> buffer;
-	WideCharToMultiByte(CP_UTF8, 0, pathPointer, -1, buffer, array.size(), nullptr, nullptr);
+	WideCharToMultiByte(CP_UTF8, 0, pathPointer, -1, buffer, buffer.size(), nullptr, nullptr);
 	CoTaskMemFree(pathPointer);
 	std::string folderLocation(buffer.data());
 	return std::move(folderLocation);
