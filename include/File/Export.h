@@ -3,7 +3,7 @@
 
 #include "IExport.h"
 
-Class Export : public IExport
+class Export : public IExport
 {
    public:
 	Export()		   = default;
@@ -11,12 +11,12 @@ Class Export : public IExport
 
 	Export(const Export& other)				   = default;
 	Export& operator=(const Export& other)	   = default;
-	Export(Export && other) noexcept		   = default;
+	Export(Export&& other) noexcept			   = default;
 	Export& operator=(Export&& other) noexcept = default;
 
-	virtual void					  exportFile(void*, ssize_t);
-	[[nodiscard]] virtual std::string quarryFileLocation();
-	virtual void					  setFileType(IFiles::type);
-}
+	void					  exportFile(void* fileLocation, ssize_t fileSize) override;
+	[[nodiscard]] std::string quarryFileLocation() override;
+	void					  setFileType(IFiles::type fileType) override;
+};
 
 #endif	// EXPORT_H

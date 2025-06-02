@@ -2,6 +2,7 @@ add_library(
     File
     SHARED
     Export.cpp
+    FileLocation.cpp
 )
 
 registerFilesToFormat(FILES Export.cpp)

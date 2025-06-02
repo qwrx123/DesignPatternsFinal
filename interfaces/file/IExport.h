@@ -6,7 +6,7 @@ class IExport : public IFiles
 {
    public:
 	IExport()						   = default;
-	virtual ~IExport()				   = default;
+	~IExport() override				   = default;
 	IExport(const IExport&)			   = default;
 	IExport& operator=(const IExport&) = default;
 	IExport(IExport&&)				   = default;

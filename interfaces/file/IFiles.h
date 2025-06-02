@@ -1,11 +1,12 @@
 #pragma once
 
 #include <string>
+#include <cstdint>
 
 class IFiles
 {
    public:
-	enum class type
+	enum class type : std::uint8_t
 	{
 		daisy,
 		jpg,
