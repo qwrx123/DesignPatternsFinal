@@ -13,6 +13,8 @@
 #include "MenuBar.h"
 #include "ButtonClass.h"
 #include "TextManager.h"
+#include "SubMenu.h"
+#include "SliderButton.h"
 
 const int		  defaultWindowWidth  = 800;
 const int		  defaultWindowHeight = 600;
@@ -20,10 +22,11 @@ const char* const defaultWindowTitle  = "Drawing App";
 
 const float defaultEraserSize = 10;
 
-const float defaultThickness	 = 2.0F;
-const int	defaultMenuBarHeight = 100;
-const float buttonWidth			 = 40.0F;
-const int	defaultFontSize		 = 48;
+const float defaultThickness		= 2.0F;
+const int	defaultMenuBarHeight	= 100;
+const int	defaultToolButtonHeight = 60;
+const float buttonWidth				= 40.0F;
+const int	defaultFontSize			= 48;
 
 const float grayColor	  = 0.5F;
 const float darkGrayColor = 0.3F;
@@ -63,6 +66,7 @@ int main()
 	auto					   menuBar		 = std::make_shared<MenuBar>();
 	std::optional<std::string> pendingToolSwitch;
 	auto					   textManager = std::make_shared<TextManager>();
+	auto					   textMenu	   = std::make_shared<SubMenu>();
 
 	inputManager->bindToWindow(window);
 	inputManager->registerReceiver(toolManager);
@@ -77,7 +81,6 @@ int main()
 		"",
 		Bounds(defaultFontSize + defaultMenuBarHeight, defaultWindowHeight, 0, defaultWindowWidth),
 		"Delius", defaultFontSize, Color{.r = 0.0F, .g = 0.0F, .b = 0.0F, .a = 1.0F}, true));
-	// textManager->setTextToolActive();
 	toolManager->registerTool("eraser",
 							  std::make_shared<EraserTool>(strokeManager, defaultEraserSize));
 
@@ -96,9 +99,21 @@ int main()
 	currentRight += buttonWidth + 1;
 
 	menuBar->addButton(std::make_shared<ButtonClass>(
-		"text", Bounds(0, defaultMenuBarHeight, currentRight, currentRight + buttonWidth),
+		"text", Bounds(0, defaultToolButtonHeight, currentRight, currentRight + buttonWidth),
 		bColor(darkGrayColor, grayColor, 0, 1)));
 	static bool wasPressedLastFrame = false;
+
+	menuBar->addButton(
+		std::make_shared<ButtonClass>("open text menu",
+									  Bounds(defaultToolButtonHeight, defaultMenuBarHeight,
+											 currentRight, currentRight + buttonWidth),
+									  bColor(grayColor, grayColor, 0, 0.5F)));
+	textMenu->setBounds(
+		Bounds(defaultMenuBarHeight, 2 * defaultMenuBarHeight, 0, static_cast<float>(INT_MAX)));
+	textMenu->setLabel("Text Options");
+	textMenu->addButton(std::make_shared<SliderButton>(
+		"size", Bounds(defaultMenuBarHeight, 2 * defaultMenuBarHeight, 0, buttonWidth),
+		bColor(grayColor, grayColor, 0, 1)));
 
 	while (glfwWindowShouldClose(window) == 0)
 	{
@@ -115,6 +130,15 @@ int main()
 			for (const auto& button : menuBar->getButtons())
 			{
 				if (button->getBounds().contains(mouseX, mouseY))
+				{
+					pendingToolSwitch	= button->getLabel();
+					wasPressedLastFrame = isPressedNow;
+					goto render_frame;
+				}
+			}
+			for (const auto& button : textMenu->getButtons())
+			{
+				if (button->getBounds().contains(mouseX, mouseY) && textMenu->isOpen())
 				{
 					pendingToolSwitch	= button->getLabel();
 					wasPressedLastFrame = isPressedNow;
@@ -145,6 +169,42 @@ int main()
 				textManager->setTextToolActive();
 				pendingToolSwitch.reset();
 			}
+		}
+
+		if (pendingToolSwitch == "open text menu")
+		{
+			if (textMenu->isOpen())
+			{
+				textMenu->close();
+			}
+			else
+			{
+				textMenu->open();
+			}
+			pendingToolSwitch.reset();
+		}
+
+		if (pendingToolSwitch == "size")
+		{
+			auto sliderButton =
+				std::dynamic_pointer_cast<SliderButton>(textMenu->getSelectedItem());
+			if (sliderButton)
+			{
+				// Set the slider value based on the mouse X position relative to the slider bounds
+				sliderButton->setMinValue(0.01F);
+				float minValue	  = sliderButton->getMinValue();
+				float maxValue	  = sliderButton->getMaxValue();
+				auto  bounds	  = sliderButton->getBounds();
+				float sliderStart = bounds.left;
+				float sliderEnd	  = bounds.right;
+				float t = (static_cast<float>(mouseX) - sliderStart) / (sliderEnd - sliderStart);
+				t		= std::clamp(t, minValue, maxValue);
+				float value = minValue + t * (maxValue - minValue);
+				sliderButton->setValue(value);
+
+				textManager->setFontSize(static_cast<int>(value));
+			}
+			pendingToolSwitch.reset();
 		}
 
 		if (pendingToolSwitch)
@@ -190,6 +250,15 @@ int main()
 		for (const auto& button : menuBar->getButtons())
 		{
 			renderer->drawButton(*button);
+		}
+		if (textMenu->isOpen())
+		{
+			renderer->drawMenu(*textMenu);
+			for (const auto& button : textMenu->getButtons())
+			{
+				renderer->drawSliderButton(
+					*button, std::dynamic_pointer_cast<SliderButton>(button)->getValue());
+			}
 		}
 
 		renderer->endFrame();

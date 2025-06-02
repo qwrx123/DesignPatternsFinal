@@ -27,10 +27,12 @@ class CanvasRenderer : public ICanvasRenderer
 	static void renderText(const IText& text);
 	void		drawButton(const IButton& button) override;
 	void		drawMenu(const IMenu& menu) override;
+	void		drawSliderButton(const IButton& button, float value);
 	void		endFrame() override;
 
 	static void textRenderTest();
 	static void renderGlyph(FT_Face face, FT_GlyphSlot glyph, float x, float y, Color color);
+	static void renderLabel(const std::string& label, float x, float y, Color color);
 
    private:
 	GLFWwindow* window_;

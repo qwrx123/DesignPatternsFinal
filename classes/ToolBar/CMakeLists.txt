@@ -4,6 +4,7 @@ add_library(
     MenuBar.cpp
     ButtonClass.cpp
     SubMenu.cpp
+    SliderButton.cpp
 )
 
 find_package(OpenGL REQUIRED)

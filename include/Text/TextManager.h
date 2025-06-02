@@ -36,6 +36,7 @@ class TextManager : public ITextManager, public IInputReceiver
 	void onMouseButton(MouseButton button, KeyAction action, double x, double y) override;
 	void onKey(int key, KeyAction action) override;
 	void onChar(unsigned int codepoint) override;
+	void setFontSize(int size);
 
    private:
 	std::vector<std::shared_ptr<IText>> texts;

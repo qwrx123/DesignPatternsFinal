@@ -203,3 +203,11 @@ void TextManager::handleEnter()
 										  bounds.bottom, bounds.left, bounds.right),
 								   fontName, fontSize, color, true));
 }
+void TextManager::setFontSize(int size)
+{
+	fontSize = size;
+	for (auto& text : texts)
+	{
+		text->setFontSize(size);
+	}
+}

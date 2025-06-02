@@ -4,6 +4,7 @@
 #include <iostream>
 #ifdef _WIN32
 #include <GL/glext.h>
+#include "Text.h"
 #endif
 
 CanvasRenderer::CanvasRenderer(GLFWwindow* window) : window_(window)
@@ -118,6 +119,7 @@ void CanvasRenderer::renderText(const IText& text)
 			continue;
 		}
 		FT_Face face = font.getFontFace();
+
 		renderGlyph(face, face->glyph, x, y, color);
 		x += static_cast<float>(face->glyph->advance.x >> pixleConversionFactor);
 	}
@@ -168,6 +170,59 @@ void CanvasRenderer::renderGlyph(FT_Face face, FT_GlyphSlot glyph, float x, floa
 	glDisable(GL_BLEND);
 	glDeleteTextures(1, &texture);
 }
+
+void CanvasRenderer::drawSliderButton(const IButton& button, float value)
+{
+	const auto& bounds = button.getBounds();
+	glBegin(GL_QUADS);
+	glColor4f(0.8F, 0.8F, 0.8F, 1.0F);
+	glVertex2f(bounds.left, bounds.top);
+	glVertex2f(bounds.right, bounds.top);
+	glVertex2f(bounds.right, bounds.bottom);
+	glVertex2f(bounds.left, bounds.bottom);
+
+	float sliderPosition = bounds.left + (bounds.right - bounds.left) * value;
+	glColor4f(0.0F, 0.5F, 1.0F, 1.0F);
+	glVertex2f(sliderPosition - 5, bounds.top + 3);
+	glVertex2f(sliderPosition + 5, bounds.top + 3);
+	glVertex2f(sliderPosition + 5, bounds.bottom - 3);
+	glVertex2f(sliderPosition - 5, bounds.bottom - 3);
+
+	int			newValue = static_cast<int>(value * 100.0F);
+	std::string valueStr = " " + std::to_string(newValue);
+	float		textX =
+		button.getBounds().left + (button.getBounds().right - button.getBounds().left) * 0.5F;
+	float textY = bounds.top + (bounds.bottom - bounds.top) * 0.5F;
+	textX -= static_cast<float>(valueStr.length() * 14) / 4.0F;	 // approximate centering
+	textY -= 10.0F;												 // approximate centering
+	renderLabel(valueStr, textX, textY, Color{.r = 0.0F, .g = 0.0F, .b = 0.0F, .a = 1.0F});
+	glEnd();
+}
+
+void CanvasRenderer::renderLabel(const std::string& label, float x, float y, Color color)
+{
+	std::filesystem::path fontPath = "../include/Delius-Regular.ttf";
+	if (!std::filesystem::exists(fontPath))
+	{
+		return;
+	}
+	Font font(fontPath);
+	font.setFontSize(14);
+	const int pixleConversionFactor = 6;
+	for (char c : label)
+	{
+		if (font.getFontBitmap(c).width == 0 && c != ' ' && c != '\t')
+		{
+			std::cout << "Failed to load glyph for character: " << c << "\n";
+			continue;
+		}
+		FT_Face face = font.getFontFace();
+
+		renderGlyph(face, face->glyph, x, y, color);
+		x += static_cast<float>(face->glyph->advance.x >> pixleConversionFactor);
+	}
+}
+
 void CanvasRenderer::endFrame()
 {
 	glfwSwapBuffers(window_);
