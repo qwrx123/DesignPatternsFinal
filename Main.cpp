@@ -22,11 +22,7 @@ const float defaultEraserSize = 10;
 
 const float defaultThickness	 = 2.0F;
 const int	defaultMenuBarHeight = 100;
-const float buttonWidth			 = 40.0F;
 const int	defaultFontSize		 = 48;
-
-const float grayColor	  = 0.5F;
-const float darkGrayColor = 0.3F;
 
 int main()
 {
@@ -66,8 +62,9 @@ int main()
 
 	inputManager->bindToWindow(window);
 	inputManager->registerReceiver(toolManager);
-	inputManager->setResizeCallback([&](int w, int h) { CanvasRenderer::resize(w, h); });
+	inputManager->registerReceiver(menuBar);
 	inputManager->registerReceiver(textManager);
+	inputManager->setResizeCallback([&](int w, int h) { CanvasRenderer::resize(w, h); });
 
 	toolManager->registerTool(
 		"brush",
@@ -82,75 +79,21 @@ int main()
 							  std::make_shared<EraserTool>(strokeManager, defaultEraserSize));
 
 	menuBar->setBounds(Bounds(0, defaultMenuBarHeight, 0, static_cast<float>(INT_MAX)));
-
-	float currentRight = 0.0F;
-
-	menuBar->addButton(std::make_shared<ButtonClass>(
-		"brush", Bounds(0, defaultMenuBarHeight, currentRight, currentRight + buttonWidth),
-		bColor(0, grayColor, grayColor, 1)));
-	currentRight += buttonWidth + 1;
-
-	menuBar->addButton(std::make_shared<ButtonClass>(
-		"eraser", Bounds(0, defaultMenuBarHeight, currentRight, currentRight + buttonWidth),
-		bColor(1, grayColor, 0.0F, 1)));
-	currentRight += buttonWidth + 1;
-
-	menuBar->addButton(std::make_shared<ButtonClass>(
-		"text", Bounds(0, defaultMenuBarHeight, currentRight, currentRight + buttonWidth),
-		bColor(darkGrayColor, grayColor, 0, 1)));
-	static bool wasPressedLastFrame = false;
+	menuBar->setToolPointer(toolManager);
+	menuBar->setTextPointer(textManager);
+	menuBar->setDefaultButtons();
 
 	while (glfwWindowShouldClose(window) == 0)
 	{
 		inputManager->beginFrame();
 		glfwPollEvents();
 
-		double mouseX = 0;
-		double mouseY = 0;
-		glfwGetCursorPos(window, &mouseX, &mouseY);
-		bool isPressedNow = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS;
-
-		if (isPressedNow && !wasPressedLastFrame)
-		{
-			for (const auto& button : menuBar->getButtons())
-			{
-				if (button->getBounds().contains(mouseX, mouseY))
-				{
-					pendingToolSwitch	= button->getLabel();
-					wasPressedLastFrame = isPressedNow;
-					goto render_frame;
-				}
-			}
-		}
-
-		wasPressedLastFrame = isPressedNow;
-
-	render_frame:
+		// begin rendering
 		renderer->beginFrame();
 
 		for (const auto& stroke : strokeManager->getStrokes())
 		{
 			renderer->drawStroke(*stroke);
-		}
-
-		if (pendingToolSwitch == "text")
-		{
-			if (textManager->isTextToolActive())
-			{
-				textManager->setTextToolInactive();
-				pendingToolSwitch.reset();
-			}
-			else
-			{
-				textManager->setTextToolActive();
-				pendingToolSwitch.reset();
-			}
-		}
-
-		if (pendingToolSwitch)
-		{
-			toolManager->selectTool(*pendingToolSwitch);
-			pendingToolSwitch.reset();
 		}
 
 		for (const auto& text : textManager->getTexts())
@@ -159,20 +102,6 @@ int main()
 		}
 
 		auto current_tool = toolManager->getActiveTool();
-
-		if (isPressedNow && !wasPressedLastFrame)
-		{
-			current_tool->beginStroke({.x = mouseX, .y = mouseY});
-		}
-		else if (isPressedNow && wasPressedLastFrame)
-		{
-			current_tool->addPoint({.x = mouseX, .y = mouseY});
-		}
-		else if (!isPressedNow && wasPressedLastFrame)
-		{
-			current_tool->endStroke({.x = mouseX, .y = mouseY});
-		}
-
 		if (current_tool)
 		{
 			auto brush = std::dynamic_pointer_cast<BrushTool>(current_tool);
