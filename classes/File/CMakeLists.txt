@@ -15,8 +15,7 @@ target_include_directories(File
 if(WIN32)
     target_link_libraries(File
         PUBLIC
-        shlobj_core.lib
-        Ole32.lib
+        Ole32
     )
     install(TARGETS Input
         RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
