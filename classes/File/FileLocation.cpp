@@ -1,4 +1,5 @@
 #include "FileLocation.h"
+#include <string>
 
 #ifndef __LINUX__
 
@@ -29,9 +30,25 @@ std::string FileLocation::getDownloadLocation()
 
 #elif _WIN32
 
+#include <shlobj_core.h>
+#include <combaseapi.h>
+
 std::string FileLocation::getDownloadLocation()
 {
-	return {};
+	HRESULT folderWorked;
+	PWSTR pathPointer = nullptr;
+
+	folderWorked = SHGetKnownFolderPath(FOLDERID_Downloads, 0, nullptr, &pathPointer);
+
+	if (!SUCCEEDED(folderWorked))
+	{
+		CoTaskMemFree(pathPointer);
+		return {};
+	}
+	
+	std::string folderLocation = std::string(pathPointer);
+	CoTaskMemFree(pathPointer);
+	return folderLocation;
 }
 
 #endif
