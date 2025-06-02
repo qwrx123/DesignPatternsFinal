@@ -21,6 +21,7 @@ class IFiles
 	IFiles(IFiles&&)				 = default;
 	IFiles& operator=(IFiles&&)		 = default;
 
-	[[nodiscard]] virtual std::string quarryFileLocation()		= 0;
-	virtual void					  setFileType(IFiles::type) = 0;
+	[[nodiscard]] virtual std::string quarryFileLocation()			  = 0;
+	virtual void					  setFileType(IFiles::type)		  = 0;
+	virtual void					  setFileName(const std::string&) = 0;
 };

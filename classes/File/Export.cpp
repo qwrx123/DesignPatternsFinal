@@ -9,3 +9,5 @@ std::string Export::quarryFileLocation()
 }
 
 void Export::setFileType(IFiles::type fileType) {}
+
+void Export::setFileName(const std::string& fileName) {}

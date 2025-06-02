@@ -17,6 +17,12 @@ class Export : public IExport
 	void					  exportFile(void* fileLocation, size_t fileSize) override;
 	[[nodiscard]] std::string quarryFileLocation() override;
 	void					  setFileType(IFiles::type fileType) override;
+	void					  setFileName(const std::string& fileName) override;
+
+   private:
+	IFiles::type fileType = IFiles::type::bmp;
+	std::string	 fileName = "DaisyExport";
+	std::string	 fileLocation;
 };
 
 #endif	// EXPORT_H
