@@ -22,9 +22,9 @@ class TextManager : public ITextManager, public IInputReceiver
 	void removeText(std::shared_ptr<IText> text) override;
 
 	void			   registerTextTool(std::shared_ptr<IText> text) override;
-	[[nodiscard]] bool isTextToolActive() const;
-	void			   setTextToolActive();
-	void			   setTextToolInactive();
+	[[nodiscard]] bool isTextToolActive() const override;
+	void			   setTextToolActive() override;
+	void			   setTextToolInactive() override;
 
 	[[nodiscard]] const std::vector<std::shared_ptr<IText>>& getTexts() const override;
 
@@ -36,7 +36,7 @@ class TextManager : public ITextManager, public IInputReceiver
 	void onMouseButton(MouseButton button, KeyAction action, double x, double y) override;
 	void onKey(int key, KeyAction action) override;
 	void onChar(unsigned int codepoint) override;
-	void setFontSize(int size);
+	void setFontSize(int size) override;
 
    private:
 	std::vector<std::shared_ptr<IText>> texts;

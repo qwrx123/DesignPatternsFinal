@@ -34,11 +34,13 @@ class BrushTool : public IDrawingTool
 	{
 		return "Brush";
 	}
+	void setColor(const Color& color) override;
 
 	[[nodiscard]] bool isActive() const override;
 	void			   setActive(bool value);
 
-	[[nodiscard]] bool isDrawing() const override;
+	[[nodiscard]] bool	isDrawing() const override;
+	[[nodiscard]] Color getColor() const override;
 };
 
 #endif	// BRUSHTOOL_H

@@ -4,11 +4,14 @@
 #include <cassert>
 #include <GLFW/glfw3.h>
 
-TextManager::TextManager() = default;
+TextManager::TextManager() : bounds({.top = 0, .bottom = 0, .left = 0, .right = 0}) {};
 
 TextManager::~TextManager() = default;
 
-TextManager::TextManager(const TextManager& other) : texts(std::move(other.copyTexts())) {}
+TextManager::TextManager(const TextManager& other)
+	: texts(std::move(other.copyTexts())), bounds(other.bounds)
+{
+}
 
 TextManager& TextManager::operator=(const TextManager& other)
 {
@@ -19,7 +22,10 @@ TextManager& TextManager::operator=(const TextManager& other)
 	return *this;
 }
 
-TextManager::TextManager(TextManager&& other) noexcept : texts(std::move(other.texts)) {}
+TextManager::TextManager(TextManager&& other) noexcept
+	: texts(std::move(other.texts)), bounds(other.bounds)
+{
+}
 
 TextManager& TextManager::operator=(TextManager&& other) noexcept
 {
@@ -190,18 +196,22 @@ void TextManager::handleBackspace()
 void TextManager::handleEnter()
 {
 	Bounds prevBounds;
+	int	   prevFontSize = fontSize;
+	Color  prevColor	= color;
 	if (!texts.empty())
 	{
-		prevBounds = texts.back()->getBounds();
+		prevBounds	 = texts.back()->getBounds();
+		prevFontSize = texts.back()->getFontSize();
+		prevColor	 = texts.back()->getColor();
 	}
 	else
 	{
 		prevBounds = bounds;
 	}
 	addText(std::make_shared<Text>("",
-								   Bounds((static_cast<float>(fontSize) + prevBounds.top),
+								   Bounds((static_cast<float>(prevFontSize) + prevBounds.top),
 										  bounds.bottom, bounds.left, bounds.right),
-								   fontName, fontSize, color, true));
+								   fontName, prevFontSize, prevColor, true));
 }
 void TextManager::setFontSize(int size)
 {

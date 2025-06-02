@@ -7,8 +7,11 @@
 #include "Bounds.h"
 #include "IButton.h"
 #include "IMenu.h"
+#include "IInputReceiver.h"
+#include "IToolManager.h"
+#include "ITextManager.h"
 
-class MenuBar : public IMenu
+class MenuBar : public IMenu, public IInputReceiver
 {
    public:
 	MenuBar();
@@ -31,6 +34,7 @@ class MenuBar : public IMenu
 	void open() override;
 	void close() override;
 
+	void setDefaultButtons();
 	void addButton(std::shared_ptr<IButton> button) override;
 	void clearButtons() override;
 	[[nodiscard]] const std::vector<std::shared_ptr<IButton>>& getButtons() const override;
@@ -43,11 +47,24 @@ class MenuBar : public IMenu
 	[[nodiscard]] bool showSelectedLabelWhenClosed() const override;
 	void			   setShowSelectedLabelWhenClosed(bool show) override;
 
+	void onMouseMove(double x, double y) override;
+	void onMouseButton(MouseButton click, KeyAction action, double x, double y) override;
+	void onKey(int key, KeyAction action) override;
+	void onChar(unsigned int codepoint) override;
+
+	void setToolPointer(const std::shared_ptr<IToolManager>& ptr);
+	void setTextPointer(const std::shared_ptr<ITextManager>& ptr);
+
    private:
 	std::string							  label;
 	Bounds								  bounds;
 	std::vector<std::shared_ptr<IButton>> buttons;
+	std::shared_ptr<IToolManager>		  tool;
+	std::shared_ptr<ITextManager>		  text;
 	int									  selectedIndex = 0;
+
+	float halfHeight	= 0;
+	float quarterHeight = 0;
 
 	// Functions
 	[[nodiscard]] std::vector<std::shared_ptr<IButton>> cloneButtons() const;

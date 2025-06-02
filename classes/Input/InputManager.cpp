@@ -10,7 +10,7 @@ void InputManager::registerReceiver(std::shared_ptr<IInputReceiver> receiver)
 
 void InputManager::unregisterReceiver(std::shared_ptr<IInputReceiver> receiver)
 {
-	std::ranges::remove(receivers, receiver);
+	std::erase(receivers, receiver);
 }
 
 void InputManager::beginFrame()

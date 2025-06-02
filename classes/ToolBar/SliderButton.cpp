@@ -3,7 +3,7 @@
 #include <iostream>
 #include "Bounds.h"
 
-SliderButton::SliderButton(std::string label, Bounds bounds, bColor color)
+SliderButton::SliderButton(std::string label, Bounds bounds, Color color)
     : label(std::move(label)), bounds(bounds), color(color), value(0.0f), minValue(0.0f), maxValue(1.0f)
 {
 }
@@ -17,11 +17,11 @@ Bounds SliderButton::getBounds() const
 {
     return bounds;
 }
-void SliderButton::setColor(const bColor& color)
+void SliderButton::setColor(const Color& color)
 {
     this->color = color;
 }
-bColor SliderButton::getColor() const
+Color SliderButton::getColor() const
 {
     return color;
 }

@@ -9,7 +9,7 @@
 class ButtonClass : public IButton
 {
    public:
-	ButtonClass(std::string label, Bounds bounds, bColor color);
+	ButtonClass(std::string label, Bounds bounds, Color color);
 	~ButtonClass() override;
 	ButtonClass(const ButtonClass& other)				 = default;
 	ButtonClass& operator=(const ButtonClass& other)	 = default;
@@ -19,8 +19,8 @@ class ButtonClass : public IButton
 	void				 setBounds(const Bounds& bounds) override;
 	[[nodiscard]] Bounds getBounds() const override;
 
-	void				 setColor(const bColor& color) override;
-	[[nodiscard]] bColor getColor() const override;
+	void				setColor(const Color& color) override;
+	[[nodiscard]] Color getColor() const override;
 
 	[[nodiscard]] bool isHovered() const override;
 	void			   setHovered(bool hovered) override;
@@ -30,17 +30,17 @@ class ButtonClass : public IButton
 	[[nodiscard]] std::string getLabel() const override;
 	void					  setLabel(const std::string& label) override;
 
-	void onClick(std::function<void()> callback) override;
+	void  onClick(std::function<void()> callback) override;
 	float getValue() const override;
 	void  setValue(float value) override;
 
    private:
 	Bounds		bounds;
-	bColor		color;
+	Color		color;
 	bool		hovered = false;
 	bool		pressed = false;
 	std::string label;
-	float value = 0.0f;
+	float		value = 0.0f;
 };
 
 #endif

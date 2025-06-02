@@ -13,14 +13,14 @@ class ToolManager : public IToolManager, public IInputReceiver
 
 	ToolManager(const ToolManager&)			   = default;
 	ToolManager& operator=(const ToolManager&) = default;
-	ToolManager(ToolManager&&)				   = default;
+	ToolManager(ToolManager&&) noexcept		   = default;
 	ToolManager& operator=(ToolManager&&)	   = default;
 
 	void registerTool(const std::string& name, std::shared_ptr<IDrawingTool> tool) override;
 	bool selectTool(const std::string& name) override;
 
-	std::string					  getActiveToolName() const override;
-	std::shared_ptr<IDrawingTool> getActiveTool() const override;
+	[[nodiscard]] std::string					getActiveToolName() const override;
+	[[nodiscard]] std::shared_ptr<IDrawingTool> getActiveTool() const override;
 
 	void beginStroke(const Point& start) override;
 	void addPoint(const Point& point) override;

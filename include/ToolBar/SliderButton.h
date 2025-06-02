@@ -9,7 +9,7 @@
 class SliderButton : public IButton
 {
 public:
-    SliderButton(std::string label, Bounds bounds, bColor color);
+    SliderButton(std::string label, Bounds bounds, Color color);
     ~SliderButton() override;
     SliderButton(const SliderButton& other) = default;
     SliderButton& operator=(const SliderButton& other) = default;
@@ -19,8 +19,8 @@ public:
     void setBounds(const Bounds& bounds) override;
     [[nodiscard]] Bounds getBounds() const override;
 
-    void setColor(const bColor& color) override;
-    [[nodiscard]] bColor getColor() const override;
+    void setColor(const Color& color) override;
+    [[nodiscard]] Color getColor() const override;
 
     [[nodiscard]] bool isHovered() const override;
     void setHovered(bool hovered) override;
@@ -42,14 +42,14 @@ public:
 
 private:
     Bounds bounds;
-    bColor color;
+    Color color;
     bool hovered = false;
     bool pressed = false;
     std::string label;
 
-    float value = 0.0f;
-    float minValue = 0.0f;
-    float maxValue = 1.0f;
+    float value = 0.0F;
+    float minValue = 0.0F;
+    float maxValue = 1.0F;
     std::function<void(float)> onValueChangeCallback;
 
     void updateValueFromPosition(double mouseX);

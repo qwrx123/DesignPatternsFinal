@@ -8,6 +8,11 @@
 #include "SliderButton.h"
 #endif
 
+static const Color lighterGray = {.r = 0.8F, .g = 0.8F, .b = 0.8F, .a = 1.0F};
+static const Color lightGray   = {.r = 0.7F, .g = 0.7F, .b = 0.7F, .a = 1.0F};
+static const Color gray		   = {.r = 0.5F, .g = 0.5F, .b = 0.5F, .a = 1.0F};
+static const Color darkGray	   = {.r = 0.3F, .g = 0.3F, .b = 0.3F, .a = 1.0F};
+
 CanvasRenderer::CanvasRenderer(GLFWwindow* window) : window_(window)
 {
 	int width  = 0;
@@ -61,19 +66,14 @@ void CanvasRenderer::drawStroke(const IStroke& stroke)
 
 void CanvasRenderer::drawButton(const IButton& button)
 {
-	static const float lighterGray = 0.8F;
-	static const float lightGray   = 0.7F;
-	static const float gray		   = 0.5F;
-	static const float darkGray	   = 0.3F;
-
 	glBegin(GL_QUADS);
-	glColor4f(lighterGray, lighterGray, lighterGray, 1);
+	glColor4f(lighterGray.r, lighterGray.g, lighterGray.b, lighterGray.a);
 	glVertex2f(button.getBounds().left, button.getBounds().top);
-	glColor4f(lightGray, lightGray, lightGray, 1);
+	glColor4f(lightGray.r, lightGray.g, lightGray.b, lightGray.a);
 	glVertex2f(button.getBounds().right, button.getBounds().top);
-	glColor4f(darkGray, darkGray, darkGray, 1);
+	glColor4f(darkGray.r, darkGray.g, darkGray.b, darkGray.a);
 	glVertex2f(button.getBounds().right, button.getBounds().bottom);
-	glColor4f(gray, gray, gray, 1);
+	glColor4f(gray.r, gray.g, gray.b, gray.a);
 	glVertex2f(button.getBounds().left, button.getBounds().bottom);
 
 	glColor4f(button.getColor().r, button.getColor().g, button.getColor().b, button.getColor().a);
@@ -86,10 +86,8 @@ void CanvasRenderer::drawButton(const IButton& button)
 
 void CanvasRenderer::drawMenu(const IMenu& menu)
 {
-	static const float darkGray = 0.3F;
-
 	glBegin(GL_QUADS);
-	glColor4f(darkGray, darkGray, darkGray, 1);
+	glColor4f(darkGray.r, darkGray.g, darkGray.b, darkGray.a);
 	glVertex2f(menu.getBounds().left, menu.getBounds().top);
 	glVertex2f(menu.getBounds().right, menu.getBounds().top);
 	glVertex2f(menu.getBounds().right, menu.getBounds().bottom);
@@ -174,26 +172,36 @@ void CanvasRenderer::renderGlyph(FT_Face face, FT_GlyphSlot glyph, float x, floa
 
 void CanvasRenderer::drawSliderButton(const IButton& button, float value)
 {
-	const auto& bounds = button.getBounds();
 	glBegin(GL_QUADS);
-	glColor4f(0.8F, 0.8F, 0.8F, 1.0F);
-	glVertex2f(bounds.left, bounds.top);
-	glVertex2f(bounds.right, bounds.top);
-	glVertex2f(bounds.right, bounds.bottom);
-	glVertex2f(bounds.left, bounds.bottom);
+	glColor4f(lighterGray.r, lighterGray.g, lighterGray.b, lighterGray.a);
+	glVertex2f(button.getBounds().left, button.getBounds().top);
+	glColor4f(lightGray.r, lightGray.g, lightGray.b, lightGray.a);
+	glVertex2f(button.getBounds().right, button.getBounds().top);
+	glColor4f(darkGray.r, darkGray.g, darkGray.b, darkGray.a);
+	glVertex2f(button.getBounds().right, button.getBounds().bottom);
+	glColor4f(gray.r, gray.g, gray.b, gray.a);
+	glVertex2f(button.getBounds().left, button.getBounds().bottom);
 
-	float sliderPosition = bounds.left + (bounds.right - bounds.left) * value;
+	glColor4f(button.getColor().r, button.getColor().g, button.getColor().b, button.getColor().a);
+	glVertex2f(button.getBounds().left + 3, button.getBounds().top + 3);
+	glVertex2f(button.getBounds().right - 3, button.getBounds().top + 3);
+	glVertex2f(button.getBounds().right - 3, button.getBounds().bottom - 3);
+	glVertex2f(button.getBounds().left + 3, button.getBounds().bottom - 3);
+
+	float sliderPosition =
+		(button.getBounds().left + (button.getBounds().right - (button.getBounds().left)) * value);
 	glColor4f(0.0F, 0.5F, 1.0F, 1.0F);
-	glVertex2f(sliderPosition - 5, bounds.top + 3);
-	glVertex2f(sliderPosition + 5, bounds.top + 3);
-	glVertex2f(sliderPosition + 5, bounds.bottom - 3);
-	glVertex2f(sliderPosition - 5, bounds.bottom - 3);
+	glVertex2f(sliderPosition - 5, button.getBounds().top + 3);
+	glVertex2f(sliderPosition + 5, button.getBounds().top + 3);
+	glVertex2f(sliderPosition + 5, button.getBounds().bottom - 3);
+	glVertex2f(sliderPosition - 5, button.getBounds().bottom - 3);
 
 	int			newValue = static_cast<int>(value * 100.0F);
 	std::string valueStr = " " + std::to_string(newValue);
 	float		textX =
 		button.getBounds().left + (button.getBounds().right - button.getBounds().left) * 0.5F;
-	float textY = bounds.top + (bounds.bottom - bounds.top) * 0.5F;
+	float textY =
+		button.getBounds().top + (button.getBounds().bottom - button.getBounds().top) * 0.5F;
 	textX -= static_cast<float>(valueStr.length() * 14) / 4.0F;	 // approximate centering
 	textY -= 10.0F;												 // approximate centering
 	renderLabel(valueStr, textX, textY, Color{.r = 0.0F, .g = 0.0F, .b = 0.0F, .a = 1.0F});
