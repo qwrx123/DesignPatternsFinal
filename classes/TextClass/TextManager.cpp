@@ -5,11 +5,14 @@
 #include <iostream>
 #include <GLFW/glfw3.h>
 
-TextManager::TextManager() = default;
+TextManager::TextManager() : bounds({.top = 0, .bottom = 0, .left = 0, .right = 0}) {};
 
 TextManager::~TextManager() = default;
 
-TextManager::TextManager(const TextManager& other) : texts(std::move(other.copyTexts())) {}
+TextManager::TextManager(const TextManager& other)
+	: texts(std::move(other.copyTexts())), bounds(other.bounds)
+{
+}
 
 TextManager& TextManager::operator=(const TextManager& other)
 {
@@ -20,7 +23,10 @@ TextManager& TextManager::operator=(const TextManager& other)
 	return *this;
 }
 
-TextManager::TextManager(TextManager&& other) noexcept : texts(std::move(other.texts)) {}
+TextManager::TextManager(TextManager&& other) noexcept
+	: texts(std::move(other.texts)), bounds(other.bounds)
+{
+}
 
 TextManager& TextManager::operator=(TextManager&& other) noexcept
 {
@@ -145,7 +151,7 @@ void TextManager::onKey(int key, KeyAction action)
 		}
 		else if (key == GLFW_KEY_ENTER)
 		{
-			Bounds prevBounds;
+			Bounds prevBounds{.top = 0, .bottom = 0, .left = 0, .right = 0};
 			if (!texts.empty())
 			{
 				prevBounds = texts.back()->getBounds();

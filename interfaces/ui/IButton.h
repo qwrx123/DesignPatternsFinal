@@ -4,15 +4,7 @@
 #include <functional>
 #include <string>
 #include "Bounds.h"	 // contains bounds
-
-struct bColor
-{
-	float r, g, b, a;
-
-	bColor() : r(0), g(0), b(0), a(1) {}
-
-	bColor(float red, float green, float blue, float alpha) : r(red), g(green), b(blue), a(alpha) {}
-};
+#include "Color.h"
 
 class IButton
 {
@@ -29,8 +21,8 @@ class IButton
 	[[nodiscard]] virtual Bounds getBounds() const				 = 0;
 
 	// Button color
-	virtual void				 setColor(const bColor& color) = 0;
-	[[nodiscard]] virtual bColor getColor() const			   = 0;
+	virtual void				setColor(const Color& color) = 0;
+	[[nodiscard]] virtual Color getColor() const			 = 0;
 
 	// Button state
 	[[nodiscard]] virtual bool isHovered() const		= 0;

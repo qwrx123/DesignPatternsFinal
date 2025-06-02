@@ -20,8 +20,9 @@ class IDrawingTool : public ITool
 	virtual void addPoint(const Point& point)	 = 0;
 	virtual void endStroke(const Point& end)	 = 0;
 
-	virtual std::shared_ptr<IStroke> getCurrentStroke() = 0;
-	virtual std::string				 getName()			= 0;
+	virtual std::shared_ptr<IStroke> getCurrentStroke()			  = 0;
+	virtual std::string				 getName()					  = 0;
+	virtual void					 setColor(const Color& color) = 0;
 
 	[[nodiscard]] virtual bool isDrawing() const = 0;
 };

@@ -18,7 +18,10 @@ class ITextManager
 	virtual void addText(std::shared_ptr<IText> text)	 = 0;
 	virtual void removeText(std::shared_ptr<IText> text) = 0;
 
-	virtual void registerTextTool(std::shared_ptr<IText> text) = 0;
+	virtual void			   registerTextTool(std::shared_ptr<IText> text) = 0;
+	[[nodiscard]] virtual bool isTextToolActive() const						 = 0;
+	virtual void			   setTextToolActive()							 = 0;
+	virtual void			   setTextToolInactive()						 = 0;
 
 	[[nodiscard]] virtual const std::vector<std::shared_ptr<IText>>& getTexts() const = 0;
 

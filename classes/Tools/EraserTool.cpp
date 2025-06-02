@@ -123,6 +123,8 @@ std::string EraserTool::getName()
 	return "Eraser";
 }
 
+void EraserTool::setColor(const Color& color) {}
+
 bool EraserTool::isActive() const
 {
 	return active;
