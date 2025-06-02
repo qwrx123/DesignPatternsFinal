@@ -12,5 +12,5 @@ class IExport : public IFiles
 	IExport(IExport&&)				   = default;
 	IExport& operator=(IExport&&)	   = default;
 
-	virtual void exportFile(void*, ssize_t) = 0;
+	virtual void exportFile(void*, size_t) = 0;
 };
