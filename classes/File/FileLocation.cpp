@@ -1,7 +1,7 @@
 #include "FileLocation.h"
 #include <string>
 
-#ifndef __LINUX__
+#ifdef __linux__
 
 #include <memory>
 #include <cstdio>
@@ -45,7 +45,7 @@ std::string FileLocation::getDownloadLocation()
 		CoTaskMemFree(pathPointer);
 		return {};
 	}
-	
+
 	std::string folderLocation = std::string(pathPointer);
 	CoTaskMemFree(pathPointer);
 	return folderLocation;
