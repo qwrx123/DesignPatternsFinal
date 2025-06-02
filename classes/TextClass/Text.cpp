@@ -38,6 +38,11 @@ void Text::setPosition(float x, float y)
 	bounds.bottom = y + bounds.bottom - bounds.top;
 }
 
+void Text::setBounds(const Bounds& bounds)
+{
+	this->bounds = bounds;
+}
+
 std::string Text::getFontName() const
 {
 	return fontName;

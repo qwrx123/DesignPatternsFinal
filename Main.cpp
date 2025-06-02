@@ -31,6 +31,8 @@ const int	defaultFontSize			= 48;
 const float grayColor	  = 0.5F;
 const float darkGrayColor = 0.3F;
 
+const int buffer = 20;
+
 int main()
 {
 	if (glfwInit() == GLFW_FALSE)
@@ -112,8 +114,28 @@ int main()
 		Bounds(defaultMenuBarHeight, 2 * defaultMenuBarHeight, 0, static_cast<float>(INT_MAX)));
 	textMenu->setLabel("Text Options");
 	textMenu->addButton(std::make_shared<SliderButton>(
-		"size", Bounds(defaultMenuBarHeight, 2 * defaultMenuBarHeight, 0, buttonWidth),
+		"text size", Bounds(defaultMenuBarHeight, 2 * defaultMenuBarHeight, 0, buttonWidth),
 		bColor(grayColor, grayColor, 0, 1)));
+	textMenu->addButton(
+		std::make_shared<SliderButton>("text red",
+									   Bounds(defaultMenuBarHeight, 2 * defaultMenuBarHeight,
+											  buttonWidth + buffer, 2 * buttonWidth + buffer),
+									   bColor(grayColor, grayColor, 0, 1)));
+	textMenu->addButton(
+		std::make_shared<SliderButton>("text green",
+									   Bounds(defaultMenuBarHeight, 2 * defaultMenuBarHeight,
+											  2 * buttonWidth + buffer, 3 * buttonWidth + buffer),
+									   bColor(grayColor, grayColor, 0, 1)));
+	textMenu->addButton(
+		std::make_shared<SliderButton>("text blue",
+									   Bounds(defaultMenuBarHeight, 2 * defaultMenuBarHeight,
+											  3 * buttonWidth + buffer, 4 * buttonWidth + buffer),
+									   bColor(grayColor, grayColor, 0, 1)));
+	textMenu->addButton(
+		std::make_shared<SliderButton>("text opacity",
+									   Bounds(defaultMenuBarHeight, 2 * defaultMenuBarHeight,
+											  4 * buttonWidth + buffer, 5 * buttonWidth + buffer),
+									   bColor(grayColor, grayColor, 0, 1)));
 
 	while (glfwWindowShouldClose(window) == 0)
 	{
@@ -184,25 +206,154 @@ int main()
 			pendingToolSwitch.reset();
 		}
 
-		if (pendingToolSwitch == "size")
+		if (pendingToolSwitch == "text size")
 		{
 			auto sliderButton =
 				std::dynamic_pointer_cast<SliderButton>(textMenu->getSelectedItem());
 			if (sliderButton)
 			{
-				// Set the slider value based on the mouse X position relative to the slider bounds
-				sliderButton->setMinValue(0.01F);
+				sliderButton->setMinValue(0.0F);
+				sliderButton->setMaxValue(1.0F);
 				float minValue	  = sliderButton->getMinValue();
 				float maxValue	  = sliderButton->getMaxValue();
 				auto  bounds	  = sliderButton->getBounds();
 				float sliderStart = bounds.left;
 				float sliderEnd	  = bounds.right;
 				float t = (static_cast<float>(mouseX) - sliderStart) / (sliderEnd - sliderStart);
-				t		= std::clamp(t, minValue, maxValue);
+				t		= std::clamp(t, 0.0f, 1.0f);
 				float value = minValue + t * (maxValue - minValue);
 				sliderButton->setValue(value);
 
-				textManager->setFontSize(static_cast<int>(value));
+				// Map slider value to a reasonable font size range, e.g., 12 to 96
+				int minFontSize = 12;
+				int maxFontSize = 96;
+				int newFontSize =
+					static_cast<int>(minFontSize + value * (maxFontSize - minFontSize));
+
+				for (const auto& text : textManager->getTexts())
+				{
+					text->setFontSize(newFontSize);
+					auto  oldBounds = text->getBounds();
+					float newBottom = oldBounds.top + newFontSize + 1.0F;
+					text->setBounds(
+						Bounds(oldBounds.top, newBottom, oldBounds.left, oldBounds.right));
+				}
+			}
+			pendingToolSwitch.reset();
+		}
+
+		if (pendingToolSwitch == "text red")
+		{
+			auto sliderButton =
+				std::dynamic_pointer_cast<SliderButton>(textMenu->getSelectedItem());
+			if (sliderButton)
+			{
+				sliderButton->setMinValue(0.0F);
+				sliderButton->setMaxValue(1.0F);
+				float minValue	  = sliderButton->getMinValue();
+				float maxValue	  = sliderButton->getMaxValue();
+				auto  bounds	  = sliderButton->getBounds();
+				float sliderStart = bounds.left;
+				float sliderEnd	  = bounds.right;
+				float t = (static_cast<float>(mouseX) - sliderStart) / (sliderEnd - sliderStart);
+				t		= std::clamp(t, 0.0f, 1.0f);
+				float value = minValue + t * (maxValue - minValue);
+				sliderButton->setValue(value);
+
+				for (const auto& text : textManager->getTexts())
+				{
+					text->setColor(Color{.r = value,
+										 .g = text->getColor().g,
+										 .b = text->getColor().b,
+										 .a = text->getColor().a});
+				}
+			}
+			pendingToolSwitch.reset();
+		}
+
+		if (pendingToolSwitch == "text blue")
+		{
+			auto sliderButton =
+				std::dynamic_pointer_cast<SliderButton>(textMenu->getSelectedItem());
+			if (sliderButton)
+			{
+				sliderButton->setMinValue(0.0F);
+				sliderButton->setMaxValue(1.0F);
+				float minValue	  = sliderButton->getMinValue();
+				float maxValue	  = sliderButton->getMaxValue();
+				auto  bounds	  = sliderButton->getBounds();
+				float sliderStart = bounds.left;
+				float sliderEnd	  = bounds.right;
+				float t = (static_cast<float>(mouseX) - sliderStart) / (sliderEnd - sliderStart);
+				t		= std::clamp(t, 0.0f, 1.0f);
+				float value = minValue + t * (maxValue - minValue);
+				sliderButton->setValue(value);
+
+				for (const auto& text : textManager->getTexts())
+				{
+					text->setColor(Color{.r = text->getColor().r,
+										 .g = text->getColor().g,
+										 .b = value,
+										 .a = text->getColor().a});
+				}
+			}
+			pendingToolSwitch.reset();
+		}
+
+		if (pendingToolSwitch == "text green")
+		{
+			auto sliderButton =
+				std::dynamic_pointer_cast<SliderButton>(textMenu->getSelectedItem());
+			if (sliderButton)
+			{
+				sliderButton->setMinValue(0.0F);
+				sliderButton->setMaxValue(1.0F);
+				float minValue	  = sliderButton->getMinValue();
+				float maxValue	  = sliderButton->getMaxValue();
+				auto  bounds	  = sliderButton->getBounds();
+				float sliderStart = bounds.left;
+				float sliderEnd	  = bounds.right;
+				float t = (static_cast<float>(mouseX) - sliderStart) / (sliderEnd - sliderStart);
+				t		= std::clamp(t, 0.0f, 1.0f);
+				float value = minValue + t * (maxValue - minValue);
+				sliderButton->setValue(value);
+
+				for (const auto& text : textManager->getTexts())
+				{
+					text->setColor(Color{.r = text->getColor().r,
+										 .g = value,
+										 .b = text->getColor().b,
+										 .a = text->getColor().a});
+				}
+			}
+			pendingToolSwitch.reset();
+		}
+
+		if (pendingToolSwitch == "text opacity")
+		{
+			auto sliderButton =
+				std::dynamic_pointer_cast<SliderButton>(textMenu->getSelectedItem());
+			if (sliderButton)
+			{
+				sliderButton->setMinValue(0.0F);
+				sliderButton->setMaxValue(1.0F);
+				float minValue	  = sliderButton->getMinValue();
+				float maxValue	  = sliderButton->getMaxValue();
+				auto  bounds	  = sliderButton->getBounds();
+				float sliderStart = bounds.left;
+				float sliderEnd	  = bounds.right;
+				float t = (static_cast<float>(mouseX) - sliderStart) / (sliderEnd - sliderStart);
+				t		= std::clamp(t, 0.0f, 1.0f);
+				float value = minValue + t * (maxValue - minValue);
+				sliderButton->setValue(value);
+
+				for (const auto& text : textManager->getTexts())
+				{
+					text->setColor(Color{.r = text->getColor().r,
+										 .g = text->getColor().g,
+										 .b = text->getColor().b,
+										 .a = value});
+				}
 			}
 			pendingToolSwitch.reset();
 		}
@@ -256,8 +407,7 @@ int main()
 			renderer->drawMenu(*textMenu);
 			for (const auto& button : textMenu->getButtons())
 			{
-				renderer->drawSliderButton(
-					*button, std::dynamic_pointer_cast<SliderButton>(button)->getValue());
+				renderer->drawSliderButton(*button, button->getValue());
 			}
 		}
 

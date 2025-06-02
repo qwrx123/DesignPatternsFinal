@@ -31,6 +31,8 @@ class ButtonClass : public IButton
 	void					  setLabel(const std::string& label) override;
 
 	void onClick(std::function<void()> callback) override;
+	float getValue() const override;
+	void  setValue(float value) override;
 
    private:
 	Bounds		bounds;
@@ -38,6 +40,7 @@ class ButtonClass : public IButton
 	bool		hovered = false;
 	bool		pressed = false;
 	std::string label;
+	float value = 0.0f;
 };
 
 #endif

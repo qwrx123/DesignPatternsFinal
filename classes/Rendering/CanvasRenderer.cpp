@@ -5,6 +5,7 @@
 #ifdef _WIN32
 #include <GL/glext.h>
 #include "Text.h"
+#include "SliderButton.h"
 #endif
 
 CanvasRenderer::CanvasRenderer(GLFWwindow* window) : window_(window)
