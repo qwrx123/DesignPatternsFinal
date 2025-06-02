@@ -32,6 +32,8 @@ std::string FileLocation::getDownloadLocation()
 
 #include <shlobj_core.h>
 #include <combaseapi.h>
+#include <windows.h>
+#include <array>
 
 std::string FileLocation::getDownloadLocation()
 {
