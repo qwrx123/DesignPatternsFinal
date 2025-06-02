@@ -20,14 +20,7 @@ add_executable(projectTests
     projectTests.cpp
     CanvasRendererTest.cpp
     StrokeManagerTest.cpp
-
-    ${CMAKE_SOURCE_DIR}/classes/Tools/ToolManager.cpp
-    ${CMAKE_SOURCE_DIR}/classes/Tools/BrushTool.cpp
-    ${CMAKE_SOURCE_DIR}/classes/Tools/Stroke.cpp
-    ${CMAKE_SOURCE_DIR}/classes/Tools/StrokeManager.cpp
-    ${CMAKE_SOURCE_DIR}/classes/Tools/EraserTool.cpp
-
-    ${CMAKE_SOURCE_DIR}/classes/Rendering/CanvasRenderer.cpp
+    FileTests.cpp
 )
 
 target_include_directories(projectTests PRIVATE ${PROJECT_COMMON_INCLUDE_DIRS})
@@ -36,6 +29,12 @@ target_link_libraries(projectTests
     PRIVATE
     ${GLEW_LIBRARIES}
     TextClass
+    File
+    Input
+    Rendering
+    ToolBar
+    Tools
+    WindowClass
     glfw
     GLEW::GLEW
     OpenGL::GL
