@@ -1,5 +1,8 @@
 #include "FileLocation.h"
 #include <string>
+#include <array>
+
+constexpr int DEFAULT_BUFFER_SIZE = 256;
 
 #ifdef __linux__
 
@@ -14,11 +17,11 @@ std::string FileLocation::getDownloadLocation()
 		return {};
 	}
 
-	char buffer[128];
+	std::array<char, DEFAULT_BUFFER_SIZE> buffer = {0};
 	std::string folderLocation;
-	while (fgets(buffer, sizeof(buffer), pipe.get()) != nullptr)
+	while (fgets(buffer.data(), sizeof(buffer), pipe.get()) != nullptr)
 	{
-		folderLocation += buffer;
+		folderLocation += buffer.data();
 	}
 	if (!folderLocation.empty() && folderLocation.back() == '\n')
 	{
@@ -33,7 +36,6 @@ std::string FileLocation::getDownloadLocation()
 #include <shlobj_core.h>
 #include <combaseapi.h>
 #include <windows.h>
-#include <array>
 
 std::string FileLocation::getDownloadLocation()
 {
@@ -48,7 +50,7 @@ std::string FileLocation::getDownloadLocation()
 		return {};
 	}
 
-	std::array<char, 256> buffer;
+	std::array<char, DEFAULT_BUFFER_SIZE> buffer;
 	WideCharToMultiByte(CP_UTF8, 0, pathPointer, -1, buffer.data(), buffer.size(), nullptr, nullptr);
 	CoTaskMemFree(pathPointer);
 	std::string folderLocation(buffer.data());
