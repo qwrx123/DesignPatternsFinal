@@ -121,7 +121,7 @@ int main()
 				button->getLabel() == "green" || button->getLabel() == "blue" ||
 				button->getLabel() == "opacity")
 			{
-				renderer->drawSliderButton(*button, button->getValue());
+				CanvasRenderer::drawSliderButton(*button, button->getValue());
 			}
 			else
 			{

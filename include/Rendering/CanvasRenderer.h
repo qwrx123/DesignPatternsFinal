@@ -27,7 +27,7 @@ class CanvasRenderer : public ICanvasRenderer
 	static void renderText(const IText& text);
 	void		drawButton(const IButton& button) override;
 	void		drawMenu(const IMenu& menu) override;
-	void		drawSliderButton(const IButton& button, float value);
+	static void drawSliderButton(const IButton& button, float value);
 	void		endFrame() override;
 
 	static void textRenderTest();

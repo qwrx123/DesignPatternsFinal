@@ -195,7 +195,7 @@ void TextManager::handleBackspace()
 
 void TextManager::handleEnter()
 {
-	Bounds prevBounds;
+	Bounds prevBounds	= {};
 	int	   prevFontSize = fontSize;
 	Color  prevColor	= color;
 	if (!texts.empty())

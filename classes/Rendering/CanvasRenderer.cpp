@@ -194,8 +194,8 @@ void CanvasRenderer::drawSliderButton(const IButton& button, float value)
 	glVertex2f(button.getBounds().right - three, button.getBounds().bottom - three);
 	glVertex2f(button.getBounds().left + three, button.getBounds().bottom - three);
 
-	float sliderPosition =
-		(button.getBounds().left + (button.getBounds().right - (button.getBounds().left)) * value);
+	float sliderPosition = (button.getBounds().left +
+							(button.getBounds().right - ((button.getBounds().left)) * value));
 	glColor4f(0.0F, half, 1.0F, 1.0F);
 	glVertex2f(sliderPosition - five, button.getBounds().top + three);
 	glVertex2f(sliderPosition + five, button.getBounds().top + three);
