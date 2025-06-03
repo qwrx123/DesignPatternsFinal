@@ -4,7 +4,7 @@
 #include "Bounds.h"
 
 SliderButton::SliderButton(std::string label, Bounds bounds, Color color)
-    : label(std::move(label)), bounds(bounds), color(color), value(0.0f), minValue(0.0f), maxValue(1.0f)
+    : label(std::move(label)), bounds(bounds), color(color)
 {
 }
 SliderButton::~SliderButton() = default;
@@ -100,9 +100,10 @@ void SliderButton::setOnValueChangeCallback(std::function<void(float)> callback)
 }
 void SliderButton::updateValueFromPosition(double mouseX)
 {
-    float normalizedValue = (mouseX - bounds.left) / (bounds.right - bounds.left);
-    // Clamp normalizedValue between 0.0f and 1.0f
-    if (normalizedValue < minValue) normalizedValue = minValue;
-    if (normalizedValue > maxValue) normalizedValue = maxValue;
-    setValue(minValue + normalizedValue * (maxValue - minValue));
+    float normalizedValue = (float) (mouseX - bounds.left) / (bounds.right - bounds.left);
+
+    normalizedValue = std::max(normalizedValue, minValue);
+    normalizedValue = std::min(normalizedValue, maxValue);
+    
+    setValue(minValue + (normalizedValue * (maxValue - minValue)));
 }
