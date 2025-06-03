@@ -13,7 +13,6 @@
 #include "MenuBar.h"
 #include "ButtonClass.h"
 #include "TextManager.h"
-#include "SubMenu.h"
 #include "SliderButton.h"
 
 const int		  defaultWindowWidth  = 800;
@@ -68,7 +67,6 @@ int main()
 	auto					   menuBar		 = std::make_shared<MenuBar>();
 	std::optional<std::string> pendingToolSwitch;
 	auto					   textManager = std::make_shared<TextManager>();
-	auto					   textMenu	   = std::make_shared<SubMenu>();
 
 	inputManager->bindToWindow(window);
 	inputManager->registerReceiver(toolManager);
@@ -144,15 +142,6 @@ int main()
 				renderer->drawButton(*button);
 			}
 		}
-		if (textMenu->isOpen())
-		{
-			renderer->drawMenu(*textMenu);
-			for (const auto& button : textMenu->getButtons())
-			{
-				renderer->drawSliderButton(*button, button->getValue());
-			}
-		}
-
 		renderer->endFrame();
 		inputManager->endFrame();
 	}

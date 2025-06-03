@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 #include "Bounds.h"
+#include "SliderButton.h"
 #include "IButton.h"
 #include "IMenu.h"
 #include "IInputReceiver.h"
@@ -68,6 +69,10 @@ class MenuBar : public IMenu, public IInputReceiver
 
 	// Functions
 	[[nodiscard]] std::vector<std::shared_ptr<IButton>> cloneButtons() const;
+	static float setSliderButton(const std::shared_ptr<SliderButton>& sliderButton, double x,
+								 double y);
+	void onButton(const std::shared_ptr<IButton>& button, const std::string& label, double x,
+				  double y, int itCount);
 };
 
 #endif	// MENU_BAR_H
