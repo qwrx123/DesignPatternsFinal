@@ -13,7 +13,6 @@
 #include "MenuBar.h"
 #include "ButtonClass.h"
 #include "TextManager.h"
-#include "SliderButton.h"
 
 const int		  defaultWindowWidth  = 800;
 const int		  defaultWindowHeight = 600;
@@ -21,16 +20,9 @@ const char* const defaultWindowTitle  = "Drawing App";
 
 const float defaultEraserSize = 10;
 
-const float defaultThickness		= 2.0F;
-const int	defaultMenuBarHeight	= 100;
-const int	defaultToolButtonHeight = 60;
-const float buttonWidth				= 40.0F;
-const int	defaultFontSize			= 48;
-
-const float grayColor	  = 0.5F;
-const float darkGrayColor = 0.3F;
-
-const int buffer = 20;
+const float defaultThickness	 = 2.0F;
+const int	defaultMenuBarHeight = 100;
+const int	defaultFontSize		 = 48;
 
 int main()
 {
@@ -103,12 +95,6 @@ int main()
 			renderer->drawStroke(*stroke);
 		}
 
-		if (pendingToolSwitch)
-		{
-			toolManager->selectTool(*pendingToolSwitch);
-			pendingToolSwitch.reset();
-		}
-
 		for (const auto& text : textManager->getTexts())
 		{
 			CanvasRenderer::renderText(*text);
@@ -142,6 +128,7 @@ int main()
 				renderer->drawButton(*button);
 			}
 		}
+
 		renderer->endFrame();
 		inputManager->endFrame();
 	}
