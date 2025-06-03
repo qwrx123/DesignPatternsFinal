@@ -2,6 +2,13 @@
 
 #include <string>
 #include <cstdint>
+#include <memory>
+
+struct fileStruct
+{
+	std::unique_ptr<char*> fileLocation;
+	size_t				   fileSize;
+};
 
 class IFiles
 {

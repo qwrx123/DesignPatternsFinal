@@ -6,6 +6,7 @@
 #include "IStroke.h"
 #include "IButton.h"
 #include "IMenu.h"
+#include "IFiles.h"
 
 class ICanvasRenderer
 {
@@ -17,6 +18,7 @@ class ICanvasRenderer
 	ICanvasRenderer(ICanvasRenderer&&)				   = default;
 	ICanvasRenderer& operator=(ICanvasRenderer&&)	   = default;
 
+	virtual fileStruct exportCanvas() = 0;
 	// Called once per frame
 	virtual void beginFrame()					   = 0;
 	virtual void drawStroke(const IStroke& stroke) = 0;

@@ -184,3 +184,8 @@ void CanvasRenderer::resize(int width, int height)
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 }
+
+fileStruct CanvasRenderer::exportCanvas()
+{
+	return {};
+}

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "IFiles.h"
+#include <memory>
 
 class IExport : public IFiles
 {
@@ -12,5 +13,5 @@ class IExport : public IFiles
 	IExport(IExport&&)				   = default;
 	IExport& operator=(IExport&&)	   = default;
 
-	virtual void exportFile(void*, size_t) = 0;
+	virtual bool exportFile(std::unique_ptr<char*>, size_t) = 0;
 };

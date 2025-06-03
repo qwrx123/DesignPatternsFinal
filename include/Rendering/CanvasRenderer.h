@@ -29,6 +29,8 @@ class CanvasRenderer : public ICanvasRenderer
 	void		drawMenu(const IMenu& menu) override;
 	void		endFrame() override;
 
+	fileStruct exportCanvas() override;
+
 	static void textRenderTest();
 	static void renderGlyph(FT_Face face, FT_GlyphSlot glyph, float x, float y, Color color);
 

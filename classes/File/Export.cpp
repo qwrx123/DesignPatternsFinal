@@ -1,7 +1,11 @@
 #include "Export.h"
 #include "FileLocation.h"
+#include <memory>
 
-void Export::exportFile(void* fileLocation, size_t fileSize) {}
+bool Export::exportFile(std::unique_ptr<char*> fileLocation, size_t fileSize)
+{
+	return true;
+}
 
 std::string Export::quarryFileLocation()
 {
