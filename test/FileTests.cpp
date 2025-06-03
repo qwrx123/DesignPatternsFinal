@@ -31,4 +31,6 @@ TEST(FileTests, FileCreated) {
     std::filesystem::path path(location + fileName + ".txt");
     EXPECT_TRUE(exportFile.exportFile(std::move(fileStruct)));
     EXPECT_TRUE(std::filesystem::exists(path));
+
+    std::filesystem::remove(path);
 }
