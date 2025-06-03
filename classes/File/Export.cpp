@@ -8,6 +8,12 @@ std::string Export::quarryFileLocation()
 	return FileLocation::getDownloadLocation();
 }
 
-void Export::setFileType(IFiles::type fileType) {}
+void Export::setFileType(IFiles::type fileType)
+{
+	this->fileType = fileType;
+}
 
-void Export::setFileName(const std::string& fileName) {}
+void Export::setFileName(const std::string& fileName)
+{
+	this->fileName = fileName;
+}
