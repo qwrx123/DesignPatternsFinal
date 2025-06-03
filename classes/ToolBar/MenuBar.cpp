@@ -406,7 +406,7 @@ void MenuBar::onButton(const std::shared_ptr<IButton>& button, const std::string
 							 .left   = text->getTexts().at(text->getTexts().size() - 1)->getBounds().left,
 							 .right  = text->getTexts().at(text->getTexts().size() - 1)->getBounds().right});
 
-					// TODO update size for brush and eraser tools
+			tool->getActiveTool()->setThickness(value * 100.0F);
 		}
 					
 	} else if (label == "red"){
