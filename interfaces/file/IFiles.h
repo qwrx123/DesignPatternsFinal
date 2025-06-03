@@ -18,7 +18,8 @@ class IFiles
 		daisy,
 		jpg,
 		png,
-		bmp
+		bmp,
+		txt
 	};
 
 	IFiles()						 = default;
