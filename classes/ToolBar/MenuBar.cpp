@@ -23,6 +23,7 @@ const Color gray = {.r = 0.5F, .g = 0.5F, .b = 0.5F, .a = 1.0F};
 
 const int minFontSize = 12;
 const int maxFontSize = 96;
+const float thicknessConversionFactor = 40.0F;
 
 MenuBar::MenuBar() : label("Menu Bar"), bounds{.top = 0,.bottom = 0,.left = 0,.right = 0}, tool(nullptr)
 {
@@ -406,7 +407,7 @@ void MenuBar::onButton(const std::shared_ptr<IButton>& button, const std::string
 							 .left   = text->getTexts().at(text->getTexts().size() - 1)->getBounds().left,
 							 .right  = text->getTexts().at(text->getTexts().size() - 1)->getBounds().right});
 
-			tool->getActiveTool()->setThickness(value * 100.0F);
+			tool->getActiveTool()->setThickness(value * thicknessConversionFactor);
 		}
 					
 	} else if (label == "red"){
