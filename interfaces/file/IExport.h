@@ -13,5 +13,5 @@ class IExport : public IFiles
 	IExport(IExport&&)				   = default;
 	IExport& operator=(IExport&&)	   = default;
 
-	virtual bool exportFile(std::unique_ptr<char*>, size_t) = 0;
+	virtual bool exportFile(fileStruct) = 0;
 };

@@ -15,7 +15,7 @@ class Export : public IExport
 	Export(Export&& other) noexcept			   = default;
 	Export& operator=(Export&& other) noexcept = default;
 
-	bool exportFile(std::unique_ptr<char*> fileLocation, size_t fileSize) override;
+	bool					  exportFile(fileStruct file) override;
 	[[nodiscard]] std::string quarryFileLocation() override;
 	void					  setFileType(IFiles::type fileType) override;
 	void					  setFileName(const std::string& fileName) override;

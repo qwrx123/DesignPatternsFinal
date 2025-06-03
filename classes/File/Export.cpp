@@ -2,8 +2,12 @@
 #include "FileLocation.h"
 #include <memory>
 
-bool Export::exportFile(std::unique_ptr<char*> fileLocation, size_t fileSize)
+bool Export::exportFile(fileStruct fileStruct)
 {
+	if (!fileStruct.fileLocation || fileStruct.fileSize == 0)
+	{
+		return false;
+	}
 	return true;
 }
 
