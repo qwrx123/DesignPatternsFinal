@@ -11,7 +11,7 @@ constexpr int DEFAULT_BUFFER_SIZE = 256;
 
 std::string FileLocation::getDownloadLocation()
 {
-	std::unique_ptr<std::FILE> pipe(popen("xdg-user-dir DOWNLOAD", "r"));
+	std::unique_ptr<std::FILE, decltype(&pclose)> pipe(popen("xdg-user-dir DOWNLOAD", "r"), pclose);
 	if (!pipe)
 	{
 		return {};
@@ -26,6 +26,11 @@ std::string FileLocation::getDownloadLocation()
 	if (!folderLocation.empty() && folderLocation.back() == '\n')
 	{
 		folderLocation.pop_back();
+	}
+
+	if (!folderLocation.empty() && folderLocation.back() != '/')
+	{
+		folderLocation.push_back('/');
 	}
 
 	return folderLocation;

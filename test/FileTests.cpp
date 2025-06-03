@@ -21,6 +21,7 @@ TEST(FileTests, FileCreated) {
     Export exportFile = Export();
     std::string location = exportFile.quarryFileLocation();
     std::string fileName = "TESTEXPORTFILECREATED";
+    exportFile.setFileLocation(location);
     exportFile.setFileName(fileName);
     exportFile.setFileType(IFiles::type::txt);
 

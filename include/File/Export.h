@@ -17,6 +17,7 @@ class Export : public IExport
 
 	bool					  exportFile(fileStruct file) override;
 	[[nodiscard]] std::string quarryFileLocation() override;
+	void					  setFileLocation(const std::string& fileLocation) override;
 	void					  setFileType(IFiles::type fileType) override;
 	void					  setFileName(const std::string& fileName) override;
 

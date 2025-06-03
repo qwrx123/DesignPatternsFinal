@@ -8,7 +8,26 @@ bool Export::exportFile(fileStruct fileStruct)
 	{
 		return false;
 	}
+
+	std::string				   fullpath = fileLocation + fileName + ".txt";
+	std::unique_ptr<std::FILE> file(std::fopen(fullpath.c_str(), "wt"));
+	if (!file)
+	{
+		return false;
+	}
+
+	if (std::fwrite(*fileStruct.fileLocation, sizeof(char), fileStruct.fileSize, file.get()) !=
+		fileStruct.fileSize)
+	{
+		return false;
+	}
+
 	return true;
+}
+
+void Export::setFileLocation(const std::string& fileLocation)
+{
+	this->fileLocation = fileLocation;
 }
 
 std::string Export::quarryFileLocation()
