@@ -27,6 +27,15 @@ using DWORD = uint32_t;
 using LONG	= int32_t;
 using WORD	= uint16_t;
 
+using BITMAPFILEHEADER = struct
+{
+	WORD  bfType;
+	DWORD bfSize;
+	WORD  bfReserved1;
+	WORD  bfReserved2;
+	DWORD bfOffBits;
+};
+
 using BITMAPINFOHEADER = struct
 {
 	DWORD biSize;

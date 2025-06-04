@@ -14,7 +14,17 @@ TEST(FileTests, emptyFile) {
     Export exportFile = Export();
     fileStruct fileStruct = {nullptr, 0};
 
-    EXPECT_EQ(exportFile.exportFile(std::move(fileStruct)), false);
+    EXPECT_EQ(exportFile.exportFile(std::move(fileStruct), {}), false);
+}
+
+TEST(FileTests, emptyBitmap) {
+    Export exportFile = Export();
+    exportFile.setFileType(IFiles::type::bmp);
+
+    fileStruct fileStruct = {std::make_unique<char*>(new char[sizeof("TESTDATAHERE")]), sizeof("TESTDATAHERE")};
+
+    EXPECT_EQ(exportFile.exportFile(std::move(fileStruct), 
+        {.width = 0, .height = 0, .horizontalResolution = 0, .verticalResolution = 0}), false);
 }
 
 TEST(FileTests, FileCreated) {
@@ -29,7 +39,7 @@ TEST(FileTests, FileCreated) {
     strcpy(*fileStruct.fileLocation, "TESTDATAHERE");
     
     std::filesystem::path path(location + fileName + ".txt");
-    EXPECT_TRUE(exportFile.exportFile(std::move(fileStruct)));
+    EXPECT_TRUE(exportFile.exportFile(std::move(fileStruct), {}));
     EXPECT_TRUE(std::filesystem::exists(path));
 
     std::filesystem::remove(path);

@@ -2,7 +2,7 @@
 #include "FileLocation.h"
 #include <memory>
 
-bool Export::exportFile(fileStruct fileStruct)
+bool Export::exportFile(fileStruct fileStruct, imageInfo imageInfo)
 {
 	switch (fileType)
 	{
