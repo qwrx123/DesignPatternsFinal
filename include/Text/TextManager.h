@@ -6,6 +6,7 @@
 #include "ITextManager.h"
 #include "Text.h"
 #include "IInputReceiver.h"
+#include "TextHistory.h"
 
 class TextManager : public ITextManager, public IInputReceiver
 {
@@ -48,6 +49,8 @@ class TextManager : public ITextManager, public IInputReceiver
 	std::string fontName;
 	int			fontSize = 0;
 	Color		color	 = {.r = 0.0F, .g = 0.0F, .b = 0.0F, .a = 1.0F};
+
+	TextHistory textHistory;
 
 	void insertTab();
 	void handleBackspace();

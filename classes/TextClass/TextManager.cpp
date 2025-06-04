@@ -63,6 +63,7 @@ void TextManager::setTextToolInactive()
 void TextManager::addText(std::shared_ptr<IText> text)
 {
 	texts.push_back(text);
+	textHistory.push(text);
 }
 
 void TextManager::removeText(std::shared_ptr<IText> text)
@@ -72,6 +73,8 @@ void TextManager::removeText(std::shared_ptr<IText> text)
 	{
 		texts.erase(it, texts.end());
 	}
+	textHistory.undo();
+	textHistory.push(text);
 }
 
 const std::vector<std::shared_ptr<IText>>& TextManager::getTexts() const

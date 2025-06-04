@@ -24,6 +24,7 @@ target_include_directories(TextClass
 
 target_link_libraries(TextClass
     PRIVATE
+    Canvas
     Freetype::Freetype
     glfw
     OpenGL::GL
