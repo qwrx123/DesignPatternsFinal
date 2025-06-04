@@ -33,11 +33,14 @@ class TextManager : public ITextManager, public IInputReceiver
 
 	void clearAll() override;
 
-	void onMouseMove(double x, double y) override;
-	void onMouseButton(MouseButton button, KeyAction action, double x, double y) override;
-	void onKey(int key, KeyAction action) override;
-	void onChar(unsigned int codepoint) override;
-	void setFontSize(int size) override;
+	void		onMouseMove(double x, double y) override;
+	void		onMouseButton(MouseButton button, KeyAction action, double x, double y) override;
+	void		onKey(int key, KeyAction action) override;
+	void		onChar(unsigned int codepoint) override;
+	void		setFontSize(int size) override;
+	void		undoText() override;
+	void		redoText() override;
+	TextHistory getHistory();
 
    private:
 	std::vector<std::shared_ptr<IText>> texts;

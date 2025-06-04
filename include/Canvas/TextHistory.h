@@ -23,8 +23,12 @@ class TextHistory : public IHistoryStack<std::shared_ptr<IText>>
 	[[nodiscard]] std::vector<std::shared_ptr<IText>> getHistory() override;
 	[[nodiscard]] bool								  isEmpty() const override;
 	[[nodiscard]] size_t							  size() const override;
-	void											  redo();
-	void											  undo();
+	std::shared_ptr<IText>							  redo();
+	std::shared_ptr<IText>							  undo();
+	[[nodiscard]] std::shared_ptr<IText>			  peekLastUndone() const;
+	[[nodiscard]] bool								  isLastUndoneEmpty() const;
+	[[nodiscard]] size_t							  undoneSize() const;
+	[[nodiscard]] std::vector<std::shared_ptr<IText>> getUndoneHistory() const;
 
    private:
 	std::vector<std::shared_ptr<IText>> history;

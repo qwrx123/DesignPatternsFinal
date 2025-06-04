@@ -273,7 +273,21 @@ void MenuBar::setDefaultButtons()
 					   .bottom = bounds.bottom,
 					   .left   = buttons.at(buttons.size() - 1)->getBounds().right + 1,
 					   .right  = buttons.at(buttons.size() - 1)->getBounds().right + defaultButtonWidth},
-									   gray));						
+									   gray));	
+	addButton(std::make_shared<ButtonClass>(
+		"undo",
+		Bounds{.top	   = bounds.top,
+			   .bottom = midDiv,
+			   .left   = buttons.at(buttons.size() - 1)->getBounds().right + 1,
+			   .right  = buttons.at(buttons.size() - 1)->getBounds().right + defaultButtonWidth},
+		black));
+	addButton(std::make_shared<ButtonClass>(
+		"redo",
+		Bounds{.top	   = midDiv,
+			   .bottom = bounds.bottom,
+			   .left   = buttons.at(buttons.size() - 1)->getBounds().left,
+			   .right  = buttons.at(buttons.size() - 1)->getBounds().right},
+		white));
 }
 
 void MenuBar::addButton(std::shared_ptr<IButton> button)
@@ -470,7 +484,15 @@ void MenuBar::onButton(const std::shared_ptr<IButton>& button, const std::string
 													 .b = tool->getActiveTool()->getColor().b,
 													 .a = value});
 		}
-	}
+	} 
+	else if (label == "undo")
+	{
+		text->undoText();
+	} 
+	else if (label == "redo")
+	{
+		text->redoText();
+	} 
 	else
 	{
 		tool->selectTool(label);

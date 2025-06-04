@@ -63,7 +63,6 @@ void TextManager::setTextToolInactive()
 void TextManager::addText(std::shared_ptr<IText> text)
 {
 	texts.push_back(text);
-	textHistory.push(text);
 }
 
 void TextManager::removeText(std::shared_ptr<IText> text)
@@ -155,6 +154,7 @@ void TextManager::onChar(unsigned int codepoint)
 				std::string content = text->getContent();
 				content += static_cast<char>(codepoint);
 				text->setContent(content);
+				textHistory.push(text);
 				break;
 			}
 		}
@@ -170,6 +170,7 @@ void TextManager::insertTab()
 			std::string content = text->getContent();
 			content += '\t';
 			text->setContent(content);
+			textHistory.push(text);
 		}
 		break;
 	}
@@ -186,6 +187,7 @@ void TextManager::handleBackspace()
 			{
 				content.pop_back();
 				text->setContent(content);
+				textHistory.push(text);
 			}
 			else if (texts.size() > 1)
 			{
@@ -215,6 +217,7 @@ void TextManager::handleEnter()
 								   Bounds((static_cast<float>(prevFontSize) + prevBounds.top),
 										  bounds.bottom, bounds.left, bounds.right),
 								   fontName, prevFontSize, prevColor, true));
+	textHistory.push(texts.back());
 }
 void TextManager::setFontSize(int size)
 {
@@ -223,4 +226,26 @@ void TextManager::setFontSize(int size)
 	{
 		text->setFontSize(size);
 	}
+}
+
+void TextManager::undoText()
+{
+	handleBackspace();
+	textHistory.undo();
+	textHistory.push(texts.back());
+}
+
+void TextManager::redoText()
+{
+	if (textHistory.isEmpty() || textHistory.isLastUndoneEmpty())
+	{
+		return;
+	}
+	auto text = textHistory.redo();
+	// texts.back() = text;  // Update the last text with the redone text
+}
+
+TextHistory TextManager::getHistory()
+{
+	return textHistory;
 }

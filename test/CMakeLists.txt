@@ -23,6 +23,7 @@ add_executable(projectTests
     StrokeManagerTest.cpp
     TextManagerTest.cpp
     TextTest.cpp
+    TextHistoryTest.cpp
 
     ${CMAKE_SOURCE_DIR}/classes/Tools/ToolManager.cpp
     ${CMAKE_SOURCE_DIR}/classes/Tools/BrushTool.cpp

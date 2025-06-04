@@ -41,17 +41,43 @@ size_t TextHistory::size() const
 	return history.size();
 }
 
-void TextHistory::redo()
+std::shared_ptr<IText> TextHistory::redo()
 {
 	if (!undoneHistory.empty())
 	{
 		auto text = undoneHistory.back();
-		push(text);
 		undoneHistory.pop_back();
+		push(text);
+		return text;
 	}
+	return nullptr;
 }
 
-void TextHistory::undo()
+std::shared_ptr<IText> TextHistory::undo()
 {
-	pop();
+	return pop();
+}
+
+std::shared_ptr<IText> TextHistory::peekLastUndone() const
+{
+	if (undoneHistory.empty())
+	{
+		return nullptr;
+	}
+	return undoneHistory.back();
+}
+
+bool TextHistory::isLastUndoneEmpty() const
+{
+	return undoneHistory.empty();
+}
+
+size_t TextHistory::undoneSize() const
+{
+	return undoneHistory.size();
+}
+
+std::vector<std::shared_ptr<IText>> TextHistory::getUndoneHistory() const
+{
+	return undoneHistory;
 }
