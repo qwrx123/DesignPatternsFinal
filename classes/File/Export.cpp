@@ -4,6 +4,39 @@
 
 bool Export::exportFile(fileStruct fileStruct)
 {
+	switch (fileType)
+	{
+		case IFiles::type::txt:
+			return exportTxtFile(std::move(fileStruct));
+		case IFiles::type::bmp:
+			return exportBmpFile(std::move(fileStruct));
+		default:
+			return false;
+	}
+}
+
+void Export::setFileLocation(const std::string& fileLocation)
+{
+	this->fileLocation = fileLocation;
+}
+
+std::string Export::quarryFileLocation()
+{
+	return FileLocation::getDownloadLocation();
+}
+
+void Export::setFileType(IFiles::type fileType)
+{
+	this->fileType = fileType;
+}
+
+void Export::setFileName(const std::string& fileName)
+{
+	this->fileName = fileName;
+}
+
+bool Export::exportTxtFile(fileStruct fileStruct)
+{
 	if (!fileStruct.fileLocation || fileStruct.fileSize == 0)
 	{
 		return false;
@@ -25,22 +58,7 @@ bool Export::exportFile(fileStruct fileStruct)
 	return true;
 }
 
-void Export::setFileLocation(const std::string& fileLocation)
+bool Export::exportBmpFile(fileStruct file)
 {
-	this->fileLocation = fileLocation;
-}
-
-std::string Export::quarryFileLocation()
-{
-	return FileLocation::getDownloadLocation();
-}
-
-void Export::setFileType(IFiles::type fileType)
-{
-	this->fileType = fileType;
-}
-
-void Export::setFileName(const std::string& fileName)
-{
-	this->fileName = fileName;
+	return false;
 }

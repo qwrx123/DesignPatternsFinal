@@ -25,6 +25,9 @@ class Export : public IExport
 	IFiles::type fileType = IFiles::type::bmp;
 	std::string	 fileName = "DaisyExport";
 	std::string	 fileLocation;
+
+	bool exportTxtFile(fileStruct file);
+	bool exportBmpFile(fileStruct file);
 };
 
 #endif	// EXPORT_H

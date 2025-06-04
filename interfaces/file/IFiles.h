@@ -10,6 +10,38 @@ struct fileStruct
 	size_t				   fileSize;
 };
 
+/// @brief Structure to hold image information
+/// @details This structure contains the width, height, and resolution of an image.
+struct imageInfo
+{
+	size_t width;
+	size_t height;
+	size_t horizontalResolution;
+	size_t verticalResolution;
+}
+
+#include <stdint.h>
+
+using BYTE	= uint8_t;
+using DWORD = uint32_t;
+using LONG	= int32_t;
+using WORD	= uint16_t;
+
+using BITMAPINFOHEADER = struct
+{
+	DWORD biSize;
+	LONG  biWidth;
+	LONG  biHeight;
+	WORD  biPlanes;
+	WORD  biBitCount;
+	DWORD biCompression;
+	DWORD biSizeImage;
+	LONG  biXPelsPerMeter;
+	LONG  biYPelsPerMeter;
+	DWORD biClrUsed;
+	DWORD biClrImportant;
+};
+
 class IFiles
 {
    public:
