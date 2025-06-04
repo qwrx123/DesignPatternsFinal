@@ -18,7 +18,7 @@ struct imageInfo
 	size_t height;
 	size_t horizontalResolution;
 	size_t verticalResolution;
-}
+};
 
 #include <stdint.h>
 

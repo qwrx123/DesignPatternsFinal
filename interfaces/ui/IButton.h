@@ -36,6 +36,9 @@ class IButton
 
 	// Event callback
 	virtual void onClick(std::function<void()> callback) = 0;
+
+	[[nodiscard]] virtual float getValue() const	  = 0;
+	virtual void				setValue(float value) = 0;
 };
 
 #endif	// IBUTTON_H

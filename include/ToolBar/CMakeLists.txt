@@ -1,6 +1,7 @@
 set(FILE_LIST
     ButtonClass.h
     MenuBar.h
+    SliderButton.h
 )
 
 registerFilesToFormat(FILES ${FILE_LIST})

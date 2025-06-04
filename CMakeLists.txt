@@ -91,6 +91,8 @@ if(CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
 	endif()
 endif()
 
+option(WARNINGS_AS_ERRORS "Treat compiler warnings as errors" OFF)
+
 # Enable clang-tidy
 find_program(CLANG_TIDY_EXE NAMES clang-tidy)
 message(STATUS "clang-tidy: ${CLANG_TIDY_EXE}")
@@ -99,6 +101,9 @@ if(CLANG_TIDY_EXE)
 		set(CMAKE_CXX_CLANG_TIDY ${CLANG_TIDY_EXE})
 	else()
 		set(CMAKE_CXX_CLANG_TIDY "${PROJECT_SOURCE_DIR}/clang-tidy-wrapper.sh")
+	endif()
+	if (WARNINGS_AS_ERRORS)
+		list(APPEND CMAKE_CXX_CLANG_TIDY "--warnings-as-errors=*")
 	endif()
 endif()
 message(STATUS "clang-tidy: ${CMAKE_CXX_CLANG_TIDY}")

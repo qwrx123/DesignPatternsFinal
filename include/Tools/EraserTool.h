@@ -27,14 +27,19 @@ class EraserTool : public IDrawingTool
 	[[nodiscard]] bool isActive() const override;
 	void			   setActive(bool value);
 
-	[[nodiscard]] bool isDrawing() const override;
+	[[nodiscard]] bool	isDrawing() const override;
+	[[nodiscard]] Color getColor() const override;
+
+	void				setThickness(float thickness) override;
+	[[nodiscard]] float getThickness() const override;
 
    private:
 	std::shared_ptr<Stroke>			erase_path;
 	std::shared_ptr<IStrokeManager> stroke_manager;
 	float							eraser_thickness;
-	bool							active	= false;
-	bool							drawing = false;
+	bool							active		 = false;
+	bool							drawing		 = false;
+	Color							eraser_color = {.r = 1.0F, .g = 1.0F, .b = 1.0F, .a = 0.0F};
 };
 
 #endif	// ERASER_TOOL_H

@@ -123,3 +123,22 @@ bool BrushTool::isDrawing() const
 {
 	return drawing;
 }
+
+Color BrushTool::getColor() const
+{
+	return brush_color;
+}
+
+void BrushTool::setThickness(float thickness)
+{
+	brush_thickness = thickness;
+	if (current_stroke)
+	{
+		current_stroke->setThickness(thickness);
+	}
+}
+
+float BrushTool::getThickness() const
+{
+	return brush_thickness;
+}

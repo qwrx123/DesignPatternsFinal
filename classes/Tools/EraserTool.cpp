@@ -123,7 +123,11 @@ std::string EraserTool::getName()
 	return "Eraser";
 }
 
-void EraserTool::setColor(const Color& color) {}
+void  EraserTool::setColor(const Color& color) {}
+Color EraserTool::getColor() const
+{
+	return eraser_color;
+}
 
 bool EraserTool::isActive() const
 {
@@ -138,4 +142,18 @@ void EraserTool::setActive(bool value)
 bool EraserTool::isDrawing() const
 {
 	return drawing;
+}
+
+void EraserTool::setThickness(float thickness)
+{
+	eraser_thickness = thickness;
+	if (erase_path)
+	{
+		erase_path->setThickness(thickness);
+	}
+}
+
+float EraserTool::getThickness() const
+{
+	return eraser_thickness;
 }

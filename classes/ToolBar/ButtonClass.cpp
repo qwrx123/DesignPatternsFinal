@@ -63,3 +63,13 @@ void ButtonClass::setLabel(const std::string& label)
 
 // customize for specialized button classes inheriting from ButtonClass
 void ButtonClass::onClick(std::function<void()> callback) {}
+
+float ButtonClass::getValue() const
+{
+	return value;
+}
+
+void ButtonClass::setValue(float value)
+{
+	this->value = value;
+}
