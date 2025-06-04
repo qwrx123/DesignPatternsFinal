@@ -36,6 +36,7 @@ class TextManager : public ITextManager, public IInputReceiver
 	void onMouseButton(MouseButton button, KeyAction action, double x, double y) override;
 	void onKey(int key, KeyAction action) override;
 	void onChar(unsigned int codepoint) override;
+	void setFontSize(int size) override;
 
    private:
 	std::vector<std::shared_ptr<IText>> texts;
@@ -47,6 +48,10 @@ class TextManager : public ITextManager, public IInputReceiver
 	std::string fontName;
 	int			fontSize = 0;
 	Color		color	 = {.r = 0.0F, .g = 0.0F, .b = 0.0F, .a = 1.0F};
+
+	void insertTab();
+	void handleBackspace();
+	void handleEnter();
 };
 
 #endif	// TEXTMANAGER_H

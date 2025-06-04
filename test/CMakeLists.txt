@@ -14,12 +14,15 @@ find_package(GTest REQUIRED)
 find_package(OpenGL REQUIRED)
 find_package(glfw3 3.3 REQUIRED)
 find_package(GLEW REQUIRED)
+find_package(Freetype REQUIRED)
 
 add_executable(projectTests
     ToolManagerTests.cpp
     projectTests.cpp
     CanvasRendererTest.cpp
     StrokeManagerTest.cpp
+    TextManagerTest.cpp
+    TextTest.cpp
 
     ${CMAKE_SOURCE_DIR}/classes/Tools/ToolManager.cpp
     ${CMAKE_SOURCE_DIR}/classes/Tools/BrushTool.cpp
@@ -28,9 +31,13 @@ add_executable(projectTests
     ${CMAKE_SOURCE_DIR}/classes/Tools/EraserTool.cpp
 
     ${CMAKE_SOURCE_DIR}/classes/Rendering/CanvasRenderer.cpp
+
+    ${CMAKE_SOURCE_DIR}/classes/TextClass/Text.cpp
+    ${CMAKE_SOURCE_DIR}/classes/TextClass/TextManager.cpp
+    ${CMAKE_SOURCE_DIR}/classes/TextClass/TextBox.cpp
 )
 
-target_include_directories(projectTests PRIVATE ${PROJECT_COMMON_INCLUDE_DIRS})
+target_include_directories(projectTests PRIVATE ${PROJECT_COMMON_INCLUDE_DIRS} ${FREETYPE_INCLUDE_DIRS})
 
 target_link_libraries(projectTests
     PRIVATE
@@ -40,6 +47,7 @@ target_link_libraries(projectTests
     GLEW::GLEW
     OpenGL::GL
     GTest::gtest_main
+    Freetype::Freetype
 )
 
 # skip linting for test files

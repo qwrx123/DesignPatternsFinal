@@ -39,7 +39,11 @@ class BrushTool : public IDrawingTool
 	[[nodiscard]] bool isActive() const override;
 	void			   setActive(bool value);
 
-	[[nodiscard]] bool isDrawing() const override;
+	[[nodiscard]] bool	isDrawing() const override;
+	[[nodiscard]] Color getColor() const override;
+
+	void				setThickness(float thickness) override;
+	[[nodiscard]] float getThickness() const override;
 };
 
 #endif	// BRUSHTOOL_H

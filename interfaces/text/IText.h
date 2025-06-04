@@ -30,8 +30,9 @@ class IText
 	[[nodiscard]] virtual Color getColor() const			 = 0;
 	virtual void				setColor(const Color& color) = 0;
 
-	[[nodiscard]] virtual bool isEditable() const		  = 0;
-	virtual void			   setEditable(bool editable) = 0;
+	[[nodiscard]] virtual bool isEditable() const			   = 0;
+	virtual void			   setEditable(bool editable)	   = 0;
+	virtual void			   setBounds(const Bounds& bounds) = 0;
 };
 
 #endif	// ITEXT_H

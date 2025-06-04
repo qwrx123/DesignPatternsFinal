@@ -26,6 +26,11 @@ class StrokeManager : public IStrokeManager
 	[[nodiscard]] std::vector<std::shared_ptr<IStroke>> cloneStrokes() const;
 
 	std::vector<std::shared_ptr<IStroke>> strokes_;
+
+	void isErased(const auto& stroke_pts, size_t i, bool& is_erased,
+				  std::vector<std::shared_ptr<IStroke>>& updated_strokes,
+				  std::vector<Point>& current_segment, const std::shared_ptr<IStroke>& eraser_path,
+				  float eraser_radius, const std::shared_ptr<IStroke>& stroke);
 };
 
 #endif	// STROKEMANAGER_H

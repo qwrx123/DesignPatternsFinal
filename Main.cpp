@@ -74,7 +74,6 @@ int main()
 		"",
 		Bounds(defaultFontSize + defaultMenuBarHeight, defaultWindowHeight, 0, defaultWindowWidth),
 		"Delius", defaultFontSize, Color{.r = 0.0F, .g = 0.0F, .b = 0.0F, .a = 1.0F}, true));
-	// textManager->setTextToolActive();
 	toolManager->registerTool("eraser",
 							  std::make_shared<EraserTool>(strokeManager, defaultEraserSize));
 
@@ -118,7 +117,16 @@ int main()
 		renderer->drawMenu(*menuBar);
 		for (const auto& button : menuBar->getButtons())
 		{
-			renderer->drawButton(*button);
+			if (button->getLabel() == "size" || button->getLabel() == "red" ||
+				button->getLabel() == "green" || button->getLabel() == "blue" ||
+				button->getLabel() == "opacity")
+			{
+				CanvasRenderer::drawSliderButton(*button, button->getValue());
+			}
+			else
+			{
+				renderer->drawButton(*button);
+			}
 		}
 
 		renderer->endFrame();

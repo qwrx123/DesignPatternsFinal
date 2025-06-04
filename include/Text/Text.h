@@ -34,6 +34,8 @@ class Text : public IText
 	[[nodiscard]] bool isEditable() const override;
 	void			   setEditable(bool editable) override;
 
+	void setBounds(const Bounds& bounds) override;
+
    private:
 	std::string content;
 	Bounds		bounds;

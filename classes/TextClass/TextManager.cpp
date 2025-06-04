@@ -2,7 +2,6 @@
 #include <algorithm>
 #include <ranges>
 #include <cassert>
-#include <iostream>
 #include <GLFW/glfw3.h>
 
 TextManager::TextManager() : bounds({.top = 0, .bottom = 0, .left = 0, .right = 0}) {};
@@ -122,61 +121,23 @@ void TextManager::onMouseMove(double x, double y) {}
 void TextManager::onMouseButton(MouseButton button, KeyAction action, double x, double y) {}
 void TextManager::onKey(int key, KeyAction action)
 {
-	if (active && action == KeyAction::Press)
+	if (active && (action == KeyAction::Press || action == KeyAction::Repeat))
 	{
 		if (key == GLFW_KEY_ESCAPE)
 		{
 			active = false;
-			std::cout << "Text tool deactivated.\n";
 		}
 		else if (key == GLFW_KEY_BACKSPACE)
 		{
-			for (auto& text : std::ranges::reverse_view(texts))
-			{
-				if (text->isEditable())
-				{
-					std::string content = text->getContent();
-					if (!content.empty())
-					{
-						content.pop_back();
-						text->setContent(content);
-					}
-					else if (texts.size() > 1)
-					{
-						removeText(text);
-					}
-					break;
-				}
-			}
+			handleBackspace();
 		}
 		else if (key == GLFW_KEY_ENTER)
 		{
-			Bounds prevBounds{.top = 0, .bottom = 0, .left = 0, .right = 0};
-			if (!texts.empty())
-			{
-				prevBounds = texts.back()->getBounds();
-			}
-			else
-			{
-				prevBounds = bounds;
-			}
-			addText(std::make_shared<Text>("",
-										   Bounds((static_cast<float>(fontSize) + prevBounds.top),
-												  bounds.bottom, bounds.left, bounds.right),
-										   fontName, fontSize, color, true));
+			handleEnter();
 		}
 		else if (key == GLFW_KEY_TAB)
 		{
-			for (auto& text : std::ranges::reverse_view(texts))
-			{
-				if (text->isEditable())
-				{
-					std::string content = text->getContent();
-					content += '\t';
-					text->setContent(content);
-					break;
-				}
-			}
+			insertTab();
 		}
 	}
 }
@@ -194,5 +155,69 @@ void TextManager::onChar(unsigned int codepoint)
 				break;
 			}
 		}
+	}
+}
+
+void TextManager::insertTab()
+{
+	for (auto& text : std::ranges::reverse_view(texts))
+	{
+		if (text->isEditable())
+		{
+			std::string content = text->getContent();
+			content += '\t';
+			text->setContent(content);
+		}
+		break;
+	}
+}
+
+void TextManager::handleBackspace()
+{
+	for (auto& text : std::ranges::reverse_view(texts))
+	{
+		if (text->isEditable())
+		{
+			std::string content = text->getContent();
+			if (!content.empty())
+			{
+				content.pop_back();
+				text->setContent(content);
+			}
+			else if (texts.size() > 1)
+			{
+				removeText(text);
+			}
+			break;
+		}
+	}
+}
+
+void TextManager::handleEnter()
+{
+	Bounds prevBounds	= {};
+	int	   prevFontSize = fontSize;
+	Color  prevColor	= color;
+	if (!texts.empty())
+	{
+		prevBounds	 = texts.back()->getBounds();
+		prevFontSize = texts.back()->getFontSize();
+		prevColor	 = texts.back()->getColor();
+	}
+	else
+	{
+		prevBounds = bounds;
+	}
+	addText(std::make_shared<Text>("",
+								   Bounds((static_cast<float>(prevFontSize) + prevBounds.top),
+										  bounds.bottom, bounds.left, bounds.right),
+								   fontName, prevFontSize, prevColor, true));
+}
+void TextManager::setFontSize(int size)
+{
+	fontSize = size;
+	for (auto& text : texts)
+	{
+		text->setFontSize(size);
 	}
 }
