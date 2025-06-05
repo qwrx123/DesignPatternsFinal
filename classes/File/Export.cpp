@@ -2,6 +2,7 @@
 #include "FileLocation.h"
 #include <memory>
 #include <vector>
+#include <cstring>
 
 bool Export::exportFile(bufferStruct fileStruct, imageInfo imageInfo)
 {
@@ -79,7 +80,31 @@ bool Export::exportBmpFile(bufferStruct pixels, imageInfo imageInfo)
 	setupBmpFileHeader(buffer, bmpBuffer.size(), imageInfo);
 	setupBmpV5Header(buffer, bmpBuffer.size(), imageInfo);
 
-	return false;
+	auto* bmpHeader		 = reinterpret_cast<BITMAPFILEHEADER*>(buffer);
+	DWORD offsetToPixels = bmpHeader->bfOffBits;
+
+	if (bmpBuffer.size() < offsetToPixels + pixels.bufferSize)
+	{
+		return false;
+	}
+
+	char* pixelData = buffer + offsetToPixels;
+
+	std::memcpy(pixelData, pixels.bufferLocation.get(), pixels.bufferSize);
+
+	std::string				   fullpath = fileLocation + fileName + ".bmp";
+	std::unique_ptr<std::FILE> file(std::fopen(fullpath.c_str(), "wt"));
+	if (!file)
+	{
+		return false;
+	}
+
+	if (std::fwrite(buffer, sizeof(char), bmpBuffer.size(), file.get()) != bmpBuffer.size())
+	{
+		return false;
+	}
+
+	return true;
 }
 
 bool Export::setupBmpFileHeader(char* buffer, size_t buffer_size, imageInfo imageInfo)
@@ -157,7 +182,7 @@ bool Export::setupBmpV5Header(char* buffer, size_t buffer_size, imageInfo imageI
 	const DWORD BLUE_MASK  = 0x0000FF00;
 	const DWORD ALPHA_MASK = 0x000000FF;
 
-	const DWORD LCS_sRGB = 0x73524742; /* 'sRGB' */
+	const DWORD LCS_sRGB = 0x73524742;
 
 	// Move the buffer pointer to the start of the BITMAPINFOHEADER
 	// NOLINTNEXTLINE(cppcoreguidelines-pro-bounds-pointer-arithmetic)
