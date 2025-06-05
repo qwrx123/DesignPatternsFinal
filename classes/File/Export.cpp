@@ -2,14 +2,14 @@
 #include "FileLocation.h"
 #include <memory>
 
-bool Export::exportFile(fileStruct fileStruct, imageInfo imageInfo)
+bool Export::exportFile(bufferStruct fileStruct, imageInfo imageInfo)
 {
 	switch (fileType)
 	{
 		case IFiles::type::txt:
 			return exportTxtFile(std::move(fileStruct));
 		case IFiles::type::bmp:
-			return exportBmpFile(std::move(fileStruct));
+			return exportBmpFile(std::move(fileStruct), imageInfo);
 		default:
 			return false;
 	}
@@ -35,9 +35,9 @@ void Export::setFileName(const std::string& fileName)
 	this->fileName = fileName;
 }
 
-bool Export::exportTxtFile(fileStruct fileStruct)
+bool Export::exportTxtFile(bufferStruct fileStruct)
 {
-	if (!fileStruct.fileLocation || fileStruct.fileSize == 0)
+	if (!fileStruct.bufferLocation || fileStruct.bufferSize == 0)
 	{
 		return false;
 	}
@@ -49,8 +49,8 @@ bool Export::exportTxtFile(fileStruct fileStruct)
 		return false;
 	}
 
-	if (std::fwrite(*fileStruct.fileLocation, sizeof(char), fileStruct.fileSize, file.get()) !=
-		fileStruct.fileSize)
+	if (std::fwrite(fileStruct.bufferLocation.get(), sizeof(char), fileStruct.bufferSize,
+					file.get()) != fileStruct.bufferSize)
 	{
 		return false;
 	}
@@ -58,7 +58,30 @@ bool Export::exportTxtFile(fileStruct fileStruct)
 	return true;
 }
 
-bool Export::exportBmpFile(fileStruct file)
+bool Export::exportBmpFile(bufferStruct pixels, imageInfo imageInfo)
+{
+	if (!pixels.bufferLocation || pixels.bufferSize == 0)
+	{
+		return false;
+	}
+	if (imageInfo.pixelType == pixelType::PIXEL_TYPE_UNKNOWN ||
+		imageInfo.pixelType != pixelType::PIXEL_TYPE_RGBA)
+	{
+		return false;
+	}
+
+	std::unique_ptr<char[]> exportFile = std::make_unique<char[]>(
+		sizeof(BITMAPFILEHEADER) + sizeof(BITMAPV5HEADER) + pixels.bufferSize);
+
+	return false;
+}
+
+bool Export::setupBmpV1Header(char* buffer, size_t buffer_size, imageInfo imageInfo)
+{
+	return false;
+}
+
+bool Export::setupBmpV5Header(char* buffer, size_t buffer_size, imageInfo imageInfo)
 {
 	return false;
 }

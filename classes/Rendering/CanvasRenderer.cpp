@@ -257,7 +257,7 @@ void CanvasRenderer::resize(int width, int height)
 	glLoadIdentity();
 }
 
-fileStruct CanvasRenderer::exportCanvas()
+bufferStruct CanvasRenderer::exportCanvas()
 {
 	return {};
 }

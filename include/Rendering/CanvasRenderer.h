@@ -30,7 +30,7 @@ class CanvasRenderer : public ICanvasRenderer
 	static void drawSliderButton(const IButton& button, float value);
 	void		endFrame() override;
 
-	fileStruct exportCanvas() override;
+	bufferStruct exportCanvas() override;
 
 	static void textRenderTest();
 	static void renderGlyph(FT_Face face, FT_GlyphSlot glyph, float x, float y, Color color);

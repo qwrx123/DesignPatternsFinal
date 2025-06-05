@@ -4,7 +4,7 @@
 #include <cstdint>
 #include <memory>
 
-enum pixelType : std::uint8_t
+enum class pixelType : std::uint8_t
 {
 	PIXEL_TYPE_UNKNOWN = 0,
 	PIXEL_TYPE_RGB,
@@ -15,20 +15,21 @@ enum pixelType : std::uint8_t
 	PIXEL_TYPE_ABGR
 };
 
-struct fileStruct
+struct bufferStruct
 {
-	std::unique_ptr<char*> fileLocation;
-	size_t				   fileSize;
+	std::unique_ptr<char[]> bufferLocation = nullptr;
+	size_t					bufferSize	   = 0;
 };
 
 /// @brief Structure to hold image information
 /// @details This structure contains the width, height, and resolution of an image.
 struct imageInfo
 {
-	size_t width;
-	size_t height;
-	size_t horizontalResolution;
-	size_t verticalResolution;
+	size_t	  width				   = 0;
+	size_t	  height			   = 0;
+	size_t	  horizontalResolution = 0;
+	size_t	  verticalResolution   = 0;
+	pixelType pixelType			   = pixelType::PIXEL_TYPE_UNKNOWN;
 };
 
 #include <stdint.h>

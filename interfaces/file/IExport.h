@@ -13,5 +13,5 @@ class IExport : public IFiles
 	IExport(IExport&&)				   = default;
 	IExport& operator=(IExport&&)	   = default;
 
-	virtual bool exportFile(fileStruct, imageInfo) = 0;
+	virtual bool exportFile(bufferStruct, imageInfo) = 0;
 };

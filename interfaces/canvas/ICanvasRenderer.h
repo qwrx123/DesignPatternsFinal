@@ -18,7 +18,7 @@ class ICanvasRenderer
 	ICanvasRenderer(ICanvasRenderer&&)				   = default;
 	ICanvasRenderer& operator=(ICanvasRenderer&&)	   = default;
 
-	virtual fileStruct exportCanvas() = 0;
+	virtual bufferStruct exportCanvas() = 0;
 	// Called once per frame
 	virtual void beginFrame()					   = 0;
 	virtual void drawStroke(const IStroke& stroke) = 0;

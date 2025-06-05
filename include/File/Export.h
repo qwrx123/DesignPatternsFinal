@@ -15,7 +15,7 @@ class Export : public IExport
 	Export(Export&& other) noexcept			   = default;
 	Export& operator=(Export&& other) noexcept = default;
 
-	bool					  exportFile(fileStruct file, imageInfo imageInfo) override;
+	bool					  exportFile(bufferStruct file, imageInfo imageInfo) override;
 	[[nodiscard]] std::string quarryFileLocation() override;
 	void					  setFileLocation(const std::string& fileLocation) override;
 	void					  setFileType(IFiles::type fileType) override;
@@ -26,8 +26,12 @@ class Export : public IExport
 	std::string	 fileName = "DaisyExport";
 	std::string	 fileLocation;
 
-	bool exportTxtFile(fileStruct file);
-	bool exportBmpFile(fileStruct file);
+	bool exportTxtFile(bufferStruct file);
+	bool exportBmpFile(bufferStruct pixels, imageInfo imageInfo);
+
+	bool setupBmpFileHeader(char* buffer, size_t buffer_size, imageInfo imageInfo);
+	bool setupBmpV1Header(char* buffer, size_t buffer_size, imageInfo imageInfo);
+	bool setupBmpV5Header(char* buffer, size_t buffer_size, imageInfo imageInfo);
 };
 
 #endif	// EXPORT_H
