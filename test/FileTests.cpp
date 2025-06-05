@@ -27,6 +27,24 @@ TEST(FileTests, emptyBitmap) {
         {.width = 0, .height = 0, .horizontalResolution = 0, .verticalResolution = 0}), false);
 }
 
+TEST(FileTests, BitmapCreated) {
+    Export exportFile = Export();
+    std::string location = exportFile.quarryFileLocation();
+    std::string fileName = "TESTEXPORTBITMAPCREATED";
+    exportFile.setFileLocation(location);
+    exportFile.setFileName(fileName);
+    exportFile.setFileType(IFiles::type::bmp);
+
+    fileStruct fileStruct = {std::make_unique<char*>(new char[sizeof(4 * 6)]), 4 * 6};
+    imageInfo imageInfo = {.width = 3, .height = 2, .horizontalResolution = 3780, .verticalResolution = 3780};
+    
+    std::filesystem::path path(location + fileName + ".bmp");
+    EXPECT_TRUE(exportFile.exportFile(std::move(fileStruct), imageInfo));
+    EXPECT_TRUE(std::filesystem::exists(path));
+
+    std::filesystem::remove(path);
+}
+
 TEST(FileTests, FileCreated) {
     Export exportFile = Export();
     std::string location = exportFile.quarryFileLocation();

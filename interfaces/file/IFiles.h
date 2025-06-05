@@ -4,6 +4,17 @@
 #include <cstdint>
 #include <memory>
 
+enum pixelType : std::uint8_t
+{
+	PIXEL_TYPE_UNKNOWN = 0,
+	PIXEL_TYPE_RGB,
+	PIXEL_TYPE_RGBA,
+	PIXEL_TYPE_ARGB,
+	PIXEL_TYPE_BGR,
+	PIXEL_TYPE_BGRA,
+	PIXEL_TYPE_ABGR
+};
+
 struct fileStruct
 {
 	std::unique_ptr<char*> fileLocation;
@@ -49,6 +60,50 @@ using BITMAPINFOHEADER = struct
 	LONG  biYPelsPerMeter;
 	DWORD biClrUsed;
 	DWORD biClrImportant;
+};
+
+using FXPT2DOT30 = LONG;
+
+using CIEXYZ = struct
+{
+	FXPT2DOT30 ciexyzX;
+	FXPT2DOT30 ciexyzY;
+	FXPT2DOT30 ciexyzZ;
+};
+
+using CIEXYZTRIPLE = struct
+{
+	CIEXYZ ciexyzRed;
+	CIEXYZ ciexyzGreen;
+	CIEXYZ ciexyzBlue;
+};
+
+using BITMAPV5HEADER = struct
+{
+	DWORD		 bV5Size;
+	LONG		 bV5Width;
+	LONG		 bV5Height;
+	WORD		 bV5Planes;
+	WORD		 bV5BitCount;
+	DWORD		 bV5Compression;
+	DWORD		 bV5SizeImage;
+	LONG		 bV5XPelsPerMeter;
+	LONG		 bV5YPelsPerMeter;
+	DWORD		 bV5ClrUsed;
+	DWORD		 bV5ClrImportant;
+	DWORD		 bV5RedMask;
+	DWORD		 bV5GreenMask;
+	DWORD		 bV5BlueMask;
+	DWORD		 bV5AlphaMask;
+	DWORD		 bV5CSType;
+	CIEXYZTRIPLE bV5Endpoints;
+	DWORD		 bV5GammaRed;
+	DWORD		 bV5GammaGreen;
+	DWORD		 bV5GammaBlue;
+	DWORD		 bV5Intent;
+	DWORD		 bV5ProfileData;
+	DWORD		 bV5ProfileSize;
+	DWORD		 bV5Reserved;
 };
 
 class IFiles
