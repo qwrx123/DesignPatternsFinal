@@ -29,9 +29,9 @@ class Export : public IExport
 	bool exportTxtFile(bufferStruct file);
 	bool exportBmpFile(bufferStruct pixels, imageInfo imageInfo);
 
-	bool setupBmpFileHeader(char* buffer, size_t buffer_size, imageInfo imageInfo);
-	bool setupBmpV1Header(char* buffer, size_t buffer_size, imageInfo imageInfo);
-	bool setupBmpV5Header(char* buffer, size_t buffer_size, imageInfo imageInfo);
+	static bool setupBmpFileHeader(char* buffer, size_t buffer_size, imageInfo imageInfo);
+	static bool setupBmpV1Header(char* buffer, size_t buffer_size, imageInfo imageInfo);
+	static bool setupBmpV5Header(char* buffer, size_t buffer_size, imageInfo imageInfo);
 };
 
 #endif	// EXPORT_H

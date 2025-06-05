@@ -81,6 +81,8 @@ bool Export::exportBmpFile(bufferStruct pixels, imageInfo imageInfo)
 	setupBmpFileHeader(buffer, bmpBuffer.size(), imageInfo);
 	setupBmpV5Header(buffer, bmpBuffer.size(), imageInfo);
 
+	// NOLINTBEGIN(cppcoreguidelines-pro-bounds-pointer-arithmetic)
+	// NOLINTBEGIN(cppcoreguidelines-pro-type-reinterpret-cast)
 	auto* bmpHeader		 = reinterpret_cast<BITMAPFILEHEADER*>(buffer);
 	DWORD offsetToPixels = bmpHeader->bfOffBits;
 
@@ -89,9 +91,19 @@ bool Export::exportBmpFile(bufferStruct pixels, imageInfo imageInfo)
 		return false;
 	}
 
+	auto* bmpV5Header = reinterpret_cast<BITMAPV5HEADER*>(buffer + sizeof(BITMAPFILEHEADER));
+	WORD  pixelSize	  = bmpV5Header->bV5BitCount / CHAR_BIT;
+
 	char* pixelData = buffer + offsetToPixels;
 
-	std::memcpy(pixelData, pixels.bufferLocation.get(), pixels.bufferSize);
+	for (char* scanLine = pixelData + ((imageInfo.height - 1) * imageInfo.width * pixelSize);
+		 scanLine >= pixelData; scanLine -= imageInfo.width * pixelSize)
+	{
+		size_t currentRow =
+			pixelData + ((imageInfo.height - 1) * imageInfo.width * pixelSize) - scanLine;
+		std::memcpy(scanLine, pixels.bufferLocation.get() + currentRow,
+					imageInfo.width * pixelSize);
+	}
 
 	std::string							  fullpath = fileLocation + fileName + ".bmp";
 	std::unique_ptr<FILE, int (*)(FILE*)> file(std::fopen(fullpath.c_str(), "wb"), &fclose);
@@ -106,6 +118,9 @@ bool Export::exportBmpFile(bufferStruct pixels, imageInfo imageInfo)
 	}
 
 	return true;
+
+	// NOLINTEND(cppcoreguidelines-pro-type-reinterpret-cast)
+	// NOLINTEND(cppcoreguidelines-pro-bounds-pointer-arithmetic)
 }
 
 bool Export::setupBmpFileHeader(char* buffer, size_t buffer_size, imageInfo imageInfo)
@@ -119,11 +134,9 @@ bool Export::setupBmpFileHeader(char* buffer, size_t buffer_size, imageInfo imag
 
 	// Only way to make the struct correct
 	// NOLINTNEXTLINE(cppcoreguidelines-pro-type-reinterpret-cast)
-	auto* fileHeader   = reinterpret_cast<BITMAPFILEHEADER*>(buffer);
-	fileHeader->bfType = bitmapMagicStart;
-	fileHeader->bfSize = static_cast<DWORD>(buffer_size);
-	std::cout << "Buffer size: " << buffer_size << "Sizeof buffer size"
-			  << sizeof(fileHeader->bfSize) << std::endl;
+	auto* fileHeader		= reinterpret_cast<BITMAPFILEHEADER*>(buffer);
+	fileHeader->bfType		= bitmapMagicStart;
+	fileHeader->bfSize		= static_cast<DWORD>(buffer_size);
 	fileHeader->bfReserved1 = 0;
 	fileHeader->bfReserved2 = 0;
 	fileHeader->bfOffBits	= sizeof(BITMAPFILEHEADER) + sizeof(BITMAPV5HEADER);
