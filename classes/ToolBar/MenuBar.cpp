@@ -336,6 +336,26 @@ void MenuBar::onMouseButton(MouseButton click, KeyAction action, double x, doubl
 		if (button->getBounds().contains(x, y) && button->getLabel() == "color" && buttons.at(selectedIndex)->getLabel() != "eraser" && action == KeyAction::Release)
 		{
 			buttons.at(selectedIndex)->setColor(button->getColor());
+
+			for (auto& slider : buttons)
+			{
+				if (slider->getLabel() == "red")
+				{
+					slider->setValue(button->getColor().r);
+				}
+				else if (slider->getLabel() == "green")
+				{
+					slider->setValue(button->getColor().g);
+				}
+				else if (slider->getLabel() == "blue")
+				{
+					slider->setValue(button->getColor().b);
+				}
+				else if (slider->getLabel() == "opacity")
+				{
+					slider->setValue(button->getColor().a);
+				}
+			}
 		}
 
 		itCount++;
@@ -458,10 +478,15 @@ void MenuBar::sliderLogic(const std::shared_ptr<SliderButton>& slider, const std
 	else if (label == "red")
 	{
 		float value = setSliderButton(slider, x, y);
-		tool->getActiveTool()->setColor(Color{.r = value,
-											  .g = tool->getActiveTool()->getColor().g,
-											  .b = tool->getActiveTool()->getColor().b,
-											  .a = tool->getActiveTool()->getColor().a});
+		Color newToolColor = {.r = value,
+						   .g = tool->getActiveTool()->getColor().g,
+						   .b = tool->getActiveTool()->getColor().b,
+						   .a = tool->getActiveTool()->getColor().a};
+		tool->getActiveTool()->setColor(newToolColor);
+
+		if (buttons.at(selectedIndex)->getLabel() != "eraser") {
+			buttons.at(selectedIndex)->setColor(newToolColor);
+		}
 
 		if (text->isTextToolActive())
 		{
@@ -474,10 +499,15 @@ void MenuBar::sliderLogic(const std::shared_ptr<SliderButton>& slider, const std
 	else if (label == "green")
 	{
 		float value = setSliderButton(slider, x, y);
-		tool->getActiveTool()->setColor(Color{.r = tool->getActiveTool()->getColor().r,
-											  .g = value,
-											  .b = tool->getActiveTool()->getColor().b,
-											  .a = tool->getActiveTool()->getColor().a});
+		Color newToolColor = {.r = tool->getActiveTool()->getColor().r,
+						   .g = value,
+						   .b = tool->getActiveTool()->getColor().b,
+						   .a = tool->getActiveTool()->getColor().a};
+		tool->getActiveTool()->setColor(newToolColor);
+
+		if (buttons.at(selectedIndex)->getLabel() != "eraser") {
+			buttons.at(selectedIndex)->setColor(newToolColor);
+		}
 
 		if (text->isTextToolActive())
 		{
@@ -490,11 +520,16 @@ void MenuBar::sliderLogic(const std::shared_ptr<SliderButton>& slider, const std
 	else if (label == "blue")
 	{
 		float value = setSliderButton(slider, x, y);
-		tool->getActiveTool()->setColor(Color{.r = tool->getActiveTool()->getColor().r,
-											  .g = tool->getActiveTool()->getColor().g,
-											  .b = value,
-											  .a = tool->getActiveTool()->getColor().a});
+		Color newToolColor = {.r = tool->getActiveTool()->getColor().r,
+						   .g = tool->getActiveTool()->getColor().g,
+						   .b = value,
+						   .a = tool->getActiveTool()->getColor().a};
+		tool->getActiveTool()->setColor(newToolColor);
 
+		if (buttons.at(selectedIndex)->getLabel() != "eraser") {
+			buttons.at(selectedIndex)->setColor(newToolColor);
+		}
+		
 		if (text->isTextToolActive())
 		{
 			text->getTexts().at(text->getTexts().size() - 1)->setColor(Color{.r = text->getTexts().at(text->getTexts().size() - 1)->getColor().r,
@@ -506,10 +541,16 @@ void MenuBar::sliderLogic(const std::shared_ptr<SliderButton>& slider, const std
 	else if (label == "opacity")
 	{
 		float value = setSliderButton(slider, x, y);
-		tool->getActiveTool()->setColor(Color{.r = tool->getActiveTool()->getColor().r,
-											  .g = tool->getActiveTool()->getColor().g,
-											  .b = tool->getActiveTool()->getColor().b,
-											  .a = value});
+		Color newToolColor = {.r = tool->getActiveTool()->getColor().r,
+						   .g = tool->getActiveTool()->getColor().g,
+						   .b = tool->getActiveTool()->getColor().b,
+						   .a = value};
+		tool->getActiveTool()->setColor(newToolColor);
+
+		if (buttons.at(selectedIndex)->getLabel() != "eraser") {
+			buttons.at(selectedIndex)->setColor(newToolColor);
+		}
+		
 
 		if (text->isTextToolActive())
 		{
