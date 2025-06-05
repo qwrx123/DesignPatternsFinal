@@ -130,7 +130,7 @@ void MenuBar::setDefaultButtons()
 	float thirdDiv = bounds.top + halfHeight + quarterHeight;
 	selectedIndex = 1;
 
-	//regular, half-menubar height buttons
+	//Half size tool buttons
 	addButton(std::make_shared<ButtonClass>(
 		"brush",
 		Bounds{.top	   = bounds.top,
@@ -154,13 +154,22 @@ void MenuBar::setDefaultButtons()
 			   .right  = buttons.at(buttons.size() - 1)->getBounds().right + defaultButtonWidth},
 		black));
 
-	//small, quarter size buttons
+	// Size slider
+	addButton(std::make_shared<SliderButton>(
+		"size",
+		Bounds{.top	   = bounds.top,
+			   .bottom = firstDiv,
+			   .left   = buttons.at(buttons.size() - 1)->getBounds().right + sliderMargin,
+			   .right  = buttons.at(buttons.size() - 1)->getBounds().right + defaultSliderWidth},
+		gray));
+
+	//Quarter size color buttons
 	addButton(std::make_shared<ButtonClass>(
 		"color",
 		Bounds{.top	   = bounds.top,
 			   .bottom = firstDiv,
-			   .left   = buttons.at(buttons.size() - 1)->getBounds().right + 1,
-			   .right  = buttons.at(buttons.size() - 1)->getBounds().right + quarterHeight},
+			   .left   = buttons.at(buttons.size() - 1)->getBounds().right + sliderMargin,
+			   .right  = buttons.at(buttons.size() - 1)->getBounds().right + sliderMargin + quarterHeight},
 		black));
 	addButton(std::make_shared<ButtonClass>(
 		"color",
@@ -242,14 +251,7 @@ void MenuBar::setDefaultButtons()
 			   .right  = buttons.at(buttons.size() - 1)->getBounds().right},
 		gray));
 	
-	// Sliders
-	addButton(std::make_shared<SliderButton>(
-		"size",
-		Bounds{.top	   = bounds.top,
-			   .bottom = firstDiv,
-			   .left   = buttons.at(buttons.size() - 1)->getBounds().right + sliderMargin,
-			   .right  = buttons.at(buttons.size() - 1)->getBounds().right + defaultSliderWidth},
-		gray));
+	// Color sliders
 	addButton(std::make_shared<SliderButton>(
 		"red",
 		Bounds{.top	   = bounds.top,
@@ -258,19 +260,19 @@ void MenuBar::setDefaultButtons()
 			   .right  = buttons.at(buttons.size() - 1)->getBounds().right + defaultSliderWidth},
 		red));
 	addButton(std::make_shared<SliderButton>(
-		"blue",
+		"green",
 		Bounds{.top	   = firstDiv,
 			   .bottom = midDiv,
 			   .left   = buttons.at(buttons.size() - 1)->getBounds().left,
 			   .right  = buttons.at(buttons.size() - 1)->getBounds().right},
-		blue));
+		green));
 	addButton(std::make_shared<SliderButton>(
-		"green",
+		"blue",
 		Bounds{.top	   = midDiv,
 			   .bottom = thirdDiv,
 			   .left   = buttons.at(buttons.size() - 1)->getBounds().left,
 			   .right  = buttons.at(buttons.size() - 1)->getBounds().right},
-		green));
+		blue));
 	addButton(std::make_shared<SliderButton>(
 		"opacity",
 		Bounds{.top	   = thirdDiv,
@@ -331,7 +333,7 @@ void MenuBar::onMouseButton(MouseButton click, KeyAction action, double x, doubl
 		}
 
 		//change tool button color as long as it is not the eraser
-		if (button->getBounds().contains(x, y) && button->getLabel() == "color" && buttons.at(selectedIndex)->getLabel() != "eraser" && buttons.at(selectedIndex)->getLabel() != "red" && buttons.at(selectedIndex)->getLabel() != "green" && buttons.at(selectedIndex)->getLabel() != "blue" && action == KeyAction::Release)
+		if (button->getBounds().contains(x, y) && button->getLabel() == "color" && buttons.at(selectedIndex)->getLabel() != "eraser" && action == KeyAction::Release)
 		{
 			buttons.at(selectedIndex)->setColor(button->getColor());
 		}
@@ -397,66 +399,93 @@ void MenuBar::onButton(const std::shared_ptr<IButton>& button, const std::string
 			button->setColor(green);
 		}
 	} 
-	else if (label == "size"){
+	else if (label == "size")
+	{
 		auto sliderButton = std::dynamic_pointer_cast<SliderButton>(button);
-		if (sliderButton)
+		if (!sliderButton)
 		{
-			float value = setSliderButton(sliderButton, x, y);
+			return;
+		}
+		
+		float value = setSliderButton(sliderButton, x, y);
+		tool->getActiveTool()->setThickness(value * thicknessConversionFactor);
+
+		if (text->isTextToolActive())
+		{
 			int newFontSize =
 						static_cast<int>(minFontSize + (value * (maxFontSize - minFontSize)));
 			text->getTexts().at(text->getTexts().size() - 1)->setFontSize(newFontSize);
 			text->getTexts().at(text->getTexts().size() - 1)->setBounds(
 				Bounds{.top	   = text->getTexts().at(text->getTexts().size() - 1)->getBounds().top,
-							 .bottom = text->getTexts().at(text->getTexts().size() - 1)->getBounds().bottom,
-							 .left   = text->getTexts().at(text->getTexts().size() - 1)->getBounds().left,
-							 .right  = text->getTexts().at(text->getTexts().size() - 1)->getBounds().right});
-
-			tool->getActiveTool()->setThickness(value * thicknessConversionFactor);
-		}
-					
-	} else if (label == "red"){
+					   .bottom = text->getTexts().at(text->getTexts().size() - 1)->getBounds().bottom,
+					   .left   = text->getTexts().at(text->getTexts().size() - 1)->getBounds().left,
+					   .right  = text->getTexts().at(text->getTexts().size() - 1)->getBounds().right});
+		}	
+	}
+	else if (label == "red")
+	{
 		auto sliderButton = std::dynamic_pointer_cast<SliderButton>(button);
-		if (sliderButton)
+		if (!sliderButton)
 		{
-			float value = setSliderButton(sliderButton, x, y);
+			return;
+		}
+
+		float value = setSliderButton(sliderButton, x, y);
+		tool->getActiveTool()->setColor(Color{.r = value,
+											  .g = tool->getActiveTool()->getColor().g,
+											  .b = tool->getActiveTool()->getColor().b,
+											  .a = tool->getActiveTool()->getColor().a});
+
+		if (text->isTextToolActive())
+		{
 			text->getTexts().at(text->getTexts().size() - 1)->setColor(Color{.r = value,
 													 .g = text->getTexts().at(text->getTexts().size() - 1)->getColor().g,
 													 .b = text->getTexts().at(text->getTexts().size() - 1)->getColor().b,
-													 .a = text->getTexts().at(text->getTexts().size() - 1)->getColor().a});
-			tool->getActiveTool()->setColor(Color{.r = value,
-													 .g = tool->getActiveTool()->getColor().g,
-													 .b = tool->getActiveTool()->getColor().b,
-													 .a = tool->getActiveTool()->getColor().a});
-					
+													 .a = text->getTexts().at(text->getTexts().size() - 1)->getColor().a});			
 		}
-	}else if (label == "green"){
+	}
+	else if (label == "green")
+	{
 		auto sliderButton = std::dynamic_pointer_cast<SliderButton>(button);
-		if (sliderButton)
+		if (!sliderButton)
 		{
-			float value = setSliderButton(sliderButton, x, y);
+			return;
+		}
+
+		float value = setSliderButton(sliderButton, x, y);
+		tool->getActiveTool()->setColor(Color{.r = tool->getActiveTool()->getColor().r,
+											  .g = value,
+											  .b = tool->getActiveTool()->getColor().b,
+											  .a = tool->getActiveTool()->getColor().a});
+
+		if (text->isTextToolActive())
+		{
 			text->getTexts().at(text->getTexts().size() - 1)->setColor(Color{.r = text->getTexts().at(text->getTexts().size() - 1)->getColor().r,
-													 .g = value,
-													 .b = text->getTexts().at(text->getTexts().size() - 1)->getColor().b,
-													 .a = text->getTexts().at(text->getTexts().size() - 1)->getColor().a});
-			tool->getActiveTool()->setColor(Color{.r = tool->getActiveTool()->getColor().r,
-													 .g = value,
-													 .b = tool->getActiveTool()->getColor().b,
-													 .a = tool->getActiveTool()->getColor().a});
-					
+												 .g = value,
+												 .b = text->getTexts().at(text->getTexts().size() - 1)->getColor().b,
+												 .a = text->getTexts().at(text->getTexts().size() - 1)->getColor().a});			
 		}
-	}else if (label == "blue"){
+	}
+	else if (label == "blue")
+	{
 		auto sliderButton = std::dynamic_pointer_cast<SliderButton>(button);
-		if (sliderButton)
+		if (!sliderButton)
 		{
-			float value = setSliderButton(sliderButton, x, y);
+			return;
+		}
+
+		float value = setSliderButton(sliderButton, x, y);
+		tool->getActiveTool()->setColor(Color{.r = tool->getActiveTool()->getColor().r,
+											  .g = tool->getActiveTool()->getColor().g,
+											  .b = value,
+											  .a = tool->getActiveTool()->getColor().a});
+
+		if (text->isTextToolActive())
+		{
 			text->getTexts().at(text->getTexts().size() - 1)->setColor(Color{.r = text->getTexts().at(text->getTexts().size() - 1)->getColor().r,
 													 .g = text->getTexts().at(text->getTexts().size() - 1)->getColor().g,
 													 .b = value,
 													 .a = text->getTexts().at(text->getTexts().size() - 1)->getColor().a});
-			tool->getActiveTool()->setColor(Color{.r = tool->getActiveTool()->getColor().r,
-													 .g = tool->getActiveTool()->getColor().g,
-													 .b = value,
-													 .a = tool->getActiveTool()->getColor().a});
 			}
 		}
 	else if (label == "opacity")
