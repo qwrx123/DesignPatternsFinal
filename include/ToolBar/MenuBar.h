@@ -73,6 +73,8 @@ class MenuBar : public IMenu, public IInputReceiver
 								 double y);
 	void onButton(const std::shared_ptr<IButton>& button, const std::string& label, double x,
 				  double y, int itCount);
+	void sliderLogic(const std::shared_ptr<SliderButton>& slider, const std::string& label,
+					 double x, double y);
 };
 
 #endif	// MENU_BAR_H

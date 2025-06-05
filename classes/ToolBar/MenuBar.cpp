@@ -376,6 +376,28 @@ std::vector<std::shared_ptr<IButton>> MenuBar::cloneButtons() const
 	return clonedButtons;
 }
 
+float MenuBar::setSliderButton(const std::shared_ptr<SliderButton>& sliderButton, double x, double y){
+	sliderButton->setMinValue(0.0F);
+	sliderButton->setMaxValue(1.0F);
+	float minValue = sliderButton->getMinValue();
+	float maxValue = sliderButton->getMaxValue();
+	auto  bounds   = sliderButton->getBounds();
+	float sliderStart = bounds.left;
+	float sliderEnd   = bounds.right;
+	float t = (static_cast<float>(x) - sliderStart) / (sliderEnd - sliderStart);
+	if (t < 0.0F) 
+	{
+		t = 0.0F;
+	}
+	else if (t > 1.0F) 
+	{
+		t = 1.0F;
+	}
+	float value = minValue + (t * (maxValue - minValue));
+	sliderButton->setValue(value);
+	return value;
+}
+
 void MenuBar::onButton(const std::shared_ptr<IButton>& button, const std::string& label, double x,
 					 double y, int itCount){
 	if (label == "color")
@@ -398,16 +420,27 @@ void MenuBar::onButton(const std::shared_ptr<IButton>& button, const std::string
 			text->setTextToolActive();
 			button->setColor(green);
 		}
-	} 
-	else if (label == "size")
+	}
+	else if (label == "size" || label == "red" || label == "green" || label == "blue" || label == "opacity")
 	{
 		auto sliderButton = std::dynamic_pointer_cast<SliderButton>(button);
-		if (!sliderButton)
+		if (sliderButton)
 		{
-			return;
+			sliderLogic(sliderButton, label, x, y);
 		}
-		
-		float value = setSliderButton(sliderButton, x, y);
+	}
+	else
+	{
+		tool->selectTool(label);
+		selectedIndex = itCount;
+	}
+}
+
+void MenuBar::sliderLogic(const std::shared_ptr<SliderButton>& slider, const std::string& label, double x, double y)
+{
+	if (label == "size")
+	{
+		float value = setSliderButton(slider, x, y);
 		tool->getActiveTool()->setThickness(value * thicknessConversionFactor);
 
 		if (text->isTextToolActive())
@@ -424,13 +457,7 @@ void MenuBar::onButton(const std::shared_ptr<IButton>& button, const std::string
 	}
 	else if (label == "red")
 	{
-		auto sliderButton = std::dynamic_pointer_cast<SliderButton>(button);
-		if (!sliderButton)
-		{
-			return;
-		}
-
-		float value = setSliderButton(sliderButton, x, y);
+		float value = setSliderButton(slider, x, y);
 		tool->getActiveTool()->setColor(Color{.r = value,
 											  .g = tool->getActiveTool()->getColor().g,
 											  .b = tool->getActiveTool()->getColor().b,
@@ -446,13 +473,7 @@ void MenuBar::onButton(const std::shared_ptr<IButton>& button, const std::string
 	}
 	else if (label == "green")
 	{
-		auto sliderButton = std::dynamic_pointer_cast<SliderButton>(button);
-		if (!sliderButton)
-		{
-			return;
-		}
-
-		float value = setSliderButton(sliderButton, x, y);
+		float value = setSliderButton(slider, x, y);
 		tool->getActiveTool()->setColor(Color{.r = tool->getActiveTool()->getColor().r,
 											  .g = value,
 											  .b = tool->getActiveTool()->getColor().b,
@@ -468,13 +489,7 @@ void MenuBar::onButton(const std::shared_ptr<IButton>& button, const std::string
 	}
 	else if (label == "blue")
 	{
-		auto sliderButton = std::dynamic_pointer_cast<SliderButton>(button);
-		if (!sliderButton)
-		{
-			return;
-		}
-
-		float value = setSliderButton(sliderButton, x, y);
+		float value = setSliderButton(slider, x, y);
 		tool->getActiveTool()->setColor(Color{.r = tool->getActiveTool()->getColor().r,
 											  .g = tool->getActiveTool()->getColor().g,
 											  .b = value,
@@ -490,45 +505,18 @@ void MenuBar::onButton(const std::shared_ptr<IButton>& button, const std::string
 		}
 	else if (label == "opacity")
 	{
-		auto sliderButton = std::dynamic_pointer_cast<SliderButton>(button);
-		if (sliderButton)
+		float value = setSliderButton(slider, x, y);
+		tool->getActiveTool()->setColor(Color{.r = tool->getActiveTool()->getColor().r,
+											  .g = tool->getActiveTool()->getColor().g,
+											  .b = tool->getActiveTool()->getColor().b,
+											  .a = value});
+
+		if (text->isTextToolActive())
 		{
-			float value = setSliderButton(sliderButton, x, y);
 			text->getTexts().at(text->getTexts().size() - 1)->setColor(Color{.r = text->getTexts().at(text->getTexts().size() - 1)->getColor().r,
 													 .g = text->getTexts().at(text->getTexts().size() - 1)->getColor().g,
 													 .b = text->getTexts().at(text->getTexts().size() - 1)->getColor().b,
 													 .a = value});
-			tool->getActiveTool()->setColor(Color{.r = tool->getActiveTool()->getColor().r,
-													 .g = tool->getActiveTool()->getColor().g,
-													 .b = tool->getActiveTool()->getColor().b,
-													 .a = value});
 		}
 	}
-	else
-	{
-		tool->selectTool(label);
-		selectedIndex = itCount;
-	}
-}
-
-float MenuBar::setSliderButton(const std::shared_ptr<SliderButton>& sliderButton, double x, double y){
-	sliderButton->setMinValue(0.0F);
-	sliderButton->setMaxValue(1.0F);
-	float minValue = sliderButton->getMinValue();
-	float maxValue = sliderButton->getMaxValue();
-	auto  bounds   = sliderButton->getBounds();
-	float sliderStart = bounds.left;
-	float sliderEnd   = bounds.right;
-	float t = (static_cast<float>(x) - sliderStart) / (sliderEnd - sliderStart);
-	if (t < 0.0F) 
-	{
-		t = 0.0F;
-	}
-	else if (t > 1.0F) 
-	{
-		t = 1.0F;
-	}
-	float value = minValue + (t * (maxValue - minValue));
-	sliderButton->setValue(value);
-	return value;
 }
