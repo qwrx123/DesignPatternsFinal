@@ -1,6 +1,7 @@
 #include "Export.h"
 #include "FileLocation.h"
 #include <memory>
+#include <vector>
 
 bool Export::exportFile(bufferStruct fileStruct, imageInfo imageInfo)
 {
@@ -70,18 +71,79 @@ bool Export::exportBmpFile(bufferStruct pixels, imageInfo imageInfo)
 		return false;
 	}
 
-	std::unique_ptr<char[]> exportFile = std::make_unique<char[]>(
-		sizeof(BITMAPFILEHEADER) + sizeof(BITMAPV5HEADER) + pixels.bufferSize);
+	std::vector<char> bmpBuffer(sizeof(BITMAPFILEHEADER) + sizeof(BITMAPV5HEADER) +
+								pixels.bufferSize);
+
+	char* buffer = bmpBuffer.data();
+
+	setupBmpFileHeader(buffer, bmpBuffer.size(), imageInfo);
 
 	return false;
+}
+
+bool Export::setupBmpFileHeader(char* buffer, size_t buffer_size, imageInfo imageInfo)
+{
+	if (buffer_size < sizeof(BITMAPFILEHEADER))
+	{
+		return false;
+	}
+
+	const WORD bitmapMagicStart = 0x4D42;  // 'BM'
+
+	// Only way to make the struct correct
+	// NOLINTNEXTLINE(cppcoreguidelines-pro-type-reinterpret-cast)
+	auto* fileHeader		= reinterpret_cast<BITMAPFILEHEADER*>(buffer);
+	fileHeader->bfType		= bitmapMagicStart;
+	fileHeader->bfSize		= static_cast<DWORD>(buffer_size);
+	fileHeader->bfReserved1 = 0;
+	fileHeader->bfReserved2 = 0;
+	fileHeader->bfOffBits	= sizeof(BITMAPFILEHEADER) + sizeof(BITMAPV5HEADER);
+	return true;
 }
 
 bool Export::setupBmpV1Header(char* buffer, size_t buffer_size, imageInfo imageInfo)
 {
-	return false;
+	if (buffer_size < sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER))
+	{
+		return false;
+	}
+
+	const WORD PIXEL_SIZE  = 24;
+	const LONG COMPRESSION = 0;
+
+	const WORD ALIGNMENT = 4;
+	const WORD PADDING	 = ALIGNMENT - (((imageInfo.width * PIXEL_SIZE) / CHAR_BIT) % ALIGNMENT);
+
+	// Move the buffer pointer to the start of the BITMAPINFOHEADER
+	// NOLINTNEXTLINE(cppcoreguidelines-pro-bounds-pointer-arithmetic)
+	buffer += sizeof(BITMAPFILEHEADER);
+	// Only way to make the struct correct
+	// NOLINTNEXTLINE(cppcoreguidelines-pro-type-reinterpret-cast)
+	auto* infoHeader		  = reinterpret_cast<BITMAPINFOHEADER*>(buffer);
+	infoHeader->biSize		  = sizeof(BITMAPINFOHEADER);
+	infoHeader->biWidth		  = static_cast<LONG>(imageInfo.width);
+	infoHeader->biHeight	  = static_cast<LONG>(imageInfo.height);
+	infoHeader->biPlanes	  = 1;
+	infoHeader->biBitCount	  = static_cast<WORD>(PIXEL_SIZE);
+	infoHeader->biCompression = COMPRESSION;
+	infoHeader->biSizeImage =
+		imageInfo.height * ((imageInfo.width * (PIXEL_SIZE / CHAR_BIT)) + PADDING);
+	infoHeader->biXPelsPerMeter = static_cast<LONG>(imageInfo.horizontalResolution);
+	infoHeader->biYPelsPerMeter = static_cast<LONG>(imageInfo.verticalResolution);
+	infoHeader->biClrUsed		= 0;
+	infoHeader->biClrImportant	= 0;
+
+	return true;
 }
 
 bool Export::setupBmpV5Header(char* buffer, size_t buffer_size, imageInfo imageInfo)
 {
+	if (buffer_size < sizeof(BITMAPFILEHEADER) + sizeof(BITMAPV5HEADER))
+	{
+		return false;
+	}
+
+	setupBmpV1Header(buffer, buffer_size, imageInfo);
+
 	return false;
 }

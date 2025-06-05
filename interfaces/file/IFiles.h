@@ -17,6 +17,9 @@ enum class pixelType : std::uint8_t
 
 struct bufferStruct
 {
+	// std::vector<char> does not act the same
+	// due to unique_ptr forcing removal of duplicates
+	// NOLINTNEXTLINE(cppcoreguidelines-avoid-c-arrays,modernize-avoid-c-arrays)
 	std::unique_ptr<char[]> bufferLocation = nullptr;
 	size_t					bufferSize	   = 0;
 };
