@@ -8,16 +8,16 @@
 #include "SliderButton.h"
 #endif
 
-static const Color lighterGray	   = {.r = 0.8F, .g = 0.8F, .b = 0.8F, .a = 1.0F};
-static const Color lightGray	   = {.r = 0.7F, .g = 0.7F, .b = 0.7F, .a = 1.0F};
-static const Color gray			   = {.r = 0.5F, .g = 0.5F, .b = 0.5F, .a = 1.0F};
-static const Color darkGray		   = {.r = 0.3F, .g = 0.3F, .b = 0.3F, .a = 1.0F};
-static const Color sliderColor	   = {.r = 0.0F, .g = 0.5F, .b = 1.0F, .a = 1.0F};
-static const int   labelSize	   = 14;
-static const float four			   = 4.0F;
-static const float ten			   = 10.0F;
-static const int   halfSliderWidth = 5;
-static const int   buttonBorder	   = 3;
+static const Color lighterGray			= {.r = 0.8F, .g = 0.8F, .b = 0.8F, .a = 1.0F};
+static const Color lightGray			= {.r = 0.7F, .g = 0.7F, .b = 0.7F, .a = 1.0F};
+static const Color gray					= {.r = 0.5F, .g = 0.5F, .b = 0.5F, .a = 1.0F};
+static const Color darkGray				= {.r = 0.3F, .g = 0.3F, .b = 0.3F, .a = 1.0F};
+static const Color sliderColor			= {.r = 0.0F, .g = 0.5F, .b = 1.0F, .a = 1.0F};
+static const int   labelSize			= 14;
+static const float labelCenteringFactor = 4.0F;
+static const float buttonLabelYOffset	= 5.0F;
+static const int   halfSliderWidth		= 5;
+static const int   buttonBorder			= 3;
 
 CanvasRenderer::CanvasRenderer(GLFWwindow* window) : window_(window)
 {
@@ -83,10 +83,10 @@ void CanvasRenderer::drawButton(const IButton& button)
 	glVertex2f(button.getBounds().left, button.getBounds().bottom);
 
 	glColor4f(button.getColor().r, button.getColor().g, button.getColor().b, button.getColor().a);
-	glVertex2f(button.getBounds().left + 3, button.getBounds().top + 3);
-	glVertex2f(button.getBounds().right - 3, button.getBounds().top + 3);
-	glVertex2f(button.getBounds().right - 3, button.getBounds().bottom - 3);
-	glVertex2f(button.getBounds().left + 3, button.getBounds().bottom - 3);
+	glVertex2f(button.getBounds().left + buttonBorder, button.getBounds().top + buttonBorder);
+	glVertex2f(button.getBounds().right - buttonBorder, button.getBounds().top + buttonBorder);
+	glVertex2f(button.getBounds().right - buttonBorder, button.getBounds().bottom - buttonBorder);
+	glVertex2f(button.getBounds().left + buttonBorder, button.getBounds().bottom - buttonBorder);
 	glEnd();
 }
 
@@ -188,11 +188,11 @@ void CanvasRenderer::drawSliderButton(const IButton& button, float value)
 	glColor4f(gray.r, gray.g, gray.b, gray.a);
 	glVertex2f(button.getBounds().left, button.getBounds().bottom);
 
-	glColor4f(button.getColor().r, button.getColor().g, button.getColor().b, button.getColor().a);
 	glVertex2f(button.getBounds().left + buttonBorder, button.getBounds().top + buttonBorder);
-	glVertex2f(button.getBounds().right - buttonBorder, button.getBounds().top + buttonBorder);
-	glVertex2f(button.getBounds().right - buttonBorder, button.getBounds().bottom - buttonBorder);
 	glVertex2f(button.getBounds().left + buttonBorder, button.getBounds().bottom - buttonBorder);
+	glColor4f(button.getColor().r, button.getColor().g, button.getColor().b, button.getColor().a);
+	glVertex2f(button.getBounds().right - buttonBorder, button.getBounds().bottom - buttonBorder);
+	glVertex2f(button.getBounds().right - buttonBorder, button.getBounds().top + buttonBorder);
 
 	float sliderPosition = (button.getBounds().left +
 							((button.getBounds().right - (button.getBounds().left)) * value));
@@ -206,11 +206,10 @@ void CanvasRenderer::drawSliderButton(const IButton& button, float value)
 	std::string valueStr = " " + std::to_string(newValue);
 	float		textX =
 		button.getBounds().left + ((button.getBounds().right - button.getBounds().left) / 2);
-	float textY =
-		button.getBounds().top + ((button.getBounds().bottom - button.getBounds().top) / 2);
-	textX -= static_cast<float>(valueStr.length() * labelSize) / four;	// approximate centering
-	textY -= ten;														// approximate centering
-	renderLabel(valueStr, textX, textY, Color{.r = 0.0F, .g = 0.0F, .b = 0.0F, .a = 1.0F});
+	float textY = button.getBounds().top +
+				  ((button.getBounds().bottom - button.getBounds().top) / 2) + buttonLabelYOffset;
+	textX -= static_cast<float>(valueStr.length() * labelSize) / labelCenteringFactor;
+	renderLabel(valueStr, textX, textY, Color{.r = 1.0F, .g = 1.0F, .b = 1.0F, .a = 1.0F});
 	glEnd();
 }
 

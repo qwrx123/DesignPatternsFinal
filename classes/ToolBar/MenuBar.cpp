@@ -7,6 +7,8 @@
 #include <cassert>
 
 const int defaultButtonWidth = 50;
+const int defaultSliderWidth = 100;
+const int sliderMargin = 7;
 
 const Color black	 = {.r = 0.0F, .g = 0.0F, .b = 0.0F, .a = 1.0F};
 const Color brown = {.r = 0.5F, .g = 0.2F, .b = 0.0F, .a = 1.0F};
@@ -244,38 +246,38 @@ void MenuBar::setDefaultButtons()
 	addButton(std::make_shared<SliderButton>(
 		"size",
 		Bounds{.top	   = bounds.top,
-			   .bottom = bounds.bottom,
-			   .left   = buttons.at(buttons.size() - 1)->getBounds().right + 1,
-			   .right  = buttons.at(buttons.size() - 1)->getBounds().right + defaultButtonWidth},
-		black));
+			   .bottom = firstDiv,
+			   .left   = buttons.at(buttons.size() - 1)->getBounds().right + sliderMargin,
+			   .right  = buttons.at(buttons.size() - 1)->getBounds().right + defaultSliderWidth},
+		gray));
 	addButton(std::make_shared<SliderButton>(
 		"red",
 		Bounds{.top	   = bounds.top,
-			   .bottom = bounds.bottom,
-			   .left   = buttons.at(buttons.size() - 1)->getBounds().right + 1,
-			   .right  = buttons.at(buttons.size() - 1)->getBounds().right + defaultButtonWidth},
+			   .bottom = firstDiv,
+			   .left   = buttons.at(buttons.size() - 1)->getBounds().right + sliderMargin,
+			   .right  = buttons.at(buttons.size() - 1)->getBounds().right + defaultSliderWidth},
 		red));
 	addButton(std::make_shared<SliderButton>(
 		"blue",
-		Bounds{.top	   = bounds.top,
-			   .bottom = bounds.bottom,
-			   .left   = buttons.at(buttons.size() - 1)->getBounds().right + 1,
-			   .right  = buttons.at(buttons.size() - 1)->getBounds().right + defaultButtonWidth},
+		Bounds{.top	   = firstDiv,
+			   .bottom = midDiv,
+			   .left   = buttons.at(buttons.size() - 1)->getBounds().left,
+			   .right  = buttons.at(buttons.size() - 1)->getBounds().right},
 		blue));
 	addButton(std::make_shared<SliderButton>(
 		"green",
-		Bounds{.top	   = bounds.top,
-			   .bottom = bounds.bottom,
-			   .left   = buttons.at(buttons.size() - 1)->getBounds().right + 1,
-			   .right  = buttons.at(buttons.size() - 1)->getBounds().right + defaultButtonWidth},
+		Bounds{.top	   = midDiv,
+			   .bottom = thirdDiv,
+			   .left   = buttons.at(buttons.size() - 1)->getBounds().left,
+			   .right  = buttons.at(buttons.size() - 1)->getBounds().right},
 		green));
 	addButton(std::make_shared<SliderButton>(
 		"opacity",
-		Bounds{.top	   = bounds.top,
+		Bounds{.top	   = thirdDiv,
 			   .bottom = bounds.bottom,
-			   .left   = buttons.at(buttons.size() - 1)->getBounds().right + 1,
-			   .right  = buttons.at(buttons.size() - 1)->getBounds().right + defaultButtonWidth},
-		gray));						
+			   .left   = buttons.at(buttons.size() - 1)->getBounds().left,
+			   .right  = buttons.at(buttons.size() - 1)->getBounds().right},
+		black));						
 }
 
 void MenuBar::addButton(std::shared_ptr<IButton> button)
