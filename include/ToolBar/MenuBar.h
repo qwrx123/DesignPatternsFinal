@@ -69,10 +69,13 @@ class MenuBar : public IMenu, public IInputReceiver
 
 	// Functions
 	[[nodiscard]] std::vector<std::shared_ptr<IButton>> cloneButtons() const;
-	static float setSliderButton(const std::shared_ptr<SliderButton>& sliderButton, double x,
-								 double y);
+
+	void		 setSliderButtonValues();
+	static float sliderValueCalc(const std::shared_ptr<SliderButton>& slider, double x);
 	void onButton(const std::shared_ptr<IButton>& button, const std::string& label, double x,
 				  double y, int itCount);
+	void sliderLogic(const std::shared_ptr<SliderButton>& slider, const std::string& label,
+					 double x, double y);
 };
 
 #endif	// MENU_BAR_H
