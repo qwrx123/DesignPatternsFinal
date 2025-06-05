@@ -42,6 +42,7 @@ using DWORD = uint32_t;
 using LONG	= int32_t;
 using WORD	= uint16_t;
 
+#pragma pack(push, 2)
 using BITMAPFILEHEADER = struct
 {
 	WORD  bfType;
@@ -50,6 +51,7 @@ using BITMAPFILEHEADER = struct
 	WORD  bfReserved2;
 	DWORD bfOffBits;
 };
+#pragma pack(pop)
 
 using BITMAPINFOHEADER = struct
 {

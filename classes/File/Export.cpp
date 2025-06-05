@@ -3,6 +3,7 @@
 #include <memory>
 #include <vector>
 #include <cstring>
+#include <iostream>
 
 bool Export::exportFile(bufferStruct fileStruct, imageInfo imageInfo)
 {
@@ -44,8 +45,8 @@ bool Export::exportTxtFile(bufferStruct fileStruct)
 		return false;
 	}
 
-	std::string				   fullpath = fileLocation + fileName + ".txt";
-	std::unique_ptr<std::FILE> file(std::fopen(fullpath.c_str(), "wt"));
+	std::string							  fullpath = fileLocation + fileName + ".txt";
+	std::unique_ptr<FILE, int (*)(FILE*)> file(std::fopen(fullpath.c_str(), "wt"), &fclose);
 	if (!file)
 	{
 		return false;
@@ -92,8 +93,8 @@ bool Export::exportBmpFile(bufferStruct pixels, imageInfo imageInfo)
 
 	std::memcpy(pixelData, pixels.bufferLocation.get(), pixels.bufferSize);
 
-	std::string				   fullpath = fileLocation + fileName + ".bmp";
-	std::unique_ptr<std::FILE> file(std::fopen(fullpath.c_str(), "wt"));
+	std::string							  fullpath = fileLocation + fileName + ".bmp";
+	std::unique_ptr<FILE, int (*)(FILE*)> file(std::fopen(fullpath.c_str(), "wb"), &fclose);
 	if (!file)
 	{
 		return false;
@@ -118,9 +119,11 @@ bool Export::setupBmpFileHeader(char* buffer, size_t buffer_size, imageInfo imag
 
 	// Only way to make the struct correct
 	// NOLINTNEXTLINE(cppcoreguidelines-pro-type-reinterpret-cast)
-	auto* fileHeader		= reinterpret_cast<BITMAPFILEHEADER*>(buffer);
-	fileHeader->bfType		= bitmapMagicStart;
-	fileHeader->bfSize		= static_cast<DWORD>(buffer_size);
+	auto* fileHeader   = reinterpret_cast<BITMAPFILEHEADER*>(buffer);
+	fileHeader->bfType = bitmapMagicStart;
+	fileHeader->bfSize = static_cast<DWORD>(buffer_size);
+	std::cout << "Buffer size: " << buffer_size << "Sizeof buffer size"
+			  << sizeof(fileHeader->bfSize) << std::endl;
 	fileHeader->bfReserved1 = 0;
 	fileHeader->bfReserved2 = 0;
 	fileHeader->bfOffBits	= sizeof(BITMAPFILEHEADER) + sizeof(BITMAPV5HEADER);

@@ -69,5 +69,23 @@ TEST(FileTests, FileCreated) {
     EXPECT_TRUE(exportFile.exportFile(std::move(fileStruct), {}));
     EXPECT_TRUE(std::filesystem::exists(path));
 
-    std::filesystem::remove(path);
+    //std::filesystem::remove(path);
+}
+
+TEST(FileTests, FileCreatedSecond) {
+    Export exportFile = Export();
+    std::string location = exportFile.quarryFileLocation();
+    std::string fileName = "TESTEXPORTFILECREATED2";
+    exportFile.setFileLocation(location);
+    exportFile.setFileName(fileName);
+    exportFile.setFileType(IFiles::type::txt);
+
+    bufferStruct fileStruct = {std::make_unique<char[]>(sizeof("TESTDATAHERE")), sizeof("TESTDATAHERE")};
+    strcpy(fileStruct.bufferLocation.get(), "TESTDATAHERE");
+    
+    std::filesystem::path path(location + fileName + ".txt");
+    EXPECT_TRUE(exportFile.exportFile(std::move(fileStruct), {}));
+    EXPECT_TRUE(std::filesystem::exists(path));
+
+    //std::filesystem::remove(path);
 }
