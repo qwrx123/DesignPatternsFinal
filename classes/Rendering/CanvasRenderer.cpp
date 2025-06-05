@@ -58,6 +58,9 @@ void CanvasRenderer::drawStroke(const IStroke& stroke)
 		return;
 	}
 
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
 	Color color = stroke.getColor();
 	glColor4f(color.r, color.g, color.b, color.a);
 
@@ -68,10 +71,15 @@ void CanvasRenderer::drawStroke(const IStroke& stroke)
 		glVertex2f(static_cast<float>(p.x), static_cast<float>(p.y));
 	}
 	glEnd();
+
+	glDisable(GL_BLEND);
 }
 
 void CanvasRenderer::drawButton(const IButton& button)
 {
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
 	glBegin(GL_QUADS);
 	glColor4f(lighterGray.r, lighterGray.g, lighterGray.b, lighterGray.a);
 	glVertex2f(button.getBounds().left, button.getBounds().top);
@@ -88,6 +96,8 @@ void CanvasRenderer::drawButton(const IButton& button)
 	glVertex2f(button.getBounds().right - buttonBorder, button.getBounds().bottom - buttonBorder);
 	glVertex2f(button.getBounds().left + buttonBorder, button.getBounds().bottom - buttonBorder);
 	glEnd();
+
+	glDisable(GL_BLEND);
 }
 
 void CanvasRenderer::drawMenu(const IMenu& menu)
