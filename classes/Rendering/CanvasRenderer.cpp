@@ -269,7 +269,10 @@ bufferStruct CanvasRenderer::exportCanvas()
 	glfwGetFramebufferSize(window_, &width, &height);
 
 	// RGBA format size
-	canvasBuffer.bufferSize		= static_cast<size_t>(width) * static_cast<size_t>(height) * 4;
+	canvasBuffer.bufferSize = static_cast<size_t>(width) * static_cast<size_t>(height) * 4;
+
+	// Proper way to allocate memory for the buffer safely
+	// NOLINTNEXTLINE(cppcoreguidelines-avoid-c-arrays,modernize-avoid-c-arrays)
 	canvasBuffer.bufferLocation = std::make_unique<char[]>(canvasBuffer.bufferSize);
 
 	char*		 pixelData = canvasBuffer.bufferLocation.get();
@@ -285,9 +288,12 @@ bufferStruct CanvasRenderer::exportCanvas()
 		size_t topRowOffset	   = y * width * pixelSize;
 		size_t bottomRowOffset = (height - 1 - y) * width * pixelSize;
 
+		// Working with raw memory means we need to be careful with pointer arithmetic
+		// NOLINTBEGIN(cppcoreguidelines-pro-bounds-pointer-arithmetic)
 		std::memcpy(scanLineBuff, pixelData + topRowOffset, width * pixelSize);
 		std::memcpy(pixelData + topRowOffset, pixelData + bottomRowOffset, width * pixelSize);
 		std::memcpy(pixelData + bottomRowOffset, scanLineBuff, width * pixelSize);
+		// NOLINTEND(cppcoreguidelines-pro-bounds-pointer-arithmetic)
 	}
 
 	return std::move(canvasBuffer);
