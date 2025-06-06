@@ -266,10 +266,41 @@ bufferStruct CanvasRenderer::exportCanvas()
 	glfwGetFramebufferSize(window_, &width, &height);
 
 	// RGBA format size
-	canvasBuffer.bufferSize		= width * height * 4;
+	canvasBuffer.bufferSize		= static_cast<size_t>(width) * static_cast<size_t>(height) * 4;
 	canvasBuffer.bufferLocation = std::make_unique<char[]>(canvasBuffer.bufferSize);
 
 	glReadPixels(0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, canvasBuffer.bufferLocation.get());
 
 	return std::move(canvasBuffer);
+}
+
+void CanvasRenderer::exportBitmap()
+{
+	bufferStruct canvasBuffer = exportCanvas();
+	imageInfo	 imageInfo;
+
+	int width  = 0;
+	int height = 0;
+	glfwGetFramebufferSize(window_, &width, &height);
+
+	imageInfo.width	 = width;
+	imageInfo.height = height;
+}
+
+std::pair<float, float> CanvasRenderer::getWindowDPI()
+{
+	GLFWmonitor* monitor = glfwGetPrimaryMonitor();
+
+	int widthMM	 = 0;
+	int heightMM = 0;
+	glfwGetMonitorPhysicalSize(monitor, &widthMM, &heightMM);
+
+	const GLFWvidmode* mode = glfwGetVideoMode(monitor);
+
+	const float mmToInch = 25.4F;
+
+	float dpiX = (static_cast<float>(mode->width) * mmToInch) / static_cast<float>(widthMM);
+	float dpiY = (static_cast<float>(mode->height) * mmToInch) / static_cast<float>(heightMM);
+
+	return {dpiX, dpiY};
 }

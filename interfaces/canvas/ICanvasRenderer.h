@@ -18,7 +18,10 @@ class ICanvasRenderer
 	ICanvasRenderer(ICanvasRenderer&&)				   = default;
 	ICanvasRenderer& operator=(ICanvasRenderer&&)	   = default;
 
-	virtual bufferStruct exportCanvas() = 0;
+	virtual bufferStruct			exportCanvas() = 0;
+	virtual void					exportBitmap() = 0;
+	virtual std::pair<float, float> getWindowDPI() = 0;
+
 	// Called once per frame
 	virtual void beginFrame()					   = 0;
 	virtual void drawStroke(const IStroke& stroke) = 0;
