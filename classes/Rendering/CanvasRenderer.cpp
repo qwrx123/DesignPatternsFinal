@@ -259,5 +259,17 @@ void CanvasRenderer::resize(int width, int height)
 
 bufferStruct CanvasRenderer::exportCanvas()
 {
-	return {};
+	bufferStruct canvasBuffer;
+
+	int width  = 0;
+	int height = 0;
+	glfwGetFramebufferSize(window_, &width, &height);
+
+	// RGBA format size
+	canvasBuffer.bufferSize		= width * height * 4;
+	canvasBuffer.bufferLocation = std::make_unique<char[]>(canvasBuffer.bufferSize);
+
+	glReadPixels(0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, canvasBuffer.bufferLocation.get());
+
+	return std::move(canvasBuffer);
 }
