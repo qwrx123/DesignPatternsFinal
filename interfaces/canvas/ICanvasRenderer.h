@@ -19,7 +19,7 @@ class ICanvasRenderer
 	ICanvasRenderer& operator=(ICanvasRenderer&&)	   = default;
 
 	virtual bufferStruct			exportCanvas() = 0;
-	virtual void					exportBitmap() = 0;
+	virtual bool					exportBitmap() = 0;
 	virtual std::pair<float, float> getWindowDPI() = 0;
 
 	// Called once per frame

@@ -22,6 +22,7 @@ target_include_directories(Rendering
 target_link_libraries(
     Rendering
     TextClass
+    File
     ${GLEW_LIBRARIES}
     Freetype::Freetype
 	glfw

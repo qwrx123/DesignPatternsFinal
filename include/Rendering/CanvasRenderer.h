@@ -31,7 +31,7 @@ class CanvasRenderer : public ICanvasRenderer
 	void		endFrame() override;
 
 	bufferStruct			exportCanvas() override;
-	void					exportBitmap() override;
+	bool					exportBitmap() override;
 	std::pair<float, float> getWindowDPI() override;
 
 	static void textRenderTest();
