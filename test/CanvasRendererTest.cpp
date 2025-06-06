@@ -4,6 +4,7 @@
 
 #include "CanvasRenderer.h"
 #include "Stroke.h"
+#include "FileLocation.h"
 
 TEST(CanvasRendererTest, CanRenderSimpleStrokeWithoutCrash) {
     // Setup minimal OpenGL context for testing
@@ -117,7 +118,7 @@ TEST(CanvasRendererTest, CanExportFile) {
         FAIL() << "GLFW failed to initialize";
     }
 
-    //glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE); // 👈 prevent test window from popping up
+    glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE); // 👈 prevent test window from popping up
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_COMPAT_PROFILE);
@@ -155,8 +156,16 @@ TEST(CanvasRendererTest, CanExportFile) {
     glFlush();
     glFinish();
 
-    bool exportSuccess = renderer.exportBitmap();
+    std::string fileLocation = FileLocation::getDownloadLocation();
+    std::string fileName = "TESTEXPORTCANVASBITMAP";
+
+    bool exportSuccess = renderer.exportBitmap(fileName, fileLocation);
     ASSERT_TRUE(exportSuccess);
+
+    std::filesystem::path path(fileLocation + fileName + ".bmp");
+    EXPECT_TRUE(std::filesystem::exists(path));
+
+    std::filesystem::remove(path);
 
     // Cleanup
     glfwDestroyWindow(testWindow);

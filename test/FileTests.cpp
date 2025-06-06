@@ -51,7 +51,7 @@ TEST(FileTests, BitmapCreated) {
     EXPECT_TRUE(exportFile.exportFile(std::move(fileStruct), imageInfo));
     EXPECT_TRUE(std::filesystem::exists(path));
 
-    //std::filesystem::remove(path);
+    std::filesystem::remove(path);
 }
 
 TEST(FileTests, FileCreated) {
@@ -69,7 +69,7 @@ TEST(FileTests, FileCreated) {
     EXPECT_TRUE(exportFile.exportFile(std::move(fileStruct), {}));
     EXPECT_TRUE(std::filesystem::exists(path));
 
-    //std::filesystem::remove(path);
+    std::filesystem::remove(path);
 }
 
 TEST(FileTests, FileCreatedSecond) {
@@ -87,5 +87,5 @@ TEST(FileTests, FileCreatedSecond) {
     EXPECT_TRUE(exportFile.exportFile(std::move(fileStruct), {}));
     EXPECT_TRUE(std::filesystem::exists(path));
 
-    //std::filesystem::remove(path);
+    std::filesystem::remove(path);
 }

@@ -2,11 +2,13 @@
 #include "Font.h"
 #include "Color.h"
 #include <iostream>
+#include <cstring>
+#include <vector>
 #include "Export.h"
-#ifdef _WIN32
-#include <GL/glext.h>
 #include "Text.h"
 #include "SliderButton.h"
+#ifdef _WIN32
+#include <GL/glext.h>
 #endif
 
 static const Color lighterGray = {.r = 0.8F, .g = 0.8F, .b = 0.8F, .a = 1.0F};
@@ -270,12 +272,28 @@ bufferStruct CanvasRenderer::exportCanvas()
 	canvasBuffer.bufferSize		= static_cast<size_t>(width) * static_cast<size_t>(height) * 4;
 	canvasBuffer.bufferLocation = std::make_unique<char[]>(canvasBuffer.bufferSize);
 
+	char*		 pixelData = canvasBuffer.bufferLocation.get();
+	const size_t pixelSize = 4;
+
 	glReadPixels(0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, canvasBuffer.bufferLocation.get());
+
+	std::vector<char> scanLine(width * pixelSize);
+	char*			  scanLineBuff = scanLine.data();
+	// Flip the image vertically
+	for (size_t y = 0; y < static_cast<size_t>(height) / 2; ++y)
+	{
+		size_t topRowOffset	   = y * width * pixelSize;
+		size_t bottomRowOffset = (height - 1 - y) * width * pixelSize;
+
+		std::memcpy(scanLineBuff, pixelData + topRowOffset, width * pixelSize);
+		std::memcpy(pixelData + topRowOffset, pixelData + bottomRowOffset, width * pixelSize);
+		std::memcpy(pixelData + bottomRowOffset, scanLineBuff, width * pixelSize);
+	}
 
 	return std::move(canvasBuffer);
 }
 
-bool CanvasRenderer::exportBitmap()
+bool CanvasRenderer::exportBitmap(std::string fileName, std::string fileLocation)
 {
 	bufferStruct canvasBuffer = exportCanvas();
 
@@ -300,9 +318,16 @@ bool CanvasRenderer::exportBitmap()
 	imageInfo.verticalResolution   = static_cast<size_t>(dpi.second * inchToM);
 	imageInfo.pixelType			   = pixelType::PIXEL_TYPE_RGBA;
 
-	Export		exportFile;
-	std::string fileLocation = exportFile.quarryFileLocation();
-	std::string fileName	 = "DaisyExport";
+	Export exportFile;
+	if (fileLocation.empty())
+	{
+		fileLocation = exportFile.quarryFileLocation();
+	}
+	if (fileName.empty())
+	{
+		fileName = "DaisyExport";
+	}
+
 	exportFile.setFileLocation(fileLocation);
 	exportFile.setFileName(fileName);
 	exportFile.setFileType(IFiles::type::bmp);
