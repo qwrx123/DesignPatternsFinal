@@ -9,6 +9,9 @@ constexpr int DEFAULT_BUFFER_SIZE = 256;
 #include <memory>
 #include <cstdio>
 
+/// @brief This function retrieves the default download location
+/// @return The download path as a string
+/// @note This function uses the `xdg-user-dir` command to get the download directory.
 std::string FileLocation::getDownloadLocation()
 {
 	std::unique_ptr<std::FILE, decltype(&pclose)> pipe(popen("xdg-user-dir DOWNLOAD", "r"), pclose);
@@ -42,6 +45,9 @@ std::string FileLocation::getDownloadLocation()
 #include <combaseapi.h>
 #include <windows.h>
 
+/// @brief This function retrieves the default download location
+/// @return The download path as a string
+/// @note This function uses the Windows API to get the download directory.
 std::string FileLocation::getDownloadLocation()
 {
 	HRESULT folderWorked;

@@ -4,6 +4,7 @@
 #include "IExport.h"
 #include <memory>
 
+/// @brief This class is designed to export files into various formats.
 class Export : public IExport
 {
    public:

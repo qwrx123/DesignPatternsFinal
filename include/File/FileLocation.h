@@ -3,6 +3,7 @@
 
 #include <string>
 
+/// @brief This class provides static methods to retrieve operating system specific file locations.
 class FileLocation
 {
    public:

@@ -5,6 +5,10 @@
 #include <cstring>
 #include <iostream>
 
+/// @brief The constructor for the Export class.
+/// @param fileStruct The structure containing the file data to be exported.
+/// @param imageInfo The structure containing image information.
+/// @return True if the export was successful, false otherwise.
 bool Export::exportFile(bufferStruct fileStruct, imageInfo imageInfo)
 {
 	switch (fileType)
@@ -18,26 +22,37 @@ bool Export::exportFile(bufferStruct fileStruct, imageInfo imageInfo)
 	}
 }
 
+/// @brief Sets the file location for the export.
+/// @param fileLocation The location where the file will be saved.
 void Export::setFileLocation(const std::string& fileLocation)
 {
 	this->fileLocation = fileLocation;
 }
 
+/// @brief Used to query the default file location for exporting files.
+/// @return The default file location as a string.
 std::string Export::quarryFileLocation()
 {
 	return FileLocation::getDownloadLocation();
 }
 
+/// @brief Sets the file type for the export.
+/// @param fileType The type of file to be exported.
 void Export::setFileType(IFiles::type fileType)
 {
 	this->fileType = fileType;
 }
 
+/// @brief Sets the file name for the export.
+/// @param fileName The name of the file to be exported, without extension.
 void Export::setFileName(const std::string& fileName)
 {
 	this->fileName = fileName;
 }
 
+/// @brief Exports a text file with the given buffer structure.
+/// @param fileStruct The structure containing the text data to be exported.
+/// @return	 True if the export was successful, false otherwise.
 bool Export::exportTxtFile(bufferStruct fileStruct)
 {
 	if (!fileStruct.bufferLocation || fileStruct.bufferSize == 0)
@@ -61,6 +76,10 @@ bool Export::exportTxtFile(bufferStruct fileStruct)
 	return true;
 }
 
+/// @brief Exports a BMP file with the given pixel data and image information.
+/// @param pixels The structure containing the pixel data to be exported.
+/// @param imageInfo The structure containing image information.
+/// @return True if the export was successful, false otherwise.
 bool Export::exportBmpFile(bufferStruct pixels, imageInfo imageInfo)
 {
 	if (!pixels.bufferLocation || pixels.bufferSize == 0)
@@ -123,6 +142,11 @@ bool Export::exportBmpFile(bufferStruct pixels, imageInfo imageInfo)
 	// NOLINTEND(cppcoreguidelines-pro-bounds-pointer-arithmetic)
 }
 
+/// @brief Sets up the BMP file header in the provided buffer.
+/// @param buffer The buffer where the BMP file header will be written.
+/// @param buffer_size The size of the buffer.
+/// @param imageInfo The structure containing image information.
+/// @return True if the header was set up successfully, false otherwise.
 bool Export::setupBmpFileHeader(char* buffer, size_t buffer_size, imageInfo imageInfo)
 {
 	if (buffer_size < sizeof(BITMAPFILEHEADER))
@@ -143,6 +167,11 @@ bool Export::setupBmpFileHeader(char* buffer, size_t buffer_size, imageInfo imag
 	return true;
 }
 
+/// @brief Sets up the BMP V1 header in the provided buffer.
+/// @param buffer The buffer where the BMP V1 header will be written.
+/// @param buffer_size The size of the buffer.
+/// @param imageInfo The structure containing image information.
+/// @return	 True if the header was set up successfully, false otherwise.
 bool Export::setupBmpV1Header(char* buffer, size_t buffer_size, imageInfo imageInfo)
 {
 	if (buffer_size < sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER))
@@ -178,6 +207,11 @@ bool Export::setupBmpV1Header(char* buffer, size_t buffer_size, imageInfo imageI
 	return true;
 }
 
+/// @brief Sets up the BMP V5 header in the provided buffer.
+/// @param buffer The buffer where the BMP V5 header will be written.
+/// @param buffer_size The size of the buffer.
+/// @param imageInfo The structure containing image information.
+/// @return True if the header was set up successfully, false otherwise.
 bool Export::setupBmpV5Header(char* buffer, size_t buffer_size, imageInfo imageInfo)
 {
 	if (buffer_size < sizeof(BITMAPFILEHEADER) + sizeof(BITMAPV5HEADER))
