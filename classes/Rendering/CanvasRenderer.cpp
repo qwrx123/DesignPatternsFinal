@@ -274,9 +274,15 @@ bufferStruct CanvasRenderer::exportCanvas()
 	return std::move(canvasBuffer);
 }
 
-void CanvasRenderer::exportBitmap()
+bool CanvasRenderer::exportBitmap()
 {
 	bufferStruct canvasBuffer = exportCanvas();
+
+	if (!canvasBuffer.bufferLocation || canvasBuffer.bufferSize == 0)
+	{
+		return false;
+	}
+
 	imageInfo	 imageInfo;
 
 	int width  = 0;
@@ -285,6 +291,27 @@ void CanvasRenderer::exportBitmap()
 
 	imageInfo.width	 = width;
 	imageInfo.height = height;
+
+	const float inchToM = 39.37F;
+
+	std::pair<float, float> dpi = getWindowDPI();
+	imageInfo.horizontalResolution = static_cast<size_t>(dpi.first * inchToM);
+	imageInfo.verticalResolution   = static_cast<size_t>(dpi.second * inchToM);
+	imageInfo.pixelType = pixelType::PIXEL_TYPE_RGBA;
+
+	Export exportFile;
+	std::string fileLocation = exportFile.quarryFileLocation();
+	std::string fileName	 = "DaisyExport";
+	exportFile.setFileLocation(fileLocation);
+	exportFile.setFileName(fileName);
+	exportFile.setFileType(IFiles::type::bmp);
+
+	if (!exportFile.exportFile(std::move(canvasBuffer), imageInfo))
+	{
+		return false;
+	}
+
+	return true;
 }
 
 std::pair<float, float> CanvasRenderer::getWindowDPI()
