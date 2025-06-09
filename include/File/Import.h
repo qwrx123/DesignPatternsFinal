@@ -18,6 +18,11 @@ class Import : public IImport
 	void					  setFileLocation(const std::string& fileLocation) override;
 	void					  setFileType(IFiles::type fileType) override;
 	void					  setFileName(const std::string& fileName) override;
+
+   private:
+	IFiles::type fileType = IFiles::type::bmp;
+	std::string	 fileName = "DaisyExport";
+	std::string	 fileLocation;
 };
 
 #endif	// IMPORT_H

@@ -6,11 +6,11 @@ class IImport : public IFiles
 {
    public:
 	IImport()						   = default;
-	virtual ~IImport()				   = default;
+	~IImport() override				   = default;
 	IImport(const IImport&)			   = default;
 	IImport& operator=(const IImport&) = default;
 	IImport(IImport&&)				   = default;
 	IImport& operator=(IImport&&)	   = default;
 
-	[[nodiscard]] virtual void importFile(const std::string&) = 0;
+	[[nodiscard]] virtual bool importFile(const std::string&) = 0;
 };
