@@ -114,11 +114,6 @@ bool MenuBar::isOpen() const
 	return true;
 }
 
-bool MenuBar::isClosed() const
-{
-	return false;
-}
-
 void MenuBar::open() {}
 
 void MenuBar::close() {}
@@ -321,7 +316,17 @@ bool MenuBar::showSelectedLabelWhenClosed() const
 
 void MenuBar::setShowSelectedLabelWhenClosed(bool show) {}
 
-void MenuBar::onMouseMove(double x, double y) {}
+void MenuBar::onMouseMove(double x, double y)
+{
+	for (auto& button : buttons) {
+		auto slider = std::dynamic_pointer_cast<SliderButton>(button);
+		if (slider && slider->isPressed()) {
+			std::string label = slider->getLabel();
+			sliderLogic(slider, label, x, y);
+			setSliderButtonValues();
+		}
+	}
+}
 
 void MenuBar::onMouseButton(MouseButton click, KeyAction action, double x, double y)
 {
@@ -331,19 +336,23 @@ void MenuBar::onMouseButton(MouseButton click, KeyAction action, double x, doubl
 		if (button->getBounds().contains(x, y) && action == KeyAction::Press)
 		{
 			std::string label = button->getLabel();
+			button->setPressed(true);
 			onButton(button, label, x, y, itCount);
 		}
 
 		//change tool button color as long as it is not the eraser
-		if (button->getBounds().contains(x, y) && button->getLabel() == "color" && buttons.at(selectedIndex)->getLabel() != "eraser" && action == KeyAction::Release)
+		if (button->isPressed() && button->getLabel() == "color" && buttons.at(selectedIndex)->getLabel() != "eraser" && action == KeyAction::Release)
 		{
 			buttons.at(selectedIndex)->setColor(button->getColor());
+			setSliderButtonValues();
+		}
+
+		if (action == KeyAction::Release) {
+			button->setPressed(false);
 		}
 
 		itCount++;
 	}
-
-	setSliderButtonValues();
 }
 
 void MenuBar::onKey(int key, KeyAction action) {}
