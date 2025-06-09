@@ -6,6 +6,11 @@ bool Import::importFile(const std::string& fileLocation)
     return false;
 }
 
+std::pair<bufferStruct, imageInfo> Import::getImportedData()
+{
+	return {std::move(importedBuffer), importedImageInfo};
+}
+
 std::string Import::quarryFileLocation()
 {
 	return FileLocation::getDownloadLocation();

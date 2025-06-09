@@ -12,5 +12,6 @@ class IImport : public IFiles
 	IImport(IImport&&)				   = default;
 	IImport& operator=(IImport&&)	   = default;
 
-	[[nodiscard]] virtual bool importFile(const std::string&) = 0;
+	[[nodiscard]] virtual bool								 importFile(const std::string&) = 0;
+	[[nodiscard]] virtual std::pair<bufferStruct, imageInfo> getImportedData()				= 0;
 };
