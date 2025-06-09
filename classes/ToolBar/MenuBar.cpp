@@ -114,11 +114,6 @@ bool MenuBar::isOpen() const
 	return true;
 }
 
-bool MenuBar::isClosed() const
-{
-	return false;
-}
-
 void MenuBar::open() {}
 
 void MenuBar::close() {}

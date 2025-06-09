@@ -30,10 +30,8 @@ class MenuBar : public IMenu, public IInputReceiver
 
 	// MenuBar is being implemented as always open
 	[[nodiscard]] bool isOpen() const override;
-	[[nodiscard]] bool isClosed()
-		const override;	 // wait why is there both, isOpen():false == isClosed():true?
-	void open() override;
-	void close() override;
+	void			   open() override;
+	void			   close() override;
 
 	void setDefaultButtons();
 	void addButton(std::shared_ptr<IButton> button) override;

@@ -25,10 +25,9 @@ class IMenu
 	virtual void				 setBounds(const Bounds& bounds) = 0;
 
 	// Dropdown menu state
-	[[nodiscard]] virtual bool isOpen() const	= 0;
-	[[nodiscard]] virtual bool isClosed() const = 0;
-	virtual void			   open()			= 0;
-	virtual void			   close()			= 0;
+	[[nodiscard]] virtual bool isOpen() const = 0;
+	virtual void			   open()		  = 0;
+	virtual void			   close()		  = 0;
 
 	// Manage butons
 	virtual void addButton(std::shared_ptr<IButton> button)								  = 0;
