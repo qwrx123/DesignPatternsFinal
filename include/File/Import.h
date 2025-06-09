@@ -13,7 +13,7 @@ class Import : public IImport
 	Import(Import&&) noexcept			 = default;
 	Import& operator=(Import&&) noexcept = default;
 
-	bool importFile(const std::string& fileLocation) override;
+	bool											 importFile() override;
 	[[nodiscard]] std::pair<bufferStruct, imageInfo> getImportedData() override;
 	[[nodiscard]] std::string						 quarryFileLocation() override;
 	void setFileLocation(const std::string& fileLocation) override;
@@ -23,6 +23,8 @@ class Import : public IImport
 	bool setImageInfo(imageInfo info);
 
    private:
+	bool readTxtFile();
+
 	IFiles::type fileType = IFiles::type::bmp;
 	std::string	 fileName = "DaisyExport";
 	std::string	 fileLocation;

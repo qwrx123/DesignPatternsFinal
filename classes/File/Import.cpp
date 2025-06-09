@@ -1,12 +1,12 @@
 #include "Import.h"
 #include "FileLocation.h"
 
-bool Import::importFile(const std::string& fileLocation)
+bool Import::importFile()
 {
     switch (fileType)
     {
         case IFiles::type::txt:
-            return false;
+            return readTxtFile();
         case IFiles::type::bmp:
             return false;
         default:
@@ -49,4 +49,16 @@ bool Import::setImageInfo(imageInfo info)
 {
 	importedImageInfo = info;
     return true;
+}
+
+bool Import::readTxtFile()
+{
+    std::string							  fullpath = fileLocation + fileName + ".txt";
+	std::unique_ptr<FILE, int (*)(FILE*)> file(std::fopen(fullpath.c_str(), "rt"), &fclose);
+	if (!file)
+	{
+		return false;
+	}
+
+    
 }

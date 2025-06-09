@@ -102,3 +102,30 @@ TEST(FileTestsImport, GetBuffer) {
     EXPECT_EQ(buffer.bufferSize, sizeof("TESTDATAHERE"));
     EXPECT_STREQ(buffer.bufferLocation.get(), "TESTDATAHERE");
 }
+
+TEST(FileTestsImport, ReadFile) {
+    Export exportFile = Export();
+    std::string location = exportFile.quarryFileLocation();
+    std::string fileName = "TESTEXPORTFILECREATED";
+    exportFile.setFileLocation(location);
+    exportFile.setFileName(fileName);
+    exportFile.setFileType(IFiles::type::txt);
+
+    bufferStruct fileStruct = {std::make_unique<char[]>(sizeof("TESTDATAHERE")), sizeof("TESTDATAHERE")};
+    strcpy(fileStruct.bufferLocation.get(), "TESTDATAHERE");
+    
+    std::filesystem::path path(location + fileName + ".txt");
+    EXPECT_TRUE(exportFile.exportFile(std::move(fileStruct), {}));
+    ASSERT_TRUE(std::filesystem::exists(path));
+
+    Import importFile = Import();
+    importFile.setFileLocation(location);
+    importFile.setFileName(fileName);
+    importFile.setFileType(IFiles::type::txt);
+    ASSERT_TRUE(importFile.importFile());
+    auto [importedBuffer, importedImageInfo] = importFile.getImportedData();
+    EXPECT_EQ(importedBuffer.bufferSize, sizeof("TESTDATAHERE"));
+    EXPECT_STREQ(importedBuffer.bufferLocation.get(), "TESTDATAHERE");
+
+    std::filesystem::remove(path);
+}
