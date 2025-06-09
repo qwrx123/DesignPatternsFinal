@@ -73,7 +73,6 @@ void TextManager::removeText(std::shared_ptr<IText> text)
 		texts.erase(it, texts.end());
 	}
 	textHistory.undo();
-	textHistory.push(text);
 }
 
 const std::vector<std::shared_ptr<IText>>& TextManager::getTexts() const
@@ -154,6 +153,8 @@ void TextManager::onChar(unsigned int codepoint)
 				std::string content = text->getContent();
 				content += static_cast<char>(codepoint);
 				text->setContent(content);
+				// refrence pointer is being coppied so when it changes everything in the stack
+				// changes
 				textHistory.push(text);
 				break;
 			}
@@ -230,19 +231,20 @@ void TextManager::setFontSize(int size)
 
 void TextManager::undoText()
 {
-	handleBackspace();
-	textHistory.undo();
-	textHistory.push(texts.back());
+	if (!textHistory.isEmpty())
+	{
+		textHistory.undo();
+		// texts.back() = textHistory.peek();
+	}
 }
 
 void TextManager::redoText()
 {
-	if (textHistory.isEmpty() || textHistory.isLastUndoneEmpty())
+	if (!textHistory.isLastUndoneEmpty())
 	{
-		return;
+		textHistory.redo();
+		// texts.back() = textHistory.peek();
 	}
-	auto text = textHistory.redo();
-	// texts.back() = text;  // Update the last text with the redone text
 }
 
 TextHistory TextManager::getHistory()

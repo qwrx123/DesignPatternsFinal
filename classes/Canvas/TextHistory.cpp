@@ -11,10 +11,9 @@ std::shared_ptr<IText> TextHistory::pop()
 	{
 		return nullptr;
 	}
-	auto text = history.back();
+	undoneHistory.push_back(history.back());
 	history.pop_back();
-	undoneHistory.push_back(text);
-	return text;
+	return history.back();
 }
 
 std::shared_ptr<IText> TextHistory::peek()
@@ -45,17 +44,20 @@ std::shared_ptr<IText> TextHistory::redo()
 {
 	if (!undoneHistory.empty())
 	{
-		auto text = undoneHistory.back();
+		push(undoneHistory.back());
 		undoneHistory.pop_back();
-		push(text);
-		return text;
+		return peek();
 	}
 	return nullptr;
 }
 
 std::shared_ptr<IText> TextHistory::undo()
 {
-	return pop();
+	if (!history.empty())
+	{
+		return pop();
+	}
+	return nullptr;
 }
 
 std::shared_ptr<IText> TextHistory::peekLastUndone() const

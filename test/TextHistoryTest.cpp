@@ -14,6 +14,7 @@ protected:
         Bounds(12, 100, 0, 100),
         "default", 12, Color{.r = 0.0F, .g = 0.0F, .b = 0.0F, .a = 1.0F}, true));
         textManager->addText(std::make_shared<Text>("", Bounds{0, 1, 0, 1}, "default", 12, Color{0.0F, 0.0F, 0.0F, 1.0F}, true));
+        textManager->setTextToolActive();
         empty = std::make_shared<Text>("", Bounds{0, 1, 0, 1}, "default", 12, Color{0.0F, 0.0F, 0.0F, 1.0F}, true);
         a = std::make_shared<Text>("a", Bounds{0, 1, 0, 1}, "default", 12, Color{0.0F, 0.0F, 0.0F, 1.0F}, true);
         ab = std::make_shared<Text>("ab", Bounds{0, 1, 0, 1}, "default", 12, Color{0.0F, 0.0F, 0.0F, 1.0F}, true);
@@ -43,8 +44,14 @@ protected:
 
 TEST_F(TextHistoryTest, Undo)
 {
-    actual = testHistory->undo();
+    testHistory->undo();
+    actual = testHistory->peek();
     expected = ab;
+    EXPECT_EQ(actual->getContent(), expected->getContent());
+    EXPECT_EQ(testHistory->undoneSize(), 1);
+    EXPECT_EQ(testHistory->size(), 3);
+    actual = testHistory->peekLastUndone();
+    expected = abc;
     EXPECT_EQ(actual->getContent(), expected->getContent());
 }
 
@@ -54,6 +61,11 @@ TEST_F(TextHistoryTest, Redo)
     testHistory->undo();
     actual = testHistory->redo();
     expected = ab;
+    EXPECT_EQ(actual->getContent(), expected->getContent());
+    EXPECT_EQ(testHistory->undoneSize(), 1);
+    EXPECT_EQ(testHistory->size(), 3);
+    actual = testHistory->peekLastUndone();
+    expected = abc;
     EXPECT_EQ(actual->getContent(), expected->getContent());
 }
 
@@ -66,6 +78,10 @@ TEST_F(TextHistoryTest, AddText)
     actual = textManager->getHistory().peek();
     expected = ab;
     EXPECT_EQ(actual->getContent(), expected->getContent());
+    actual = textManager->getTexts().back();
+    EXPECT_EQ(actual->getContent(), expected->getContent());
+    EXPECT_EQ(textManager->getHistory().undoneSize(), 0);
+    EXPECT_EQ(textManager->getHistory().size(), 2);
 }
 
 TEST_F(TextHistoryTest, UndoText)
@@ -74,21 +90,48 @@ TEST_F(TextHistoryTest, UndoText)
     unsigned int bCode = 'b';
     textManager->onChar(aCode);
     textManager->onChar(bCode);
-    textManager->getHistory().undo();
+    actual = textManager->getTexts().back();
+    expected = ab;
+    EXPECT_EQ(actual->getContent(), expected->getContent());
     actual = textManager->getHistory().peek();
+    EXPECT_EQ(actual->getContent(), expected->getContent());
+    textManager->undoText();
+    actual = textManager->getTexts().back();
     expected = a;
     EXPECT_EQ(actual->getContent(), expected->getContent());
+    actual = textManager->getHistory().peek();
+    EXPECT_EQ(actual->getContent(), expected->getContent());
+    actual = textManager->getHistory().peekLastUndone();
+    expected = ab;
+    EXPECT_EQ(actual->getContent(), expected->getContent());
+    EXPECT_EQ(textManager->getHistory().undoneSize(), 1);
+    EXPECT_EQ(textManager->getHistory().size(), 1);
 }
 
 TEST_F(TextHistoryTest, RedoText)
 {
     unsigned int aCode = 'a';
     unsigned int bCode = 'b';
+    unsigned int cCode = 'c';
     textManager->onChar(aCode);
     textManager->onChar(bCode);
-    textManager->getHistory().undo();
-    textManager->getHistory().redo();
+    textManager->onChar(cCode);
+    actual = textManager->getTexts().back();
+    expected = abc;
+    EXPECT_EQ(actual->getContent(), expected->getContent());
     actual = textManager->getHistory().peek();
+    EXPECT_EQ(actual->getContent(), expected->getContent());
+    textManager->undoText();
+    textManager->undoText();
+    textManager->redoText();
+    actual = textManager->getTexts().back();
     expected = ab;
     EXPECT_EQ(actual->getContent(), expected->getContent());
+    actual = textManager->getHistory().peek();
+    EXPECT_EQ(actual->getContent(), expected->getContent());
+    actual = textManager->getHistory().peekLastUndone();
+    expected = abc;
+    EXPECT_EQ(actual->getContent(), expected->getContent());
+    EXPECT_EQ(textManager->getHistory().undoneSize(), 1);
+    EXPECT_EQ(textManager->getHistory().size(), 2);
 }
