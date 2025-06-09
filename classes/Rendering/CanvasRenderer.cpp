@@ -287,6 +287,10 @@ bufferStruct CanvasRenderer::exportCanvas()
 	char*		 pixelData = canvasBuffer.bufferLocation.get();
 	const size_t pixelSize = 4;
 
+	glPixelStorei(GL_PACK_ALIGNMENT, 4);
+	glPixelStorei(GL_PACK_ROW_LENGTH, 0);
+	glReadBuffer(GL_BACK);
+
 	glReadPixels(0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, canvasBuffer.bufferLocation.get());
 
 	std::vector<char> scanLine(width * pixelSize);
