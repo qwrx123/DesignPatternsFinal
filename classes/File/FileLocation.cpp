@@ -50,10 +50,9 @@ std::string FileLocation::getDownloadLocation()
 /// @note This function uses the Windows API to get the download directory.
 std::string FileLocation::getDownloadLocation()
 {
-	HRESULT folderWorked;
 	PWSTR pathPointer = nullptr;
 
-	folderWorked = SHGetKnownFolderPath(FOLDERID_Downloads, 0, nullptr, &pathPointer);
+	HRESULT folderWorked = SHGetKnownFolderPath(FOLDERID_Downloads, 0, nullptr, &pathPointer);
 
 	if (!SUCCEEDED(folderWorked))
 	{
@@ -61,7 +60,7 @@ std::string FileLocation::getDownloadLocation()
 		return {};
 	}
 
-	std::array<char, DEFAULT_BUFFER_SIZE> buffer;
+	std::array<char, DEFAULT_BUFFER_SIZE> buffer {};
 	WideCharToMultiByte(CP_UTF8, 0, pathPointer, -1, buffer.data(), buffer.size(), nullptr, nullptr);
 	CoTaskMemFree(pathPointer);
 	std::string folderLocation(buffer.data());
