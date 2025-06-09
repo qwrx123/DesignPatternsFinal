@@ -165,7 +165,7 @@ TEST(CanvasRendererTest, CanExportFile) {
     std::filesystem::path path(fileLocation + fileName + ".bmp");
     EXPECT_TRUE(std::filesystem::exists(path));
 
-    //std::filesystem::remove(path);
+    std::filesystem::remove(path);
 
     // Cleanup
     glfwDestroyWindow(testWindow);
