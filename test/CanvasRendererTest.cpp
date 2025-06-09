@@ -89,7 +89,7 @@ TEST(CanvasRendererTest, CanExportCanvas) {
     renderer.beginFrame();
     renderer.drawStroke(stroke);
     renderer.endFrame();
-
+    
     glFlush();
     glFinish();
 
