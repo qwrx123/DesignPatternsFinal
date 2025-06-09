@@ -323,6 +323,7 @@ void MenuBar::onMouseMove(double x, double y)
 		if (slider && slider->isPressed()) {
 			std::string label = slider->getLabel();
 			sliderLogic(slider, label, x, y);
+			setSliderButtonValues();
 		}
 	}
 }
@@ -343,6 +344,7 @@ void MenuBar::onMouseButton(MouseButton click, KeyAction action, double x, doubl
 		if (button->isPressed() && button->getLabel() == "color" && buttons.at(selectedIndex)->getLabel() != "eraser" && action == KeyAction::Release)
 		{
 			buttons.at(selectedIndex)->setColor(button->getColor());
+			setSliderButtonValues();
 		}
 
 		if (action == KeyAction::Release) {
@@ -351,8 +353,6 @@ void MenuBar::onMouseButton(MouseButton click, KeyAction action, double x, doubl
 
 		itCount++;
 	}
-
-	setSliderButtonValues();
 }
 
 void MenuBar::onKey(int key, KeyAction action) {}
