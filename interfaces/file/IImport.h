@@ -12,5 +12,5 @@ class IImport : public IFiles
 	IImport(IImport&&)				   = default;
 	IImport& operator=(IImport&&)	   = default;
 
-	[[nodiscard]] virtual void importFile(void*, ssize_t) = 0;
+	[[nodiscard]] virtual void importFile(const std::string&) = 0;
 };
