@@ -52,13 +52,12 @@ int main()
 		return -1;
 	}
 
-	auto					   renderer		 = std::make_unique<CanvasRenderer>(window);
-	auto					   strokeManager = std::make_shared<StrokeManager>();
-	auto					   toolManager	 = std::make_shared<ToolManager>();
-	auto					   inputManager	 = std::make_shared<InputManager>();
-	auto					   menuBar		 = std::make_shared<MenuBar>();
-	std::optional<std::string> pendingToolSwitch;
-	auto					   textManager = std::make_shared<TextManager>();
+	auto renderer	   = std::make_unique<CanvasRenderer>(window);
+	auto strokeManager = std::make_shared<StrokeManager>();
+	auto toolManager   = std::make_shared<ToolManager>();
+	auto inputManager  = std::make_shared<InputManager>();
+	auto menuBar	   = std::make_shared<MenuBar>();
+	auto textManager   = std::make_shared<TextManager>();
 
 	inputManager->bindToWindow(window);
 	inputManager->registerReceiver(toolManager);
@@ -70,12 +69,13 @@ int main()
 		"brush",
 		std::make_shared<BrushTool>(
 			strokeManager, Color{.r = 0.0F, .g = 0.0F, .b = 0.0F, .a = 1.0F}, defaultThickness));
+	toolManager->registerTool("eraser",
+							  std::make_shared<EraserTool>(strokeManager, defaultEraserSize));
+
 	textManager->registerTextTool(std::make_shared<Text>(
 		"",
 		Bounds(defaultFontSize + defaultMenuBarHeight, defaultWindowHeight, 0, defaultWindowWidth),
 		"Delius", defaultFontSize, Color{.r = 0.0F, .g = 0.0F, .b = 0.0F, .a = 1.0F}, true));
-	toolManager->registerTool("eraser",
-							  std::make_shared<EraserTool>(strokeManager, defaultEraserSize));
 
 	menuBar->setBounds(Bounds(0, defaultMenuBarHeight, 0, static_cast<float>(INT_MAX)));
 	menuBar->setToolPointer(toolManager);
