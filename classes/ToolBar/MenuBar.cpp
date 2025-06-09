@@ -340,7 +340,7 @@ void MenuBar::onMouseButton(MouseButton click, KeyAction action, double x, doubl
 		}
 
 		//change tool button color as long as it is not the eraser
-		if (button->getBounds().contains(x, y) && button->getLabel() == "color" && buttons.at(selectedIndex)->getLabel() != "eraser" && action == KeyAction::Release)
+		if (button->isPressed() && button->getLabel() == "color" && buttons.at(selectedIndex)->getLabel() != "eraser" && action == KeyAction::Release)
 		{
 			buttons.at(selectedIndex)->setColor(button->getColor());
 		}
