@@ -153,9 +153,9 @@ void TextManager::onChar(unsigned int codepoint)
 				std::string content = text->getContent();
 				content += static_cast<char>(codepoint);
 				text->setContent(content);
-				// refrence pointer is being coppied so when it changes everything in the stack
-				// changes
-				textHistory.push(text);
+				textHistory.push(std::make_shared<Text>(text->getContent(), text->getBounds(),
+														text->getFontName(), text->getFontSize(),
+														text->getColor(), text->isEditable()));
 				break;
 			}
 		}
@@ -171,7 +171,9 @@ void TextManager::insertTab()
 			std::string content = text->getContent();
 			content += '\t';
 			text->setContent(content);
-			textHistory.push(text);
+			textHistory.push(std::make_shared<Text>(text->getContent(), text->getBounds(),
+													text->getFontName(), text->getFontSize(),
+													text->getColor(), text->isEditable()));
 		}
 		break;
 	}
@@ -188,7 +190,9 @@ void TextManager::handleBackspace()
 			{
 				content.pop_back();
 				text->setContent(content);
-				textHistory.push(text);
+				textHistory.push(std::make_shared<Text>(text->getContent(), text->getBounds(),
+														text->getFontName(), text->getFontSize(),
+														text->getColor(), text->isEditable()));
 			}
 			else if (texts.size() > 1)
 			{
@@ -218,7 +222,9 @@ void TextManager::handleEnter()
 								   Bounds((static_cast<float>(prevFontSize) + prevBounds.top),
 										  bounds.bottom, bounds.left, bounds.right),
 								   fontName, prevFontSize, prevColor, true));
-	textHistory.push(texts.back());
+	textHistory.push(std::make_shared<Text>(
+		texts.back()->getContent(), texts.back()->getBounds(), texts.back()->getFontName(),
+		texts.back()->getFontSize(), texts.back()->getColor(), texts.back()->isEditable()));
 }
 void TextManager::setFontSize(int size)
 {
@@ -234,7 +240,7 @@ void TextManager::undoText()
 	if (!textHistory.isEmpty())
 	{
 		textHistory.undo();
-		// texts.back() = textHistory.peek();
+		texts.back() = textHistory.peek();
 	}
 }
 
@@ -243,7 +249,7 @@ void TextManager::redoText()
 	if (!textHistory.isLastUndoneEmpty())
 	{
 		textHistory.redo();
-		// texts.back() = textHistory.peek();
+		texts.back() = textHistory.peek();
 	}
 }
 
