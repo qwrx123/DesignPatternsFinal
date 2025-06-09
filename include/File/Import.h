@@ -19,6 +19,8 @@ class Import : public IImport
 	void setFileLocation(const std::string& fileLocation) override;
 	void setFileType(IFiles::type fileType) override;
 	void setFileName(const std::string& fileName) override;
+	bool setBuffer(bufferStruct buffer);
+	bool setImageInfo(imageInfo info);
 
    private:
 	IFiles::type fileType = IFiles::type::bmp;

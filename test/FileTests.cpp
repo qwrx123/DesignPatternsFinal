@@ -1,8 +1,9 @@
 #include <gtest/gtest.h>
 #include <filesystem>
 #include "Export.h"
+#include "Import.h"
 
-TEST(FileTests, FolderExists) {
+TEST(FileTestsExport, FolderExists) {
     Export exportFile = Export();
     std::string location = exportFile.quarryFileLocation();
     
@@ -10,14 +11,14 @@ TEST(FileTests, FolderExists) {
     EXPECT_TRUE(std::filesystem::exists(path));
 }
 
-TEST(FileTests, emptyFile) {
+TEST(FileTestsExport, emptyFile) {
     Export exportFile = Export();
     bufferStruct fileStruct = {nullptr, 0};
 
     EXPECT_EQ(exportFile.exportFile(std::move(fileStruct), {}), false);
 }
 
-TEST(FileTests, emptyBitmap) {
+TEST(FileTestsExport, emptyBitmap) {
     Export exportFile = Export();
     exportFile.setFileType(IFiles::type::bmp);
 
@@ -27,7 +28,7 @@ TEST(FileTests, emptyBitmap) {
         {.width = 0, .height = 0, .horizontalResolution = 0, .verticalResolution = 0}), false);
 }
 
-TEST(FileTests, BitmapCreated) {
+TEST(FileTestsExport, BitmapCreated) {
     Export exportFile = Export();
     std::string location = exportFile.quarryFileLocation();
     std::string fileName = "TESTEXPORTBITMAPCREATED";
@@ -54,7 +55,7 @@ TEST(FileTests, BitmapCreated) {
     std::filesystem::remove(path);
 }
 
-TEST(FileTests, FileCreated) {
+TEST(FileTestsExport, FileCreated) {
     Export exportFile = Export();
     std::string location = exportFile.quarryFileLocation();
     std::string fileName = "TESTEXPORTFILECREATED";
@@ -72,7 +73,7 @@ TEST(FileTests, FileCreated) {
     std::filesystem::remove(path);
 }
 
-TEST(FileTests, FileCreatedSecond) {
+TEST(FileTestsExport, FileCreatedSecond) {
     Export exportFile = Export();
     std::string location = exportFile.quarryFileLocation();
     std::string fileName = "TESTEXPORTFILECREATED2";
@@ -88,4 +89,16 @@ TEST(FileTests, FileCreatedSecond) {
     EXPECT_TRUE(std::filesystem::exists(path));
 
     std::filesystem::remove(path);
+}
+
+TEST(FileTestsImport, GetBuffer) {
+    Import importFile = Import();
+    bufferStruct fileStruct = {std::make_unique<char[]>(sizeof("TESTDATAHERE")), sizeof("TESTDATAHERE")};
+    strcpy(fileStruct.bufferLocation.get(), "TESTDATAHERE");
+    
+    ASSERT_TRUE(importFile.setBuffer(std::move(fileStruct)));
+    auto [buffer, imageInfo] = importFile.getImportedData();
+    
+    EXPECT_EQ(buffer.bufferSize, sizeof("TESTDATAHERE"));
+    EXPECT_STREQ(buffer.bufferLocation.get(), "TESTDATAHERE");
 }

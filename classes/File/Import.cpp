@@ -3,7 +3,15 @@
 
 bool Import::importFile(const std::string& fileLocation)
 {
-    return false;
+    switch (fileType)
+    {
+        case IFiles::type::txt:
+            return false;
+        case IFiles::type::bmp:
+            return false;
+        default:
+            return false;
+    }
 }
 
 std::pair<bufferStruct, imageInfo> Import::getImportedData()
@@ -29,4 +37,16 @@ void Import::setFileType(IFiles::type fileType)
 void Import::setFileName(const std::string& fileName)
 {
     this->fileName = fileName;
+}
+
+bool Import::setBuffer(bufferStruct buffer)
+{
+    importedBuffer = std::move(buffer);
+    return true;
+}
+
+bool Import::setImageInfo(imageInfo info)
+{
+	importedImageInfo = info;
+    return true;
 }
