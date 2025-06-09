@@ -6,7 +6,7 @@ add_library(
     Import.cpp
 )
 
-registerFilesToFormat(FILES Export.cpp)
+registerFilesToFormat(FILES Export.cpp FileLocation.cpp Import.cpp)
 
 target_include_directories(File
     PUBLIC
