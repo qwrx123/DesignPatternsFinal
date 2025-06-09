@@ -103,3 +103,13 @@ void ToolManager::onChar(unsigned int codepoint)
 {
 	// Optional: handle character input
 }
+
+void ToolManager::undoStroke()
+{
+	current_tool->undoStroke();
+}
+
+void ToolManager::redoStroke()
+{
+	current_tool->redoStroke();
+}

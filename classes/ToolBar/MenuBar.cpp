@@ -282,6 +282,35 @@ void MenuBar::setDefaultButtons()
 		black));
 	
 	setSliderButtonValues();
+	// Undo and Redo
+	addButton(std::make_shared<ButtonClass>(
+		"undo text",
+		Bounds{.top	   = bounds.top,
+			   .bottom = firstDiv,
+			   .left   = buttons.at(buttons.size() - 1)->getBounds().right + 1,
+			   .right  = buttons.at(buttons.size() - 1)->getBounds().right + quarterHeight},
+		black));
+	addButton(std::make_shared<ButtonClass>(
+		"redo text",
+		Bounds{.top	   = firstDiv,
+			   .bottom = midDiv,
+			   .left   = buttons.at(buttons.size() - 1)->getBounds().left,
+			   .right  = buttons.at(buttons.size() - 1)->getBounds().right},
+		white));
+	addButton(std::make_shared<ButtonClass>(
+		"undo tool",
+		Bounds{.top	   = midDiv,
+			   .bottom = thirdDiv,
+			   .left   = buttons.at(buttons.size() - 1)->getBounds().left,
+			   .right  = buttons.at(buttons.size() - 1)->getBounds().right},
+		black));
+	addButton(std::make_shared<ButtonClass>(
+		"redo tool",
+		Bounds{.top	   = thirdDiv,
+			   .bottom = bounds.bottom,
+			   .left   = buttons.at(buttons.size() - 1)->getBounds().left,
+			   .right  = buttons.at(buttons.size() - 1)->getBounds().right},
+		white));
 }
 
 void MenuBar::addButton(std::shared_ptr<IButton> button)
@@ -344,6 +373,7 @@ void MenuBar::onMouseButton(MouseButton click, KeyAction action, double x, doubl
 	}
 
 	setSliderButtonValues();
+	
 }
 
 void MenuBar::onKey(int key, KeyAction action) {}
@@ -456,6 +486,34 @@ void MenuBar::onButton(const std::shared_ptr<IButton>& button, const std::string
 		if (sliderButton)
 		{
 			sliderLogic(sliderButton, label, x, y);
+		}
+	}
+	else if (label == "undo text")
+	{
+		if (text->isTextToolActive())
+		{
+			text->undoText();
+		}
+	}
+	else if (label == "redo text")
+	{
+		if (text->isTextToolActive())
+		{
+			text->redoText();
+		}
+	}
+	else if (label == "undo tool")
+	{
+		if (tool->getActiveTool())
+		{
+			tool->redoStroke();
+		}
+	}
+	else if (label == "redo tool")
+	{
+		if (tool->getActiveTool())
+		{
+			tool->undoStroke();
 		}
 	}
 	else

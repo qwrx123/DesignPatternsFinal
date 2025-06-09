@@ -2,11 +2,12 @@ add_library(
     Canvas
     SHARED
     TextHistory.cpp
+    ToolHistory.cpp
 )
 
 find_package(glfw3 3.3 REQUIRED)
 
-registerFilesToFormat(FILES TextHistory.cpp)
+registerFilesToFormat(FILES TextHistory.cpp ToolHistory.cpp)
 
 target_include_directories(Canvas
     SYSTEM PUBLIC

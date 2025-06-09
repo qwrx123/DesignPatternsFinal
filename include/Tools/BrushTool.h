@@ -3,6 +3,7 @@
 
 #include "IDrawingTool.h"
 #include "IStrokeManager.h"
+#include "ToolHistory.h"
 #include "Stroke.h"
 
 class BrushTool : public IDrawingTool
@@ -14,6 +15,7 @@ class BrushTool : public IDrawingTool
 	float							brush_thickness;
 	bool							active;
 	bool							drawing = false;
+	ToolHistory						toolHistory;
 
    public:
 	BrushTool(std::shared_ptr<IStrokeManager> stroke_manager, Color color, float thickness);
@@ -44,6 +46,10 @@ class BrushTool : public IDrawingTool
 
 	void				setThickness(float thickness) override;
 	[[nodiscard]] float getThickness() const override;
+
+	void		undoStroke() override;
+	void		redoStroke() override;
+	ToolHistory getHistory() const;
 };
 
 #endif	// BRUSHTOOL_H

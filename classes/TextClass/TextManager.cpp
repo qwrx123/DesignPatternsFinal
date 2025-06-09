@@ -237,16 +237,29 @@ void TextManager::setFontSize(int size)
 
 void TextManager::undoText()
 {
-	if (!textHistory.isEmpty())
+	if (!textHistory.isEmpty() && !texts.empty())
 	{
-		textHistory.undo();
-		texts.back() = textHistory.peek();
+		if (texts.back()->getContent().empty() && texts.size() != 1)
+		{
+			removeText(texts.back());
+			textHistory.undo();
+		}
+		else if (texts.back()->getContent().length() == 1)
+		{
+			textHistory.undo();
+			texts.back()->setContent("");
+		}
+		else
+		{
+			textHistory.undo();
+			texts.back() = textHistory.peek();
+		}
 	}
 }
 
 void TextManager::redoText()
 {
-	if (!textHistory.isLastUndoneEmpty())
+	if (!textHistory.isLastUndoneEmpty() && !texts.empty())
 	{
 		textHistory.redo();
 		texts.back() = textHistory.peek();

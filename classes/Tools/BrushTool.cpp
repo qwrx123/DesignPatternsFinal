@@ -95,6 +95,7 @@ void BrushTool::endStroke(const Point& end)
 	{
 		current_stroke->addPoint(end);
 		stroke_manager->addStroke(current_stroke);
+		toolHistory.push(current_stroke);
 		current_stroke.reset();
 	}
 }
@@ -141,4 +142,34 @@ void BrushTool::setThickness(float thickness)
 float BrushTool::getThickness() const
 {
 	return brush_thickness;
+}
+
+void BrushTool::undoStroke()
+{
+	if (!stroke_manager->getStrokes().empty())
+	{
+		toolHistory.undo();
+		const auto& strokes = stroke_manager->getStrokes();
+		if (!strokes.empty())
+		{
+			const_cast<std::vector<std::shared_ptr<IStroke>>&>(strokes).pop_back();
+			const_cast<std::vector<std::shared_ptr<IStroke>>&>(strokes).push_back(
+				toolHistory.peek());
+		}
+	}
+}
+
+void BrushTool::redoStroke()
+{
+	toolHistory.undo();
+	const auto& strokes = stroke_manager->getStrokes();
+	if (!strokes.empty())
+	{
+		const_cast<std::vector<std::shared_ptr<IStroke>>&>(strokes).push_back(toolHistory.peek());
+	}
+}
+
+ToolHistory BrushTool::getHistory() const
+{
+	return toolHistory;
 }

@@ -3,6 +3,7 @@
 
 #include "IDrawingTool.h"
 #include "IStrokeManager.h"
+#include "ToolHistory.h"
 #include "Stroke.h"
 
 class EraserTool : public IDrawingTool
@@ -33,6 +34,10 @@ class EraserTool : public IDrawingTool
 	void				setThickness(float thickness) override;
 	[[nodiscard]] float getThickness() const override;
 
+	void		undoStroke() override;
+	void		redoStroke() override;
+	ToolHistory getHistory() const;
+
    private:
 	std::shared_ptr<Stroke>			erase_path;
 	std::shared_ptr<IStrokeManager> stroke_manager;
@@ -40,6 +45,7 @@ class EraserTool : public IDrawingTool
 	bool							active		 = false;
 	bool							drawing		 = false;
 	Color							eraser_color = {.r = 1.0F, .g = 1.0F, .b = 1.0F, .a = 0.0F};
+	ToolHistory						toolHistory;
 };
 
 #endif	// ERASER_TOOL_H

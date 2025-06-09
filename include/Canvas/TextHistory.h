@@ -18,13 +18,13 @@ class TextHistory : public IHistoryStack<std::shared_ptr<IText>>
 	~TextHistory() override						   = default;
 
 	void											  push(std::shared_ptr<IText> text) override;
-	std::shared_ptr<IText>							  pop() override;
+	void											  pop() override;
 	std::shared_ptr<IText>							  peek() override;
 	[[nodiscard]] std::vector<std::shared_ptr<IText>> getHistory() override;
 	[[nodiscard]] bool								  isEmpty() const override;
 	[[nodiscard]] size_t							  size() const override;
 	std::shared_ptr<IText>							  redo();
-	std::shared_ptr<IText>							  undo();
+	void											  undo();
 	[[nodiscard]] std::shared_ptr<IText>			  peekLastUndone() const;
 	[[nodiscard]] bool								  isLastUndoneEmpty() const;
 	[[nodiscard]] size_t							  undoneSize() const;
@@ -33,6 +33,7 @@ class TextHistory : public IHistoryStack<std::shared_ptr<IText>>
    private:
 	std::vector<std::shared_ptr<IText>> history;
 	std::vector<std::shared_ptr<IText>> undoneHistory;
+	int									limit = 100;
 };
 
 #endif

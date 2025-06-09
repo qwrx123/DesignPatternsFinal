@@ -3,6 +3,7 @@
 
 #include "IToolManager.h"
 #include "IInputReceiver.h"
+#include "ToolHistory.h"
 #include <unordered_map>
 
 class ToolManager : public IToolManager, public IInputReceiver
@@ -30,6 +31,9 @@ class ToolManager : public IToolManager, public IInputReceiver
 	void onMouseButton(MouseButton button, KeyAction action, double x, double y) override;
 	void onKey(int key, KeyAction action) override;
 	void onChar(unsigned int codepoint) override;
+
+	void undoStroke() override;
+	void redoStroke() override;
 
    private:
 	std::unordered_map<std::string, std::shared_ptr<IDrawingTool>> tools;

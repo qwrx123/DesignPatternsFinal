@@ -157,3 +157,12 @@ float EraserTool::getThickness() const
 {
 	return eraser_thickness;
 }
+
+void EraserTool::undoStroke() {}
+
+void EraserTool::redoStroke() {}
+
+ToolHistory EraserTool::getHistory() const
+{
+	return toolHistory;
+}

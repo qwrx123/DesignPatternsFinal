@@ -18,7 +18,7 @@ class IHistoryStack
 	[[nodiscard]] virtual bool			 isEmpty() const = 0;
 	[[nodiscard]] virtual size_t		 size() const	 = 0;
 	virtual void						 push(T)		 = 0;
-	[[nodiscard]] virtual T				 pop()			 = 0;
+	virtual void						 pop()			 = 0;
 	[[nodiscard]] virtual T				 peek()			 = 0;
 	[[nodiscard]] virtual std::vector<T> getHistory()	 = 0;
 

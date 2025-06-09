@@ -23,6 +23,9 @@ class IToolManager
 	virtual void beginStroke(const Point& start) = 0;
 	virtual void addPoint(const Point& point)	 = 0;
 	virtual void endStroke(const Point& end)	 = 0;
+
+	virtual void undoStroke() = 0;
+	virtual void redoStroke() = 0;
 };
 
 #endif	// ITOOL_MANAGER_H

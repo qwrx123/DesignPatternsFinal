@@ -27,6 +27,9 @@ class IDrawingTool : public ITool
 	[[nodiscard]] virtual bool		 isDrawing() const			   = 0;
 	virtual void					 setThickness(float thickness) = 0;
 	[[nodiscard]] virtual float		 getThickness() const		   = 0;
+
+	virtual void undoStroke() = 0;
+	virtual void redoStroke() = 0;
 };
 
 #endif	// IDRAWINGTOOL_H

@@ -1,5 +1,6 @@
 set(FILE_LIST
     TextHistory.h
+    ToolHistory.h
 )
 
 registerFilesToFormat(FILES ${FILE_LIST})

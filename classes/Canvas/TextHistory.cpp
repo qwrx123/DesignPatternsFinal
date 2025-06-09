@@ -5,15 +5,13 @@ void TextHistory::push(std::shared_ptr<IText> text)
 	history.push_back(text);
 }
 
-std::shared_ptr<IText> TextHistory::pop()
+void TextHistory::pop()
 {
-	if (history.empty())
+	if (!history.empty())
 	{
-		return nullptr;
+		undoneHistory.push_back(history.back());
+		history.pop_back();
 	}
-	undoneHistory.push_back(history.back());
-	history.pop_back();
-	return history.back();
 }
 
 std::shared_ptr<IText> TextHistory::peek()
@@ -51,13 +49,12 @@ std::shared_ptr<IText> TextHistory::redo()
 	return nullptr;
 }
 
-std::shared_ptr<IText> TextHistory::undo()
+void TextHistory::undo()
 {
 	if (!history.empty())
 	{
-		return pop();
+		pop();
 	}
-	return nullptr;
 }
 
 std::shared_ptr<IText> TextHistory::peekLastUndone() const

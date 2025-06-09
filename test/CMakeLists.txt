@@ -38,6 +38,7 @@ add_executable(projectTests
     ${CMAKE_SOURCE_DIR}/classes/TextClass/TextBox.cpp
 
     ${CMAKE_SOURCE_DIR}/classes/Canvas/TextHistory.cpp
+    ${CMAKE_SOURCE_DIR}/classes/Canvas/ToolHistory.cpp
 )
 
 target_include_directories(projectTests PRIVATE ${PROJECT_COMMON_INCLUDE_DIRS} ${FREETYPE_INCLUDE_DIRS})
