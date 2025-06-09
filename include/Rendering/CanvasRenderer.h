@@ -30,6 +30,10 @@ class CanvasRenderer : public ICanvasRenderer
 	static void drawSliderButton(const IButton& button, float value);
 	void		endFrame() override;
 
+	bufferStruct			exportCanvas() override;
+	bool					exportBitmap(std::string fileName, std::string fileLocation) override;
+	std::pair<float, float> getWindowDPI() override;
+
 	static void textRenderTest();
 	static void renderGlyph(FT_Face face, FT_GlyphSlot glyph, float x, float y, Color color);
 	static void renderLabel(const std::string& label, float x, float y, Color color);

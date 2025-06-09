@@ -2,10 +2,13 @@
 #include "Font.h"
 #include "Color.h"
 #include <iostream>
-#ifdef _WIN32
-#include <GL/glext.h>
+#include <cstring>
+#include <vector>
+#include "Export.h"
 #include "Text.h"
 #include "SliderButton.h"
+#ifdef _WIN32
+#include <GL/glext.h>
 #endif
 
 static const Color lighterGray			= {.r = 0.8F, .g = 0.8F, .b = 0.8F, .a = 1.0F};
@@ -264,4 +267,110 @@ void CanvasRenderer::resize(int width, int height)
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
+}
+
+bufferStruct CanvasRenderer::exportCanvas()
+{
+	bufferStruct canvasBuffer;
+
+	int width  = 0;
+	int height = 0;
+	glfwGetFramebufferSize(window_, &width, &height);
+
+	// RGBA format size
+	canvasBuffer.bufferSize = static_cast<size_t>(width) * static_cast<size_t>(height) * 4;
+
+	// Proper way to allocate memory for the buffer safely
+	// NOLINTNEXTLINE(cppcoreguidelines-avoid-c-arrays,modernize-avoid-c-arrays)
+	canvasBuffer.bufferLocation = std::make_unique<char[]>(canvasBuffer.bufferSize);
+
+	char*		 pixelData = canvasBuffer.bufferLocation.get();
+	const size_t pixelSize = 4;
+
+	glPixelStorei(GL_PACK_ALIGNMENT, 4);
+	glPixelStorei(GL_PACK_ROW_LENGTH, 0);
+#ifdef _WIN32
+	glReadBuffer(GL_FRONT);
+#else
+	glReadBuffer(GL_BACK);
+#endif
+	glReadPixels(0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, canvasBuffer.bufferLocation.get());
+
+	std::vector<char> scanLine(width * pixelSize);
+	char*			  scanLineBuff = scanLine.data();
+	// Flip the image vertically
+	for (size_t y = 0; y < static_cast<size_t>(height) / 2; ++y)
+	{
+		size_t topRowOffset	   = y * width * pixelSize;
+		size_t bottomRowOffset = (height - 1 - y) * width * pixelSize;
+
+		// Working with raw memory means we need to be careful with pointer arithmetic
+		// NOLINTBEGIN(cppcoreguidelines-pro-bounds-pointer-arithmetic)
+		std::memcpy(scanLineBuff, pixelData + topRowOffset, width * pixelSize);
+		std::memcpy(pixelData + topRowOffset, pixelData + bottomRowOffset, width * pixelSize);
+		std::memcpy(pixelData + bottomRowOffset, scanLineBuff, width * pixelSize);
+		// NOLINTEND(cppcoreguidelines-pro-bounds-pointer-arithmetic)
+	}
+
+	return std::move(canvasBuffer);
+}
+
+bool CanvasRenderer::exportBitmap(std::string fileName, std::string fileLocation)
+{
+	bufferStruct canvasBuffer = exportCanvas();
+
+	if (!canvasBuffer.bufferLocation || canvasBuffer.bufferSize == 0)
+	{
+		return false;
+	}
+
+	imageInfo imageInfo;
+
+	int width  = 0;
+	int height = 0;
+	glfwGetFramebufferSize(window_, &width, &height);
+
+	imageInfo.width	 = width;
+	imageInfo.height = height;
+
+	const float inchToM = 39.37F;
+
+	std::pair<float, float> dpi	   = getWindowDPI();
+	imageInfo.horizontalResolution = static_cast<size_t>(dpi.first * inchToM);
+	imageInfo.verticalResolution   = static_cast<size_t>(dpi.second * inchToM);
+	imageInfo.pixelType			   = pixelType::PIXEL_TYPE_RGBA;
+
+	Export exportFile;
+	if (fileLocation.empty())
+	{
+		fileLocation = exportFile.quarryFileLocation();
+	}
+	if (fileName.empty())
+	{
+		fileName = "DaisyExport";
+	}
+
+	exportFile.setFileLocation(fileLocation);
+	exportFile.setFileName(fileName);
+	exportFile.setFileType(IFiles::type::bmp);
+
+	return (exportFile.exportFile(std::move(canvasBuffer), imageInfo));
+}
+
+std::pair<float, float> CanvasRenderer::getWindowDPI()
+{
+	GLFWmonitor* monitor = glfwGetPrimaryMonitor();
+
+	int widthMM	 = 0;
+	int heightMM = 0;
+	glfwGetMonitorPhysicalSize(monitor, &widthMM, &heightMM);
+
+	const GLFWvidmode* mode = glfwGetVideoMode(monitor);
+
+	const float mmToInch = 25.4F;
+
+	float dpiX = (static_cast<float>(mode->width) * mmToInch) / static_cast<float>(widthMM);
+	float dpiY = (static_cast<float>(mode->height) * mmToInch) / static_cast<float>(heightMM);
+
+	return {dpiX, dpiY};
 }
