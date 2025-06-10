@@ -580,4 +580,6 @@ void MenuBar::sliderLogic(const std::shared_ptr<SliderButton>& slider, const std
 													 .a = value});
 		}
 	}
+
+	setSliderButtonValues();
 }
