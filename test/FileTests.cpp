@@ -179,3 +179,49 @@ TEST(FileTestsImport, GetBufferImage)
         EXPECT_EQ(importedData[i], bufferActualData[i]);
     }
 }
+
+TEST(FileTestsImport, ReadBmpFile)
+{
+    Export exportFile = Export();
+    std::string location = exportFile.quarryFileLocation();
+    std::string fileName = "TESTEXPORTBMPREAD";
+    exportFile.setFileLocation(location);
+    exportFile.setFileName(fileName);
+    exportFile.setFileType(IFiles::type::bmp);
+
+    bufferStruct fileStruct = {std::make_unique<char[]>(4 * 6), 4 * 6};
+    imageInfo imageInfo = {.width = 3, .height = 2, .horizontalResolution = 3780, .verticalResolution = 3780, .pixelType = pixelType::PIXEL_TYPE_RGBA};
+
+    // Fill the buffer with some test data (e.g., a simple 2x3 pixel image)
+    int* buffer = reinterpret_cast<int*>(fileStruct.bufferLocation.get());
+    buffer[0] = 0xFF0000FF; // Red pixel
+    buffer[1] = 0x00FF00FF; // Green pixel
+    buffer[2] = 0x0000FFFF; // Blue pixel
+    buffer[3] = 0xFFFFFFFF; // White pixel
+    buffer[4] = 0x000000FF; // Black pixel
+    buffer[5] = 0x808080FF; // Gray pixel
+    
+    EXPECT_TRUE(exportFile.exportFile(std::move(fileStruct), imageInfo));
+    
+    Import importFile = Import();
+    importFile.setFileLocation(location);
+    importFile.setFileName(fileName);
+    importFile.setFileType(IFiles::type::bmp);
+    
+    ASSERT_TRUE(importFile.importFile());
+    
+    auto [importedBuffer, importedImageInfo] = importFile.getImportedData();
+    
+    EXPECT_EQ(importedBuffer.bufferSize, 4 * 6);
+    EXPECT_EQ(importedImageInfo.width, 3);
+    EXPECT_EQ(importedImageInfo.height, 2);
+    
+    char* importedData = importedBuffer.bufferLocation.get();
+    
+    for (size_t i = 0; i < importedBuffer.bufferSize; i++)
+    {
+        EXPECT_EQ(importedData[i], reinterpret_cast<char*>(buffer)[i]);
+    }
+
+    std::filesystem::remove(location + fileName + ".bmp");
+}

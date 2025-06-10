@@ -91,7 +91,7 @@ bool Import::readTxtFile()
 
 bool Import::readBmpFile()
 {
-	std::string							  fullpath = fileLocation + fileName + ".txt";
+	std::string							  fullpath = fileLocation + fileName + ".bmp";
 	std::unique_ptr<FILE, int (*)(FILE*)> file(std::fopen(fullpath.c_str(), "rb"), &fclose);
 	if (!file)
 	{
@@ -282,8 +282,7 @@ bool Import::validateBmpV5Header(const char* buffer, size_t buffer_size)
 	}
 
 	if (infoHeader->bV5SizeImage != 0 &&
-		infoHeader->bV5SizeImage + sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER) !=
-			buffer_size)
+		infoHeader->bV5SizeImage + sizeof(BITMAPFILEHEADER) + sizeof(BITMAPV5HEADER) != buffer_size)
 	{
 		return false;
 	}
