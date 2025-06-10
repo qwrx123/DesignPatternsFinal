@@ -2,6 +2,8 @@
 #include "FileLocation.h"
 #include <cstring>
 
+/// @brief Imports a file based on the file name and location and type stored in the class.
+/// @return True if the import was successful, false otherwise.
 bool Import::importFile()
 {
 	switch (fileType)
@@ -15,43 +17,61 @@ bool Import::importFile()
 	}
 }
 
+/// @brief Gets the imported data as a pair of bufferStruct and imageInfo.
+/// @return	 A pair containing the imported buffer and image information.
 std::pair<bufferStruct, imageInfo> Import::getImportedData()
 {
 	return {std::move(importedBuffer), importedImageInfo};
 }
 
+/// @brief Used to query the default file location for exporting files.
+/// @return The default file location as a string.
 std::string Import::quarryFileLocation()
 {
 	return FileLocation::getDownloadLocation();
 }
 
+/// @brief Used to set the file location for the import.
+/// @param fileLocation The location where the file is stored.
 void Import::setFileLocation(const std::string& fileLocation)
 {
 	this->fileLocation = fileLocation;
 }
 
+/// @brief Sets the file type for the import.
+/// @param fileType The type of file to be imported.
 void Import::setFileType(IFiles::type fileType)
 {
 	this->fileType = fileType;
 }
 
+/// @brief Sets the file name for the import.
+/// @param fileName	 The name of the file to be imported, without extension.
 void Import::setFileName(const std::string& fileName)
 {
 	this->fileName = fileName;
 }
 
+/// @brief Sets the imported data buffer directly.
+/// @param buffer The buffer structure containing the data to be imported.
+/// @return True if the buffer was set successfully, false otherwise.
 bool Import::setBuffer(bufferStruct buffer)
 {
 	importedBuffer = std::move(buffer);
 	return true;
 }
 
+/// @brief Sets the image information for the imported file.
+/// @param info The imageInfo structure containing the image details.
+/// @return	 True if the image information was set successfully, false otherwise.
 bool Import::setImageInfo(imageInfo info)
 {
 	importedImageInfo = info;
 	return true;
 }
 
+/// @brief Reads a text file from the specified location and stores its content in the buffer.
+/// @return True if the file was read successfully, false otherwise.
 bool Import::readTxtFile()
 {
 	std::string							  fullpath = fileLocation + fileName + ".txt";
@@ -89,6 +109,8 @@ bool Import::readTxtFile()
 	return readBytes == importedBuffer.bufferSize;
 }
 
+/// @brief Reads a BMP file from the specified location and validates its headers.
+/// @return True if the BMP file was read and validated successfully, false otherwise.
 bool Import::readBmpFile()
 {
 	std::string							  fullpath = fileLocation + fileName + ".bmp";
@@ -169,6 +191,10 @@ bool Import::readBmpFile()
 	return readBmpV5PixelData(fileBuffer.get(), fileSize) && size == sizeof(BITMAPV5HEADER);
 }
 
+/// @brief Validates the BMP file header.
+/// @param buffer The buffer containing the BMP file data.
+/// @param buffer_size The size of the buffer containing the BMP file data.
+/// @return True if the BMP header is valid, false otherwise.
 bool Import::validateBmpHeader(const char* buffer, size_t buffer_size)
 {
 	// Need to reinterpret the buffer to access the BITMAPINFOHEADER
@@ -194,6 +220,10 @@ bool Import::validateBmpHeader(const char* buffer, size_t buffer_size)
 	return true;
 }
 
+/// @brief Validates the BMP V1 header.
+/// @param buffer The buffer containing the BMP file data.
+/// @param buffer_size The size of the buffer containing the BMP file data.
+/// @return True if the BMP V1 header is valid, false otherwise.
 bool Import::validateBmpV1Header(const char* buffer, size_t buffer_size)
 {
 	// Need to reinterpret the buffer to access the BITMAPINFOHEADER
@@ -236,6 +266,10 @@ bool Import::validateBmpV1Header(const char* buffer, size_t buffer_size)
 	return true;
 }
 
+/// @brief Validates the BMP V5 header.
+/// @param buffer The buffer containing the BMP file data.
+/// @param buffer_size The size of the buffer containing the BMP file data.
+/// @return True if the BMP V5 header is valid, false otherwise.
 bool Import::validateBmpV5Header(const char* buffer, size_t buffer_size)
 {
 	// Need to reinterpret the buffer to access the BITMAPINFOHEADER
@@ -290,6 +324,10 @@ bool Import::validateBmpV5Header(const char* buffer, size_t buffer_size)
 	return true;
 }
 
+/// @brief Reads the pixel data from a BMP V5 file and stores it in the importedBuffer.
+/// @param buffer The buffer containing the BMP file data.
+/// @param buffer_size The size of the buffer containing the BMP file data.
+/// @return True if the pixel data was read successfully, false otherwise.
 bool Import::readBmpV5PixelData(const char* buffer, size_t buffer_size)
 {
 	// NOLINTBEGIN(cppcoreguidelines-pro-bounds-pointer-arithmetic)
