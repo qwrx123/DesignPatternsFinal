@@ -1,5 +1,6 @@
 #include "Import.h"
 #include "FileLocation.h"
+#include <cstring>
 
 bool Import::importFile()
 {
@@ -300,6 +301,27 @@ bool Import::readBmpV5PixelData(const char* buffer, size_t buffer_size)
 		reinterpret_cast<const BITMAPV5HEADER*>(buffer + sizeof(BITMAPFILEHEADER));
 
 	const char* pixelData = buffer + V5Header->bV5Size + sizeof(BITMAPFILEHEADER);
+
+	importedBuffer.bufferSize = V5Header->bV5SizeImage;
+	// NOLINTNEXTLINE(cppcoreguidelines-avoid-c-arrays,modernize-avoid-c-arrays)
+	importedBuffer.bufferLocation = std::make_unique<char[]>(importedBuffer.bufferSize);
+
+	char* importedPixelData = importedBuffer.bufferLocation.get();
+
+	size_t iteration = 0;
+	size_t scanLineSize =
+		(V5Header->bV5BitCount / static_cast<size_t>(CHAR_BIT)) * V5Header->bV5Width;
+	for (char* scanLine = importedPixelData + ((V5Header->bV5Height - 1) * scanLineSize);
+		 scanLine >= importedPixelData; scanLine -= scanLineSize)
+	{
+		std::memcpy(scanLine, pixelData + (scanLineSize * iteration++), scanLineSize);
+	}
+
+	importedImageInfo.width				   = V5Header->bV5Width;
+	importedImageInfo.height			   = V5Header->bV5Height;
+	importedImageInfo.horizontalResolution = V5Header->bV5XPelsPerMeter;
+	importedImageInfo.verticalResolution   = V5Header->bV5YPelsPerMeter;
+	importedImageInfo.pixelType			   = pixelType::PIXEL_TYPE_RGBA;
 
 	// NOLINTEND(cppcoreguidelines-pro-type-reinterpret-cast)
 	// NOLINTEND(cppcoreguidelines-pro-bounds-pointer-arithmetic)
