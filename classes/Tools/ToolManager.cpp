@@ -67,6 +67,16 @@ void ToolManager::endStroke(const Point& end)
 	}
 }
 
+void ToolManager::setBounds(const Bounds& bounds)
+{
+	this->bounds = bounds;
+}
+
+Bounds ToolManager::getBounds()
+{
+	return bounds;
+}
+
 void ToolManager::onMouseMove(double x, double y)
 {
 	if (current_tool && current_tool->isDrawing())
