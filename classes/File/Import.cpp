@@ -8,7 +8,7 @@ bool Import::importFile()
 		case IFiles::type::txt:
 			return readTxtFile();
 		case IFiles::type::bmp:
-			return false;
+			return readBmpFile();
 		default:
 			return false;
 	}
@@ -89,6 +89,111 @@ bool Import::readTxtFile()
 }
 
 bool Import::readBmpFile()
+{
+	std::string							  fullpath = fileLocation + fileName + ".txt";
+	std::unique_ptr<FILE, int (*)(FILE*)> file(std::fopen(fullpath.c_str(), "rb"), &fclose);
+	if (!file)
+	{
+		return false;
+	}
+
+	if (std::fseek(file.get(), 0, SEEK_END) != 0)
+	{
+		return false;
+	}
+
+	long fileSizeWithErrorCheck = std::ftell(file.get());
+	if (fileSizeWithErrorCheck == -1)
+	{
+		return false;
+	}
+
+	auto fileSize = static_cast<size_t>(fileSizeWithErrorCheck);
+	if (std::fseek(file.get(), 0, SEEK_SET) != 0)
+	{
+		return false;
+	}
+
+	// When working with files and raw memory, it is neccisary touse char[]
+	// NOLINTNEXTLINE(cppcoreguidelines-avoid-c-arrays,modernize-avoid-c-arrays)
+	std::unique_ptr<char[]> fileBuffer = std::make_unique<char[]>(fileSize);
+
+	// Read file content
+	size_t readBytes = std::fread(fileBuffer.get(), sizeof(char), fileSize, file.get());
+
+	if (readBytes != fileSize)
+	{
+		return false;
+	}
+
+	if (fileSize < sizeof(BITMAPFILEHEADER))
+	{
+		return false;
+	}
+
+	if (!validateBmpHeader(fileBuffer.get(), fileSize))
+	{
+		return false;
+	}
+
+	if (fileSize < sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER))
+	{
+		return false;
+	}
+
+	// Need to reinterpret the buffer to access the BITMAPINFOHEADER
+	auto* infoHeader =	// NOLINTNEXTLINE(cppcoreguidelines-pro-type-reinterpret-cast)
+		reinterpret_cast<BITMAPINFOHEADER*>(fileBuffer.get() + sizeof(BITMAPFILEHEADER));
+
+	DWORD size = infoHeader->biSize;
+
+	switch (size)
+	{
+		case sizeof(BITMAPINFOHEADER):
+			if (!validateBmpV1Header(fileBuffer.get(), fileSize))
+			{
+				return false;
+			}
+			break;
+		case sizeof(BITMAPV5HEADER):
+			if (!validateBmpV5Header(fileBuffer.get(), fileSize))
+			{
+				return false;
+			}
+			break;
+		default:
+			return false;  // Unsupported BMP version
+	}
+
+	return true;
+}
+
+bool Import::validateBmpHeader(const char* buffer, size_t buffer_size)
+{
+	// Need to reinterpret the buffer to access the BITMAPINFOHEADER
+	// NOLINTNEXTLINE(cppcoreguidelines-pro-type-reinterpret-cast)
+	const auto* fileHeader = reinterpret_cast<const BITMAPFILEHEADER*>(buffer);
+
+	const WORD bitmapMagicStart = 0x4D42;  // 'BM'
+	if (fileHeader->bfType != bitmapMagicStart)
+	{
+		return false;
+	}
+
+	if (fileHeader->bfSize != buffer_size)
+	{
+		return false;
+	}
+
+	return true;
+}
+
+bool Import::validateBmpV1Header(const char* buffer, size_t buffer_size)
+{
+	return false;
+}
+
+bool Import::validateBmpV5Header(const char* buffer, size_t buffer_size)
 {
 	return false;
 }
