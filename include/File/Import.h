@@ -1,0 +1,43 @@
+#ifndef IMPORT_H
+#define IMPORT_H
+
+#include "IImport.h"
+
+class Import : public IImport
+{
+   public:
+	Import()							 = default;
+	~Import() override					 = default;
+	Import(const Import&)				 = delete;
+	Import& operator=(const Import&)	 = delete;
+	Import(Import&&) noexcept			 = default;
+	Import& operator=(Import&&) noexcept = default;
+
+	bool											 importFile() override;
+	[[nodiscard]] std::pair<bufferStruct, imageInfo> getImportedData() override;
+	[[nodiscard]] std::string						 quarryFileLocation() override;
+	void setFileLocation(const std::string& fileLocation) override;
+	void setFileType(IFiles::type fileType) override;
+	void setFileName(const std::string& fileName) override;
+	bool setBuffer(bufferStruct buffer);
+	bool setImageInfo(imageInfo info);
+
+   private:
+	bool readTxtFile();
+	bool readBmpFile();
+
+	static bool validateBmpHeader(const char* buffer, size_t buffer_size);
+	static bool validateBmpV1Header(const char* buffer, size_t buffer_size);
+	static bool validateBmpV5Header(const char* buffer, size_t buffer_size);
+
+	bool readBmpV5PixelData(const char* buffer, size_t buffer_size);
+
+	IFiles::type fileType = IFiles::type::bmp;
+	std::string	 fileName = "DaisyExport";
+	std::string	 fileLocation;
+
+	bufferStruct importedBuffer	   = {};
+	imageInfo	 importedImageInfo = {};
+};
+
+#endif	// IMPORT_H
