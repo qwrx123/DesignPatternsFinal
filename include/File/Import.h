@@ -28,7 +28,9 @@ class Import : public IImport
 
 	static bool validateBmpHeader(const char* buffer, size_t buffer_size);
 	static bool validateBmpV1Header(const char* buffer, size_t buffer_size);
-	bool		validateBmpV5Header(const char* buffer, size_t buffer_size);
+	static bool validateBmpV5Header(const char* buffer, size_t buffer_size);
+
+	bool readBmpV5PixelData(const char* buffer, size_t buffer_size);
 
 	IFiles::type fileType = IFiles::type::bmp;
 	std::string	 fileName = "DaisyExport";

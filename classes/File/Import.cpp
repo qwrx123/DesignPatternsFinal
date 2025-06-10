@@ -165,7 +165,7 @@ bool Import::readBmpFile()
 			return false;  // Unsupported BMP version
 	}
 
-	return true;
+	return readBmpV5PixelData(fileBuffer.get(), fileSize) && size == sizeof(BITMAPV5HEADER);
 }
 
 bool Import::validateBmpHeader(const char* buffer, size_t buffer_size)
@@ -219,7 +219,8 @@ bool Import::validateBmpV1Header(const char* buffer, size_t buffer_size)
 		return false;
 	}
 
-	if (infoHeader->biBitCount != 24)
+	const WORD validBitCount = 24;
+	if (infoHeader->biBitCount != validBitCount)
 	{
 		return false;
 	}
@@ -236,5 +237,71 @@ bool Import::validateBmpV1Header(const char* buffer, size_t buffer_size)
 
 bool Import::validateBmpV5Header(const char* buffer, size_t buffer_size)
 {
-	return false;
+	// Need to reinterpret the buffer to access the BITMAPINFOHEADER
+	// NOLINTBEGIN(cppcoreguidelines-pro-type-reinterpret-cast)
+	// NOLINTBEGIN(cppcoreguidelines-pro-bounds-pointer-arithmetic)
+	const auto* infoHeader =
+		reinterpret_cast<const BITMAPV5HEADER*>(buffer + sizeof(BITMAPFILEHEADER));
+
+	// NOLINTEND(cppcoreguidelines-pro-bounds-pointer-arithmetic)
+	// NOLINTEND(cppcoreguidelines-pro-type-reinterpret-cast)
+
+	if (infoHeader->bV5Size != sizeof(BITMAPV5HEADER))
+	{
+		return false;
+	}
+
+	if (infoHeader->bV5Planes != 1)
+	{
+		return false;
+	}
+
+	const WORD validBitCount = 32;
+	if (infoHeader->bV5BitCount != validBitCount)
+	{
+		return false;
+	}
+
+	if (infoHeader->bV5Compression != 3)
+	{
+		return false;
+	}
+
+	if (infoHeader->bV5GreenMask == 0 || infoHeader->bV5RedMask == 0 ||
+		infoHeader->bV5BlueMask == 0 || infoHeader->bV5AlphaMask == 0)
+	{
+		return false;
+	}
+
+	const DWORD LCS_sRGB = 0x73524742;	// 'sRGB' in little-endian
+	const DWORD LCS_WIN	 = 0x57696E20;	// 'Win ' in little-endian
+	if (infoHeader->bV5CSType != LCS_sRGB && infoHeader->bV5CSType != LCS_WIN)
+	{
+		return false;
+	}
+
+	if (infoHeader->bV5SizeImage != 0 &&
+		infoHeader->bV5SizeImage + sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER) !=
+			buffer_size)
+	{
+		return false;
+	}
+
+	return true;
+}
+
+bool Import::readBmpV5PixelData(const char* buffer, size_t buffer_size)
+{
+	// NOLINTBEGIN(cppcoreguidelines-pro-bounds-pointer-arithmetic)
+	// NOLINTBEGIN(cppcoreguidelines-pro-type-reinterpret-cast)
+	const auto* infoHeader = reinterpret_cast<const BITMAPV5HEADER*>(buffer);
+
+	const auto* V5Header =
+		reinterpret_cast<const BITMAPV5HEADER*>(buffer + sizeof(BITMAPFILEHEADER));
+
+	const char* pixelData = buffer + V5Header->bV5Size + sizeof(BITMAPFILEHEADER);
+
+	// NOLINTEND(cppcoreguidelines-pro-type-reinterpret-cast)
+	// NOLINTEND(cppcoreguidelines-pro-bounds-pointer-arithmetic)
+	return true;
 }
