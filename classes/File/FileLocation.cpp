@@ -21,7 +21,7 @@ std::string FileLocation::getDownloadLocation()
 	}
 
 	std::array<char, DEFAULT_BUFFER_SIZE> buffer = {0};
-	std::string folderLocation;
+	std::string							  folderLocation;
 	while (fgets(buffer.data(), sizeof(buffer), pipe.get()) != nullptr)
 	{
 		folderLocation += buffer.data();
@@ -60,8 +60,9 @@ std::string FileLocation::getDownloadLocation()
 		return {};
 	}
 
-	std::array<char, DEFAULT_BUFFER_SIZE> buffer {};
-	WideCharToMultiByte(CP_UTF8, 0, pathPointer, -1, buffer.data(), buffer.size(), nullptr, nullptr);
+	std::array<char, DEFAULT_BUFFER_SIZE> buffer{};
+	WideCharToMultiByte(CP_UTF8, 0, pathPointer, -1, buffer.data(), buffer.size(), nullptr,
+						nullptr);
 	CoTaskMemFree(pathPointer);
 	std::string folderLocation(buffer.data());
 	if (!folderLocation.empty() && folderLocation.back() != '\\')

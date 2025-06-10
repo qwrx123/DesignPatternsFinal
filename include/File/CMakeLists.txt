@@ -1,6 +1,7 @@
 set(FILE_LIST
     Export.h
     FileLocation.h
+    Import.h
 )
 
 registerFilesToFormat(FILES ${FILE_LIST})
