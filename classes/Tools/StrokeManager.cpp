@@ -190,3 +190,11 @@ void StrokeManager::isErased(const auto& stroke_pts, size_t i, bool& is_erased,
 		current_segment.push_back(stroke_pts[i]);
 	}
 }
+
+void StrokeManager::removeLastStroke()
+{
+	if (!strokes_.empty())
+	{
+		strokes_.pop_back();
+	}
+}

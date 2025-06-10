@@ -1,12 +1,12 @@
 #include "ToolHistory.h"
 
-void ToolHistory::push(std::shared_ptr<IStroke> tool)
+void ToolHistory::push(std::shared_ptr<IStroke> stroke)
 {
-	history.push_back(tool);
+	history.push_back(stroke);
 }
 void ToolHistory::pop()
 {
-	if (history.empty())
+	if (!history.empty())
 	{
 		undoneHistory.push_back(history.back());
 		history.pop_back();

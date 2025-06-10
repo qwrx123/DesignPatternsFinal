@@ -20,6 +20,7 @@ class IStrokeManager
 	virtual void													   clear()			  = 0;
 	virtual void splitEraseWithPath(const std::shared_ptr<IStroke>& eraser_path,
 									float							eraser_radius)								  = 0;
+	virtual void removeLastStroke()														  = 0;
 };
 
 #endif	// ISTROKEMANAGER_H

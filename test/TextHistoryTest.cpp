@@ -6,7 +6,8 @@
 
 class TextHistoryTest : public ::testing::Test {
 protected:
-    void SetUp() override {
+    void SetUp() override 
+    {
         testHistory = new TextHistory();
         textManager = new TextManager();
         textManager->registerTextTool(std::make_shared<Text>(
@@ -27,7 +28,8 @@ protected:
         expected = std::make_shared<Text>();
     }
 
-    void TearDown() override {
+    void TearDown() override 
+    {
         delete testHistory;
         delete textManager;
     }

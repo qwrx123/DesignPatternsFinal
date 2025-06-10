@@ -146,26 +146,20 @@ float BrushTool::getThickness() const
 
 void BrushTool::undoStroke()
 {
-	if (!stroke_manager->getStrokes().empty())
+	if (!stroke_manager->getStrokes().empty() && !toolHistory.isEmpty())
 	{
 		toolHistory.undo();
-		const auto& strokes = stroke_manager->getStrokes();
-		if (!strokes.empty())
-		{
-			const_cast<std::vector<std::shared_ptr<IStroke>>&>(strokes).pop_back();
-			const_cast<std::vector<std::shared_ptr<IStroke>>&>(strokes).push_back(
-				toolHistory.peek());
-		}
+		stroke_manager->removeLastStroke();
+		stroke_manager->addStroke(toolHistory.peek());
 	}
 }
 
 void BrushTool::redoStroke()
 {
-	toolHistory.undo();
-	const auto& strokes = stroke_manager->getStrokes();
-	if (!strokes.empty())
+	if (!toolHistory.isLastUndoneEmpty())
 	{
-		const_cast<std::vector<std::shared_ptr<IStroke>>&>(strokes).push_back(toolHistory.peek());
+		toolHistory.redo();
+		stroke_manager->addStroke(toolHistory.peek());
 	}
 }
 

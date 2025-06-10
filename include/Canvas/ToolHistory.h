@@ -17,7 +17,7 @@ class ToolHistory : public IHistoryStack<std::shared_ptr<IStroke>>
 	ToolHistory& operator=(ToolHistory&&) noexcept = default;
 	~ToolHistory() override						   = default;
 
-	void					 push(std::shared_ptr<IStroke> tool) override;
+	void					 push(std::shared_ptr<IStroke> stroke) override;
 	void					 pop() override;
 	std::shared_ptr<IStroke> peek() override;
 	[[nodiscard]] std::vector<std::shared_ptr<IStroke>> getHistory() override;

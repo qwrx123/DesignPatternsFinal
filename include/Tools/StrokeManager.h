@@ -21,6 +21,7 @@ class StrokeManager : public IStrokeManager
 	void replaceStrokes(std::vector<std::shared_ptr<IStroke>> new_strokes);
 	void splitEraseWithPath(const std::shared_ptr<IStroke>& eraser_path,
 							float							eraser_radius) override;
+	void removeLastStroke() override;
 
    private:
 	[[nodiscard]] std::vector<std::shared_ptr<IStroke>> cloneStrokes() const;
