@@ -24,6 +24,7 @@ class Import : public IImport
 
    private:
 	bool readTxtFile();
+	bool readBmpFile();
 
 	IFiles::type fileType = IFiles::type::bmp;
 	std::string	 fileName = "DaisyExport";

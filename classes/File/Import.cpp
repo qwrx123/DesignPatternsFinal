@@ -87,3 +87,8 @@ bool Import::readTxtFile()
 
 	return readBytes == importedBuffer.bufferSize;
 }
+
+bool Import::readBmpFile()
+{
+	return false;
+}
