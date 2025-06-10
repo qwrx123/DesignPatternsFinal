@@ -17,6 +17,7 @@ class Layer
 	Layer& operator=(Layer&& other) noexcept = default;
 
 	void addStroke(std::shared_ptr<IStroke> stroke);
+	void setStrokes(std::vector<std::shared_ptr<IStroke>> new_strokes);
 	void clear();
 	[[nodiscard]] const std::vector<std::shared_ptr<IStroke>>& getStrokes() const;
 

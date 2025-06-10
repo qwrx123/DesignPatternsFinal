@@ -2,23 +2,15 @@
 #include "Stroke.h"
 #include <cmath>
 
-BrushTool::BrushTool(Color color, float thickness)
-	: brush_color(color), brush_thickness(thickness), active(false)
-{
-}
-
-BrushTool::BrushTool(std::shared_ptr<IStrokeManager> stroke_manager, Color color, float thickness)
-	: stroke_manager(std::move(stroke_manager)),
-	  brush_color(color),
-	  brush_thickness(thickness),
-	  active(false)
+BrushTool::BrushTool(std::shared_ptr<LayerManager> layer_manager, Color color, float thickness)
+	: layer_manager(std::move(layer_manager)), brush_color(color), brush_thickness(thickness)
 {
 }
 
 BrushTool::~BrushTool() = default;
 
 BrushTool::BrushTool(const BrushTool& other)
-	: stroke_manager(other.stroke_manager),
+	: layer_manager(other.layer_manager),
 	  brush_color(other.brush_color),
 	  brush_thickness(other.brush_thickness),
 	  active(other.active),
@@ -30,25 +22,24 @@ BrushTool& BrushTool::operator=(const BrushTool& other)
 {
 	if (this != &other)
 	{
-		stroke_manager	= other.stroke_manager;
+		layer_manager	= other.layer_manager;
 		brush_color		= other.brush_color;
 		brush_thickness = other.brush_thickness;
 		active			= other.active;
-		current_stroke	= nullptr;	// Reset current stroke
-		drawing			= false;	// Reset drawing state
+		drawing			= false;
+		current_stroke	= nullptr;
 	}
 	return *this;
 }
 
 BrushTool::BrushTool(BrushTool&& other) noexcept
-	: stroke_manager(std::move(other.stroke_manager)),
+	: layer_manager(std::move(other.layer_manager)),
 	  brush_color(other.brush_color),
 	  brush_thickness(other.brush_thickness),
 	  active(other.active),
-	  current_stroke(std::move(other.current_stroke)),
-	  drawing(other.drawing)
+	  drawing(other.drawing),
+	  current_stroke(std::move(other.current_stroke))
 {
-	// Reset the moved-from object
 	other.active  = false;
 	other.drawing = false;
 	other.current_stroke.reset();
@@ -58,14 +49,13 @@ BrushTool& BrushTool::operator=(BrushTool&& other) noexcept
 {
 	if (this != &other)
 	{
-		stroke_manager	= std::move(other.stroke_manager);
+		layer_manager	= std::move(other.layer_manager);
 		brush_color		= other.brush_color;
 		brush_thickness = other.brush_thickness;
 		active			= other.active;
-		current_stroke	= std::move(other.current_stroke);
 		drawing			= other.drawing;
+		current_stroke	= std::move(other.current_stroke);
 
-		// Reset the moved-from object
 		other.active  = false;
 		other.drawing = false;
 		other.current_stroke.reset();
@@ -94,7 +84,7 @@ void BrushTool::endStroke(const Point& end)
 	if (current_stroke)
 	{
 		current_stroke->addPoint(end);
-		stroke_manager->addStroke(current_stroke);
+		layer_manager->getActiveLayer()->addStroke(current_stroke);
 		current_stroke.reset();
 	}
 }

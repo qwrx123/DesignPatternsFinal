@@ -2,13 +2,13 @@
 #define ERASER_TOOL_H
 
 #include "IDrawingTool.h"
-#include "IStrokeManager.h"
+#include "LayerManager.h"
 #include "Stroke.h"
 
 class EraserTool : public IDrawingTool
 {
    public:
-	EraserTool(std::shared_ptr<IStrokeManager> stroke_manager, float thickness);
+	EraserTool(std::shared_ptr<LayerManager> layer_manager, float thickness);
 	~EraserTool() override;
 
 	EraserTool(const EraserTool&)			 = default;
@@ -34,12 +34,20 @@ class EraserTool : public IDrawingTool
 	[[nodiscard]] float getThickness() const override;
 
    private:
-	std::shared_ptr<Stroke>			erase_path;
-	std::shared_ptr<IStrokeManager> stroke_manager;
-	float							eraser_thickness;
-	bool							active		 = false;
-	bool							drawing		 = false;
-	Color							eraser_color = {.r = 1.0F, .g = 1.0F, .b = 1.0F, .a = 0.0F};
+	std::shared_ptr<Stroke>		  erase_path;
+	std::shared_ptr<LayerManager> layer_manager;
+	float						  eraser_thickness;
+	bool						  active	   = false;
+	bool						  drawing	   = false;
+	Color						  eraser_color = {.r = 1.0F, .g = 1.0F, .b = 1.0F, .a = 0.0F};
+
+	void splitEraseWithPath(const std::shared_ptr<IStroke>& eraser_path, float eraser_radius);
+	void replaceStrokes(std::vector<std::shared_ptr<IStroke>> new_strokes);
+	static void isErased(const std::vector<Point>& stroke_pts, size_t i, bool& is_erased,
+						 std::vector<std::shared_ptr<IStroke>>& updated_strokes,
+						 std::vector<Point>&					current_segment,
+						 const std::shared_ptr<IStroke>& eraser_path, float eraser_radius,
+						 const std::shared_ptr<IStroke>& stroke);
 };
 
 #endif	// ERASER_TOOL_H

@@ -6,13 +6,13 @@
 
 #include "CanvasRenderer.h"
 #include "InputManager.h"
-#include "StrokeManager.h"
 #include "ToolManager.h"
 #include "BrushTool.h"
 #include "EraserTool.h"
 #include "MenuBar.h"
 #include "ButtonClass.h"
 #include "TextManager.h"
+#include "LayerManager.h"
 
 const int		  defaultWindowWidth  = 800;
 const int		  defaultWindowHeight = 600;
@@ -52,12 +52,12 @@ int main()
 		return -1;
 	}
 
-	auto renderer	   = std::make_unique<CanvasRenderer>(window);
-	auto strokeManager = std::make_shared<StrokeManager>();
-	auto toolManager   = std::make_shared<ToolManager>();
-	auto inputManager  = std::make_shared<InputManager>();
-	auto menuBar	   = std::make_shared<MenuBar>();
-	auto textManager   = std::make_shared<TextManager>();
+	auto renderer	  = std::make_unique<CanvasRenderer>(window);
+	auto layerManager = std::make_shared<LayerManager>();
+	auto toolManager  = std::make_shared<ToolManager>();
+	auto inputManager = std::make_shared<InputManager>();
+	auto menuBar	  = std::make_shared<MenuBar>();
+	auto textManager  = std::make_shared<TextManager>();
 
 	inputManager->bindToWindow(window);
 	inputManager->registerReceiver(toolManager);
@@ -67,10 +67,10 @@ int main()
 
 	toolManager->registerTool(
 		"brush",
-		std::make_shared<BrushTool>(
-			strokeManager, Color{.r = 0.0F, .g = 0.0F, .b = 0.0F, .a = 1.0F}, defaultThickness));
+		std::make_shared<BrushTool>(layerManager, Color{.r = 0.0F, .g = 0.0F, .b = 0.0F, .a = 1.0F},
+									defaultThickness));
 	toolManager->registerTool("eraser",
-							  std::make_shared<EraserTool>(strokeManager, defaultEraserSize));
+							  std::make_shared<EraserTool>(layerManager, defaultEraserSize));
 
 	textManager->registerTextTool(std::make_shared<Text>(
 		"",
@@ -90,9 +90,12 @@ int main()
 		// begin rendering
 		renderer->beginFrame();
 
-		for (const auto& stroke : strokeManager->getStrokes())
+		for (const auto& layer : layerManager->getAllLayers())
 		{
-			renderer->drawStroke(*stroke);
+			for (const auto& stroke : layer->getStrokes())
+			{
+				renderer->drawStroke(*stroke);
+			}
 		}
 
 		for (const auto& text : textManager->getTexts())
@@ -101,16 +104,13 @@ int main()
 		}
 
 		auto current_tool = toolManager->getActiveTool();
-		if (current_tool)
+		if (toolManager->getActiveToolName() == "brush")
 		{
-			auto brush = std::dynamic_pointer_cast<BrushTool>(current_tool);
-			if (brush)
+			auto brush		 = std::dynamic_pointer_cast<BrushTool>(current_tool);
+			auto live_stroke = brush->getCurrentStroke();
+			if (live_stroke && live_stroke->getPoints().size() >= 2)
 			{
-				auto live_stroke = brush->getCurrentStroke();
-				if (live_stroke && live_stroke->getPoints().size() >= 2)
-				{
-					renderer->drawStroke(*live_stroke);
-				}
+				renderer->drawStroke(*live_stroke);
 			}
 		}
 
