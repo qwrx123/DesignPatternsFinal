@@ -50,6 +50,7 @@ class MenuBar : public IMenu, public IInputReceiver
 	void onMouseButton(MouseButton click, KeyAction action, double x, double y) override;
 	void onKey(int key, KeyAction action) override;
 	void onChar(unsigned int codepoint) override;
+	void onResize(int width, int height) override;
 
 	void setToolPointer(const std::shared_ptr<IToolManager>& ptr);
 	void setTextPointer(const std::shared_ptr<ITextManager>& ptr);

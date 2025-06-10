@@ -33,6 +33,7 @@ class ToolManager : public IToolManager, public IInputReceiver
 	void onMouseButton(MouseButton button, KeyAction action, double x, double y) override;
 	void onKey(int key, KeyAction action) override;
 	void onChar(unsigned int codepoint) override;
+	void onResize(int width, int height) override;
 
    private:
 	std::unordered_map<std::string, std::shared_ptr<IDrawingTool>> tools;
