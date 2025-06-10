@@ -15,7 +15,6 @@ class BrushTool : public IDrawingTool
 	float							brush_thickness;
 	bool							active;
 	bool							drawing = false;
-	ToolHistory						toolHistory;
 
    public:
 	BrushTool(std::shared_ptr<IStrokeManager> stroke_manager, Color color, float thickness);

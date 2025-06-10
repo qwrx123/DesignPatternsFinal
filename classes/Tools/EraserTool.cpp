@@ -109,7 +109,6 @@ void EraserTool::endStroke(const Point& end)
 	{
 		erase_path->addPoint(end);
 		stroke_manager->splitEraseWithPath(erase_path, eraser_thickness);
-		toolHistory.push(erase_path);
 		erase_path = nullptr;
 	}
 }
@@ -161,24 +160,15 @@ float EraserTool::getThickness() const
 
 void EraserTool::undoStroke()
 {
-	if (!stroke_manager->getStrokes().empty() && !toolHistory.isEmpty())
-	{
-		toolHistory.undo();
-		stroke_manager->removeLastStroke();
-		stroke_manager->addStroke(toolHistory.peek());
-	}
+	stroke_manager->undoStroke();
 }
 
 void EraserTool::redoStroke()
 {
-	if (!toolHistory.isLastUndoneEmpty())
-	{
-		toolHistory.redo();
-		stroke_manager->addStroke(toolHistory.peek());
-	}
+	stroke_manager->redoStroke();
 }
 
 ToolHistory EraserTool::getHistory() const
 {
-	return toolHistory;
+	return stroke_manager->getHistory();
 }

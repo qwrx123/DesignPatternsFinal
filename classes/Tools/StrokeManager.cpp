@@ -61,6 +61,7 @@ StrokeManager& StrokeManager::operator=(StrokeManager&& other) noexcept
 void StrokeManager::addStroke(std::shared_ptr<IStroke> stroke)
 {
 	strokes_.push_back(std::move(stroke));
+	History.push(strokes_.back());
 }
 
 const std::vector<std::shared_ptr<IStroke>>& StrokeManager::getStrokes() const
@@ -104,6 +105,7 @@ void StrokeManager::splitEraseWithPath(const std::shared_ptr<IStroke>& eraser_pa
 				new_stroke->addPoint(p);
 			}
 			updated_strokes.push_back(new_stroke);
+			History.push(std::make_shared<Stroke>(*new_stroke));
 		}
 	}
 
@@ -197,4 +199,25 @@ void StrokeManager::removeLastStroke()
 	{
 		strokes_.pop_back();
 	}
+}
+
+void StrokeManager::undoStroke()
+{
+	if (!getStrokes().empty() && !History.isEmpty())
+	{
+		History.undo();
+		removeLastStroke();
+	}
+}
+void StrokeManager::redoStroke()
+{
+	if (!History.isLastUndoneEmpty())
+	{
+		History.redo();
+		addStroke(History.peek());
+	}
+}
+ToolHistory StrokeManager::getHistory() const
+{
+	return History;
 }

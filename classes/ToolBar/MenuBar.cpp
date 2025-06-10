@@ -506,14 +506,14 @@ void MenuBar::onButton(const std::shared_ptr<IButton>& button, const std::string
 	{
 		if (tool->getActiveTool())
 		{
-			tool->redoStroke();
+			tool->undoStroke();
 		}
 	}
 	else if (label == "redo tool")
 	{
 		if (tool->getActiveTool())
 		{
-			tool->undoStroke();
+			tool->redoStroke();
 		}
 	}
 	else

@@ -45,7 +45,6 @@ class EraserTool : public IDrawingTool
 	bool							active		 = false;
 	bool							drawing		 = false;
 	Color							eraser_color = {.r = 1.0F, .g = 1.0F, .b = 1.0F, .a = 0.0F};
-	ToolHistory						toolHistory;
 };
 
 #endif	// ERASER_TOOL_H

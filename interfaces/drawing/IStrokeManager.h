@@ -4,6 +4,7 @@
 #include <memory>
 #include <vector>
 #include "IStroke.h"
+#include "ToolHistory.h"
 
 class IStrokeManager
 {
@@ -21,6 +22,9 @@ class IStrokeManager
 	virtual void splitEraseWithPath(const std::shared_ptr<IStroke>& eraser_path,
 									float							eraser_radius)								  = 0;
 	virtual void removeLastStroke()														  = 0;
+	virtual void undoStroke()															  = 0;
+	virtual void redoStroke()															  = 0;
+	[[nodiscard]] virtual ToolHistory getHistory() const								  = 0;
 };
 
 #endif	// ISTROKEMANAGER_H
