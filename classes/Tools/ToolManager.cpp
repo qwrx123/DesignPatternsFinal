@@ -1,6 +1,9 @@
 #include "ToolManager.h"
 
-ToolManager::ToolManager() : current_tool(nullptr) {}
+ToolManager::ToolManager()
+	: current_tool(nullptr), bounds{.top = 0, .bottom = 0, .left = 0, .right = 0}
+{
+}
 
 ToolManager::~ToolManager() = default;
 
@@ -67,6 +70,16 @@ void ToolManager::endStroke(const Point& end)
 	}
 }
 
+void ToolManager::setBounds(const Bounds& bounds)
+{
+	this->bounds = bounds;
+}
+
+Bounds ToolManager::getBounds()
+{
+	return bounds;
+}
+
 void ToolManager::onMouseMove(double x, double y)
 {
 	if (current_tool && current_tool->isDrawing())
@@ -77,7 +90,7 @@ void ToolManager::onMouseMove(double x, double y)
 
 void ToolManager::onMouseButton(MouseButton button, KeyAction action, double x, double y)
 {
-	if (!current_tool || button != MouseButton::Left)
+	if (!current_tool || button != MouseButton::Left || !bounds.contains(x, y))
 	{
 		return;
 	}
@@ -102,4 +115,10 @@ void ToolManager::onKey(int key, KeyAction action)
 void ToolManager::onChar(unsigned int codepoint)
 {
 	// Optional: handle character input
+}
+
+void ToolManager::onResize(int width, int height)
+{
+	setBounds(Bounds{
+		.top = bounds.top, .bottom = (float) height, .left = bounds.left, .right = (float) width});
 }

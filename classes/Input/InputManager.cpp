@@ -176,6 +176,11 @@ void InputManager::bindToWindow(GLFWwindow* window)
 			if (self->resize_callback)
 			{
 				self->resize_callback(width, height);
+
+				for (auto& receiver : self->receivers)
+				{
+					receiver->onResize(width, height);
+				}
 			}
 		});
 }
