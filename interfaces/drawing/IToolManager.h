@@ -3,6 +3,7 @@
 
 #include "IDrawingTool.h"
 #include "IStroke.h"
+#include "Bounds.h"
 
 class IToolManager
 {
@@ -23,6 +24,9 @@ class IToolManager
 	virtual void beginStroke(const Point& start) = 0;
 	virtual void addPoint(const Point& point)	 = 0;
 	virtual void endStroke(const Point& end)	 = 0;
+
+	virtual void				 setBounds(const Bounds& bounds) = 0;
+	[[nodiscard]] virtual Bounds getBounds()					 = 0;
 };
 
 #endif	// ITOOL_MANAGER_H

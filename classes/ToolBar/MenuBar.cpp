@@ -359,6 +359,11 @@ void MenuBar::onKey(int key, KeyAction action) {}
 
 void MenuBar::onChar(unsigned int codepoint) {}
 
+void MenuBar::onResize(int width, int height)
+{
+	setBounds(Bounds{.top = bounds.top, .bottom = bounds.bottom, .left = bounds.left, .right = (float)width});
+}
+
 void MenuBar::setToolPointer(const std::shared_ptr<IToolManager>& ptr)
 {
 	tool = ptr;
@@ -575,4 +580,6 @@ void MenuBar::sliderLogic(const std::shared_ptr<SliderButton>& slider, const std
 													 .a = value});
 		}
 	}
+
+	setSliderButtonValues();
 }
