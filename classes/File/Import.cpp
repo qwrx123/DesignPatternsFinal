@@ -196,9 +196,13 @@ bool Import::validateBmpHeader(const char* buffer, size_t buffer_size)
 bool Import::validateBmpV1Header(const char* buffer, size_t buffer_size)
 {
 	// Need to reinterpret the buffer to access the BITMAPINFOHEADER
-	// NOLINTNEXTLINE(cppcoreguidelines-pro-type-reinterpret-cast)
+	// NOLINTBEGIN(cppcoreguidelines-pro-type-reinterpret-cast)
+	// NOLINTBEGIN(cppcoreguidelines-pro-bounds-pointer-arithmetic)
 	const auto* infoHeader =
 		reinterpret_cast<const BITMAPINFOHEADER*>(buffer + sizeof(BITMAPFILEHEADER));
+
+	// NOLINTEND(cppcoreguidelines-pro-bounds-pointer-arithmetic)
+	// NOLINTEND(cppcoreguidelines-pro-type-reinterpret-cast)
 
 	if (infoHeader->biSize != sizeof(BITMAPINFOHEADER))
 	{
@@ -207,23 +211,24 @@ bool Import::validateBmpV1Header(const char* buffer, size_t buffer_size)
 
 	if (infoHeader->biPlanes != 1)
 	{
-		return false; 
+		return false;
 	}
 
-	if (infoHeader->biCompression != 0) 
+	if (infoHeader->biCompression != 0)
 	{
-		return false; 
+		return false;
 	}
 
 	if (infoHeader->biBitCount != 24)
 	{
-		return false; 
+		return false;
 	}
 
 	if (infoHeader->biSizeImage != 0 &&
-		infoHeader->biSizeImage + sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER) != buffer_size)
+		infoHeader->biSizeImage + sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER) !=
+			buffer_size)
 	{
-		return false; 
+		return false;
 	}
 
 	return true;

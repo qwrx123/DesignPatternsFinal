@@ -27,7 +27,7 @@ class Import : public IImport
 	bool readBmpFile();
 
 	static bool validateBmpHeader(const char* buffer, size_t buffer_size);
-	bool		validateBmpV1Header(const char* buffer, size_t buffer_size);
+	static bool validateBmpV1Header(const char* buffer, size_t buffer_size);
 	bool		validateBmpV5Header(const char* buffer, size_t buffer_size);
 
 	IFiles::type fileType = IFiles::type::bmp;
