@@ -31,10 +31,8 @@ class MenuBar : public IMenu, public IInputReceiver
 
 	// MenuBar is being implemented as always open
 	[[nodiscard]] bool isOpen() const override;
-	[[nodiscard]] bool isClosed()
-		const override;	 // wait why is there both, isOpen():false == isClosed():true?
-	void open() override;
-	void close() override;
+	void			   open() override;
+	void			   close() override;
 
 	void setDefaultButtons();
 	void addButton(std::shared_ptr<IButton> button) override;
@@ -53,6 +51,7 @@ class MenuBar : public IMenu, public IInputReceiver
 	void onMouseButton(MouseButton click, KeyAction action, double x, double y) override;
 	void onKey(int key, KeyAction action) override;
 	void onChar(unsigned int codepoint) override;
+	void onResize(int width, int height) override;
 
 	void setToolPointer(const std::shared_ptr<IToolManager>& ptr);
 	void setTextPointer(const std::shared_ptr<ITextManager>& ptr);

@@ -36,6 +36,7 @@ class TextManager : public ITextManager, public IInputReceiver
 	void onMouseButton(MouseButton button, KeyAction action, double x, double y) override;
 	void onKey(int key, KeyAction action) override;
 	void onChar(unsigned int codepoint) override;
+	void onResize(int width, int height) override;
 	void setFontSize(int size) override;
 
    private:

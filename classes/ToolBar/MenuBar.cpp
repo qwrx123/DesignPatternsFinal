@@ -114,11 +114,6 @@ bool MenuBar::isOpen() const
 	return true;
 }
 
-bool MenuBar::isClosed() const
-{
-	return false;
-}
-
 void MenuBar::open() {}
 
 void MenuBar::close() {}
@@ -341,7 +336,17 @@ bool MenuBar::showSelectedLabelWhenClosed() const
 
 void MenuBar::setShowSelectedLabelWhenClosed(bool show) {}
 
-void MenuBar::onMouseMove(double x, double y) {}
+void MenuBar::onMouseMove(double x, double y)
+{
+	for (auto& button : buttons) {
+		auto slider = std::dynamic_pointer_cast<SliderButton>(button);
+		if (slider && slider->isPressed()) {
+			std::string label = slider->getLabel();
+			sliderLogic(slider, label, x, y);
+			setSliderButtonValues();
+		}
+	}
+}
 
 void MenuBar::onMouseButton(MouseButton click, KeyAction action, double x, double y)
 {
@@ -355,15 +360,22 @@ void MenuBar::onMouseButton(MouseButton click, KeyAction action, double x, doubl
 			if (action == KeyAction::Press)
 			{
 				std::string label = button->getLabel();
+				button->setPressed(true);
 				onButton(button, label, x, y, itCount);
 			}
 
-			// Change tool color if it's a color button (and not eraser)
-			if (button->getLabel() == "color" && buttons.at(selectedIndex)->getLabel() != "eraser" &&
+			//change tool button color as long as it is not the eraser
+			if (button->isPressed() && button->getLabel() == "color" && buttons.at(selectedIndex)->getLabel() != "eraser" &&
 				action == KeyAction::Release)
 			{
 				buttons.at(selectedIndex)->setColor(button->getColor());
+				setSliderButtonValues();
 			}
+
+			if (action == KeyAction::Release) 
+			{
+				button->setPressed(false);
+		    }
 
 			// Consider clicks on displayLayers or addLayer as "inside dropdown"
 			if (button->getLabel() == "displayLayers" || button->getLabel() == "addLayer")
@@ -398,13 +410,16 @@ void MenuBar::onMouseButton(MouseButton click, KeyAction action, double x, doubl
 		dropdownOpen = false;
 		layerDropdownButtons.clear();
 	}
-
-	setSliderButtonValues();
 }
 
 void MenuBar::onKey(int key, KeyAction action) {}
 
 void MenuBar::onChar(unsigned int codepoint) {}
+
+void MenuBar::onResize(int width, int height)
+{
+	setBounds(Bounds{.top = bounds.top, .bottom = bounds.bottom, .left = bounds.left, .right = (float)width});
+}
 
 void MenuBar::setToolPointer(const std::shared_ptr<IToolManager>& ptr)
 {
@@ -666,4 +681,6 @@ void MenuBar::sliderLogic(const std::shared_ptr<SliderButton>& slider, const std
 													 .a = value});
 		}
 	}
+
+	setSliderButtonValues();
 }
