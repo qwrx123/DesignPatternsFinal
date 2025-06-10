@@ -180,6 +180,11 @@ bool Import::validateBmpHeader(const char* buffer, size_t buffer_size)
 		return false;
 	}
 
+	if (fileHeader->bfOffBits > buffer_size)
+	{
+		return false;
+	}
+
 	if (fileHeader->bfSize != buffer_size)
 	{
 		return false;
@@ -190,7 +195,20 @@ bool Import::validateBmpHeader(const char* buffer, size_t buffer_size)
 
 bool Import::validateBmpV1Header(const char* buffer, size_t buffer_size)
 {
-	return false;
+	// Need to reinterpret the buffer to access the BITMAPINFOHEADER
+	// NOLINTNEXTLINE(cppcoreguidelines-pro-type-reinterpret-cast)
+	const auto* infoHeader =
+		reinterpret_cast<const BITMAPINFOHEADER*>(buffer + sizeof(BITMAPFILEHEADER));
+
+	if (infoHeader->biSize != sizeof(BITMAPINFOHEADER))
+	{
+		return false;
+	}
+
+	if (infoHeader->biBitCount != 24)
+	{
+		return false;  // Only support 24-bit and 32-bit BMP files
+	}
 }
 
 bool Import::validateBmpV5Header(const char* buffer, size_t buffer_size)
