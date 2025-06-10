@@ -205,10 +205,28 @@ bool Import::validateBmpV1Header(const char* buffer, size_t buffer_size)
 		return false;
 	}
 
+	if (infoHeader->biPlanes != 1)
+	{
+		return false; 
+	}
+
+	if (infoHeader->biCompression != 0) 
+	{
+		return false; 
+	}
+
 	if (infoHeader->biBitCount != 24)
 	{
-		return false;  // Only support 24-bit and 32-bit BMP files
+		return false; 
 	}
+
+	if (infoHeader->biSizeImage != 0 &&
+		infoHeader->biSizeImage + sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER) != buffer_size)
+	{
+		return false; 
+	}
+
+	return true;
 }
 
 bool Import::validateBmpV5Header(const char* buffer, size_t buffer_size)
