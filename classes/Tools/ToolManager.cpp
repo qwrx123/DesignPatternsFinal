@@ -90,14 +90,14 @@ void ToolManager::onMouseMove(double x, double y)
 
 void ToolManager::onMouseButton(MouseButton button, KeyAction action, double x, double y)
 {
-	if (!current_tool || button != MouseButton::Left || !bounds.contains(x, y))
+	if (!current_tool || button != MouseButton::Left)
 	{
 		return;
 	}
 
 	Point p = {.x = x, .y = y};
 
-	if (action == KeyAction::Press)
+	if (action == KeyAction::Press && bounds.contains(x, y))
 	{
 		beginStroke(p);
 	}
