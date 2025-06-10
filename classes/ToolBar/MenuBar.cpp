@@ -282,6 +282,26 @@ void MenuBar::setDefaultButtons()
 		black));
 	
 	setSliderButtonValues();
+
+	// Add Layer button
+	addButton(std::make_shared<ButtonClass>(
+    	"addLayer",
+    	Bounds{
+     		.top = bounds.top,
+        	.bottom = midDiv,
+        	.left = buttons.at(buttons.size() - 1)->getBounds().right + 1,
+        	.right = buttons.at(buttons.size() - 1)->getBounds().right + defaultButtonWidth},
+    	black));
+
+	// Layer dropdown menu
+	addButton(std::make_shared<ButtonClass>(
+    	"displayLayers",
+    	Bounds{
+        	.top = bounds.top,
+        	.bottom = midDiv,
+        	.left = buttons.at(buttons.size() - 1)->getBounds().right + 1,
+        	.right = buttons.at(buttons.size() - 1)->getBounds().right + defaultSliderWidth},
+    	gray));
 }
 
 void MenuBar::addButton(std::shared_ptr<IButton> button)
@@ -326,21 +346,57 @@ void MenuBar::onMouseMove(double x, double y) {}
 void MenuBar::onMouseButton(MouseButton click, KeyAction action, double x, double y)
 {
 	int itCount = 0;
+	bool clickedInsideDropdown = false;
+
 	for (auto& button : buttons)
 	{
-		if (button->getBounds().contains(x, y) && action == KeyAction::Press)
+		if (button->getBounds().contains(x, y))
 		{
-			std::string label = button->getLabel();
-			onButton(button, label, x, y, itCount);
-		}
+			if (action == KeyAction::Press)
+			{
+				std::string label = button->getLabel();
+				onButton(button, label, x, y, itCount);
+			}
 
-		//change tool button color as long as it is not the eraser
-		if (button->getBounds().contains(x, y) && button->getLabel() == "color" && buttons.at(selectedIndex)->getLabel() != "eraser" && action == KeyAction::Release)
-		{
-			buttons.at(selectedIndex)->setColor(button->getColor());
+			// Change tool color if it's a color button (and not eraser)
+			if (button->getLabel() == "color" && buttons.at(selectedIndex)->getLabel() != "eraser" &&
+				action == KeyAction::Release)
+			{
+				buttons.at(selectedIndex)->setColor(button->getColor());
+			}
+
+			// Consider clicks on displayLayers or addLayer as "inside dropdown"
+			if (button->getLabel() == "displayLayers" || button->getLabel() == "addLayer")
+			{
+				clickedInsideDropdown = true;
+			}
 		}
 
 		itCount++;
+	}
+
+	// Handle clicks on dropdown layer selection buttons
+	if (dropdownOpen)
+	{
+		for (size_t i = 0; i < layerDropdownButtons.size(); ++i)
+		{
+			auto& btn = layerDropdownButtons[i];
+			if (btn->getBounds().contains(x, y) && action == KeyAction::Press)
+			{
+				layerManager->setActiveLayer(static_cast<int>(i));
+				std::cout << "Layer " << i + 1 << " selected\n";
+				dropdownOpen = false;
+				layerDropdownButtons.clear();
+				clickedInsideDropdown = true; // Still "inside"
+			}
+		}
+	}
+
+	// Close dropdown if click was outside all valid zones
+	if (dropdownOpen && !clickedInsideDropdown)
+	{
+		dropdownOpen = false;
+		layerDropdownButtons.clear();
 	}
 
 	setSliderButtonValues();
@@ -358,6 +414,10 @@ void MenuBar::setToolPointer(const std::shared_ptr<IToolManager>& ptr)
 void MenuBar::setTextPointer(const std::shared_ptr<ITextManager>& ptr)
 {
 	text = ptr;
+}
+
+void MenuBar::setLayerPointer(std::shared_ptr<LayerManager> ptr) {
+	layerManager = std::move(ptr);
 }
 
 std::vector<std::shared_ptr<IButton>> MenuBar::cloneButtons() const
@@ -456,6 +516,46 @@ void MenuBar::onButton(const std::shared_ptr<IButton>& button, const std::string
 		if (sliderButton)
 		{
 			sliderLogic(sliderButton, label, x, y);
+		}
+	}
+	else if (label == "addLayer")
+	{
+    	if (layerManager && layerManager->getAllLayers().size() < layerManager->maxLayers()) {
+        	layerManager->addLayer();
+    	}
+	}
+	else if (label == "displayLayers")
+	{
+		if (dropdownOpen)
+		{
+			layerDropdownButtons.clear();
+			dropdownOpen = false;
+		}
+		else if (layerManager)
+		{
+			layerDropdownButtons.clear();
+			const auto& layers = layerManager->getAllLayers();
+			const float buttonHeight = 25.0F;
+			const float top = bounds.bottom - 50.0F;  // just below dropdown menu
+			float left = button->getBounds().left;
+			float right = button->getBounds().right;
+
+			for (size_t i = 0; i < layers.size(); ++i)
+			{
+				std::string layerName = "Layer " + std::to_string(i + 1);
+				auto layerBtn = std::make_shared<ButtonClass>(
+					layerName,
+					Bounds{
+						.top = top + ((float)i * buttonHeight),
+						.bottom = top + (((float)i + 1) * buttonHeight),
+						.left = left,
+						.right = right
+					},
+					gray);
+
+				layerDropdownButtons.push_back(layerBtn);
+			}
+			dropdownOpen = true;
 		}
 	}
 	else

@@ -33,15 +33,16 @@ class LayerManager
 	[[nodiscard]] size_t getActiveLayerIndex() const;
 
 	// Returns max allowed layers
-	static size_t maxLayers()
+	[[nodiscard]] size_t maxLayers() const
 	{
 		return maxNumOfLayers;
 	}
 
    private:
 	std::vector<std::shared_ptr<Layer>> layers;
-	size_t								active_layer_index = 0;
-	static constexpr size_t				maxNumOfLayers	   = 5;
+	size_t								active_layer_index	   = 0;
+	static constexpr size_t				kDefaultMaxNumOfLayers = 5;	 // this is so stupid
+	size_t								maxNumOfLayers		   = kDefaultMaxNumOfLayers;
 };
 
 #endif	// LAYER_MANAGER_H

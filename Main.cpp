@@ -80,6 +80,7 @@ int main()
 	menuBar->setBounds(Bounds(0, defaultMenuBarHeight, 0, static_cast<float>(INT_MAX)));
 	menuBar->setToolPointer(toolManager);
 	menuBar->setTextPointer(textManager);
+	menuBar->setLayerPointer(layerManager);
 	menuBar->setDefaultButtons();
 
 	while (glfwWindowShouldClose(window) == 0)
@@ -127,6 +128,11 @@ int main()
 			{
 				renderer->drawButton(*button);
 			}
+		}
+
+		for (const auto& dropdown : menuBar->layerDropdownButtons)
+		{
+			renderer->drawButton(*dropdown);
 		}
 
 		renderer->endFrame();

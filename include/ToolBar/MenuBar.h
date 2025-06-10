@@ -11,6 +11,7 @@
 #include "IInputReceiver.h"
 #include "IToolManager.h"
 #include "ITextManager.h"
+#include "LayerManager.h"
 
 class MenuBar : public IMenu, public IInputReceiver
 {
@@ -55,6 +56,9 @@ class MenuBar : public IMenu, public IInputReceiver
 
 	void setToolPointer(const std::shared_ptr<IToolManager>& ptr);
 	void setTextPointer(const std::shared_ptr<ITextManager>& ptr);
+	void setLayerPointer(std::shared_ptr<LayerManager> ptr);
+
+	std::vector<std::shared_ptr<IButton>> layerDropdownButtons;
 
    private:
 	std::string							  label;
@@ -63,6 +67,9 @@ class MenuBar : public IMenu, public IInputReceiver
 	std::shared_ptr<IToolManager>		  tool;
 	std::shared_ptr<ITextManager>		  text;
 	int									  selectedIndex = 0;
+
+	std::shared_ptr<LayerManager> layerManager;
+	bool						  dropdownOpen = false;
 
 	float halfHeight	= 0;
 	float quarterHeight = 0;
