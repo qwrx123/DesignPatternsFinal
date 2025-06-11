@@ -269,13 +269,30 @@ void CanvasRenderer::resize(int width, int height)
 	glLoadIdentity();
 }
 
-bufferStruct CanvasRenderer::exportCanvas()
+/// @brief Used to export the pixels of the canvas from within the bounding box.
+/// @param boundingBox The bounding box that defines the area to export.
+/// @note If right <= left or bottom <= top, then the bounding box goes to the edge of the canvas.
+/// @return A bufferStruct containing the pixel data of the canvas.
+bufferStruct CanvasRenderer::exportCanvas(Bounds boundingBox)
 {
 	bufferStruct canvasBuffer;
 
 	int width  = 0;
 	int height = 0;
 	glfwGetFramebufferSize(window_, &width, &height);
+
+	if (boundingBox.left >= boundingBox.right)
+	{
+		boundingBox.right = static_cast<float>(width);
+	}
+
+	if (boundingBox.top >= boundingBox.bottom)
+	{
+		boundingBox.bottom = static_cast<float>(height);
+	}
+
+	int boxWidth  = static_cast<int>(boundingBox.right - boundingBox.left);
+	int boxHeight = static_cast<int>(boundingBox.bottom - boundingBox.top);
 
 	// RGBA format size
 	canvasBuffer.bufferSize = static_cast<size_t>(width) * static_cast<size_t>(height) * 4;
@@ -294,30 +311,38 @@ bufferStruct CanvasRenderer::exportCanvas()
 #else
 	glReadBuffer(GL_BACK);
 #endif
-	glReadPixels(0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, canvasBuffer.bufferLocation.get());
+	glReadPixels(boundingBox.left, height - boundingBox.bottom, boxWidth, boxHeight, GL_RGBA,
+				 GL_UNSIGNED_BYTE, canvasBuffer.bufferLocation.get());
 
 	std::vector<char> scanLine(width * pixelSize);
 	char*			  scanLineBuff = scanLine.data();
 	// Flip the image vertically
-	for (size_t y = 0; y < static_cast<size_t>(height) / 2; ++y)
+	for (size_t y = 0; y < static_cast<size_t>(boxHeight) / 2; ++y)
 	{
-		size_t topRowOffset	   = y * width * pixelSize;
-		size_t bottomRowOffset = (height - 1 - y) * width * pixelSize;
+		size_t topRowOffset	   = y * boxWidth * pixelSize;
+		size_t bottomRowOffset = (boxHeight - 1 - y) * boxWidth * pixelSize;
 
 		// Working with raw memory means we need to be careful with pointer arithmetic
 		// NOLINTBEGIN(cppcoreguidelines-pro-bounds-pointer-arithmetic)
-		std::memcpy(scanLineBuff, pixelData + topRowOffset, width * pixelSize);
-		std::memcpy(pixelData + topRowOffset, pixelData + bottomRowOffset, width * pixelSize);
-		std::memcpy(pixelData + bottomRowOffset, scanLineBuff, width * pixelSize);
+		std::memcpy(scanLineBuff, pixelData + topRowOffset, boxWidth * pixelSize);
+		std::memcpy(pixelData + topRowOffset, pixelData + bottomRowOffset, boxWidth * pixelSize);
+		std::memcpy(pixelData + bottomRowOffset, scanLineBuff, boxWidth * pixelSize);
 		// NOLINTEND(cppcoreguidelines-pro-bounds-pointer-arithmetic)
 	}
 
 	return std::move(canvasBuffer);
 }
 
-bool CanvasRenderer::exportBitmap(std::string fileName, std::string fileLocation)
+/// @brief Used to export a bitmap from within the bounding box.
+/// @param fileName Name of the file to export.
+/// @param fileLocation Location where the file will be exported.
+/// @param boundingBox The bounding box that defines the area to export.
+/// @note If right <= left or bottom <= top, then the bounding box goes to the edge of the canvas.
+/// @return True if the export was successful, false otherwise.
+bool CanvasRenderer::exportBitmap(std::string fileName, std::string fileLocation,
+								  Bounds boundingBox)
 {
-	bufferStruct canvasBuffer = exportCanvas();
+	bufferStruct canvasBuffer = exportCanvas(boundingBox);
 
 	if (!canvasBuffer.bufferLocation || canvasBuffer.bufferSize == 0)
 	{
@@ -329,6 +354,19 @@ bool CanvasRenderer::exportBitmap(std::string fileName, std::string fileLocation
 	int width  = 0;
 	int height = 0;
 	glfwGetFramebufferSize(window_, &width, &height);
+
+	if (boundingBox.left >= boundingBox.right)
+	{
+		boundingBox.right = static_cast<float>(width);
+	}
+
+	if (boundingBox.top >= boundingBox.bottom)
+	{
+		boundingBox.bottom = static_cast<float>(height);
+	}
+
+	width  = static_cast<int>(boundingBox.right - boundingBox.left);
+	height = static_cast<int>(boundingBox.bottom - boundingBox.top);
 
 	imageInfo.width	 = width;
 	imageInfo.height = height;

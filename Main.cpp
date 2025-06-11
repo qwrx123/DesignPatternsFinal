@@ -126,6 +126,7 @@ int main()
 			if (button->getLabel() == "export" && button->isPressed())
 			{
 				exportCanvas = true;
+				button->setPressed(false);
 			}
 			if (button->getLabel() == "size" || button->getLabel() == "red" ||
 				button->getLabel() == "green" || button->getLabel() == "blue" ||
@@ -149,7 +150,7 @@ int main()
 			std::string fileLocation = FileLocation::getDownloadLocation();
 			std::string fileName	 = "DaisyExport";
 
-			renderer->exportBitmap(fileName, fileLocation);
+			renderer->exportBitmap(fileName, fileLocation, {menuBar->getBounds().bottom, 0, 0, 0});
 			std::cout << "Canvas exported to: " << fileLocation << fileName << ".bmp\n";
 		}
 	}
