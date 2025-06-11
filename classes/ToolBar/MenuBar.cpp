@@ -387,22 +387,7 @@ void MenuBar::onMouseButton(MouseButton click, KeyAction action, double x, doubl
 		itCount++;
 	}
 
-	// Handle clicks on dropdown layer selection buttons
-	if (dropdownOpen)
-	{
-		for (size_t i = 0; i < layerDropdownButtons.size(); ++i)
-		{
-			auto& btn = layerDropdownButtons[i];
-			if (btn->getBounds().contains(x, y) && action == KeyAction::Press)
-			{
-				layerManager->setActiveLayer(static_cast<int>(i));
-				std::cout << "Layer " << i + 1 << " selected\n";
-				dropdownOpen = false;
-				layerDropdownButtons.clear();
-				clickedInsideDropdown = true; // Still "inside"
-			}
-		}
-	}
+	handleDropdownButtons(action, x, y, clickedInsideDropdown);
 
 	// Close dropdown if click was outside all valid zones
 	if (dropdownOpen && !clickedInsideDropdown)
@@ -411,6 +396,27 @@ void MenuBar::onMouseButton(MouseButton click, KeyAction action, double x, doubl
 		layerDropdownButtons.clear();
 	}
 }
+
+void MenuBar::handleDropdownButtons(KeyAction action, double x, double y, bool& clickedInsideDropdown)
+{
+	if (!dropdownOpen) 
+	{
+		return;
+	}
+
+	for (size_t i = 0; i < layerDropdownButtons.size(); ++i)
+	{
+		auto& btn = layerDropdownButtons[i];
+		if (btn->getBounds().contains(x, y) && action == KeyAction::Press)
+		{
+			layerManager->setActiveLayer(static_cast<int>(i));
+			dropdownOpen = false;
+			layerDropdownButtons.clear();
+			clickedInsideDropdown = true;
+		}
+	}
+}
+
 
 void MenuBar::onKey(int key, KeyAction action) {}
 
@@ -541,37 +547,8 @@ void MenuBar::onButton(const std::shared_ptr<IButton>& button, const std::string
 	}
 	else if (label == "displayLayers")
 	{
-		if (dropdownOpen)
-		{
-			layerDropdownButtons.clear();
-			dropdownOpen = false;
-		}
-		else if (layerManager)
-		{
-			layerDropdownButtons.clear();
-			const auto& layers = layerManager->getAllLayers();
-			const float buttonHeight = 25.0F;
-			const float top = bounds.bottom - 50.0F;  // just below dropdown menu
-			float left = button->getBounds().left;
-			float right = button->getBounds().right;
-
-			for (size_t i = 0; i < layers.size(); ++i)
-			{
-				std::string layerName = "Layer " + std::to_string(i + 1);
-				auto layerBtn = std::make_shared<ButtonClass>(
-					layerName,
-					Bounds{
-						.top = top + ((float)i * buttonHeight),
-						.bottom = top + (((float)i + 1) * buttonHeight),
-						.left = left,
-						.right = right
-					},
-					gray);
-
-				layerDropdownButtons.push_back(layerBtn);
-			}
-			dropdownOpen = true;
-		}
+		dropdownOpen = !dropdownOpen;
+		layerDropdownButtons.clear();
 	}
 	else
 	{
@@ -683,4 +660,49 @@ void MenuBar::sliderLogic(const std::shared_ptr<SliderButton>& slider, const std
 	}
 
 	setSliderButtonValues();
+}
+
+void MenuBar::rebuildLayerDropdownButtons()
+{
+	if (!dropdownOpen || !layerManager) 
+	{
+		return;
+	}
+
+	layerDropdownButtons.clear();
+	const auto& layers = layerManager->getAllLayers();
+	const float buttonHeight = 25.0F;
+	const float top = bounds.bottom - 50.0F;
+
+	auto dropdownBtn = std::ranges::find_if(buttons.begin(), buttons.end(), [](const auto& b) {
+		return b->getLabel() == "displayLayers";
+	});
+
+	if (dropdownBtn == buttons.end()) 
+	{
+		return;
+	}
+
+	float left = (*dropdownBtn)->getBounds().left;
+	float right = (*dropdownBtn)->getBounds().right;
+
+	for (size_t i = 0; i < layers.size(); ++i)
+	{
+		std::string layerName = "Layer " + std::to_string(i + 1);
+		auto layerBtn = std::make_shared<ButtonClass>(
+			layerName,
+			Bounds{
+				.top = top + ((float)i * buttonHeight),
+				.bottom = top + (((float)i + 1) * buttonHeight),
+				.left = left,
+				.right = right
+			},
+			gray);
+
+		layerDropdownButtons.push_back(layerBtn);
+	}
+}
+
+const std::vector<std::shared_ptr<IButton>>& MenuBar::getLayerDropdownButtons() const {
+	return layerDropdownButtons;
 }

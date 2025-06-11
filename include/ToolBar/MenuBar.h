@@ -57,7 +57,9 @@ class MenuBar : public IMenu, public IInputReceiver
 	void setTextPointer(const std::shared_ptr<ITextManager>& ptr);
 	void setLayerPointer(std::shared_ptr<LayerManager> ptr);
 
-	std::vector<std::shared_ptr<IButton>> layerDropdownButtons;
+	[[nodiscard]] const std::vector<std::shared_ptr<IButton>>& getLayerDropdownButtons() const;
+	void													   rebuildLayerDropdownButtons();
+	void handleDropdownButtons(KeyAction action, double x, double y, bool& clickedInsideDropdown);
 
    private:
 	std::string							  label;
@@ -67,8 +69,9 @@ class MenuBar : public IMenu, public IInputReceiver
 	std::shared_ptr<ITextManager>		  text;
 	int									  selectedIndex = 0;
 
-	std::shared_ptr<LayerManager> layerManager;
-	bool						  dropdownOpen = false;
+	std::shared_ptr<LayerManager>		  layerManager;
+	bool								  dropdownOpen = false;
+	std::vector<std::shared_ptr<IButton>> layerDropdownButtons;
 
 	float halfHeight	= 0;
 	float quarterHeight = 0;

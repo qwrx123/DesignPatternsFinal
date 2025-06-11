@@ -135,10 +135,11 @@ int main()
 			}
 		}
 
-		for (const auto& dropdown : menuBar->layerDropdownButtons)
+		for (const auto& dropdown : menuBar->getLayerDropdownButtons())
 		{
 			renderer->drawButton(*dropdown);
 		}
+		menuBar->rebuildLayerDropdownButtons();
 
 		renderer->endFrame();
 		inputManager->endFrame();
