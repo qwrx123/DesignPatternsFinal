@@ -3,7 +3,6 @@ add_library(
     SHARED
     TextHistory.cpp
     ToolHistory.cpp
-    History.cpp
 )
 
 find_package(glfw3 3.3 REQUIRED)

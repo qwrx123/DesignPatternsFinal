@@ -114,8 +114,8 @@ void StrokeManager::splitEraseWithPath(const std::shared_ptr<IStroke>& eraser_pa
 			updated_strokes.push_back(new_stroke);
 		}
 	}
-
 	replaceStrokes(std::move(updated_strokes));
+	eraserHistory.push(strokes_);
 }
 
 std::vector<std::shared_ptr<IStroke>> StrokeManager::cloneStrokes() const
