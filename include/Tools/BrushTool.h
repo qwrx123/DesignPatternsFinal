@@ -3,7 +3,7 @@
 
 #include "IDrawingTool.h"
 #include "IStrokeManager.h"
-#include "ToolHistory.h"
+#include "History.h"
 #include "Stroke.h"
 
 class BrushTool : public IDrawingTool
@@ -46,9 +46,9 @@ class BrushTool : public IDrawingTool
 	void				setThickness(float thickness) override;
 	[[nodiscard]] float getThickness() const override;
 
-	void		undoStroke() override;
-	void		redoStroke() override;
-	ToolHistory getHistory() const;
+	void							  undoStroke() override;
+	void							  redoStroke() override;
+	History<std::shared_ptr<IStroke>> getHistory() const;
 };
 
 #endif	// BRUSHTOOL_H

@@ -8,6 +8,7 @@ add_subdirectory(Tools)
 add_subdirectory(Rendering)
 add_subdirectory(Input)
 add_subdirectory(ToolBar)
+add_subdirectory(File)
 add_subdirectory(Canvas)
 
 find_package(OpenGL REQUIRED)

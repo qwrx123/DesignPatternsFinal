@@ -6,6 +6,7 @@
 #include "IStroke.h"
 #include "IButton.h"
 #include "IMenu.h"
+#include "IFiles.h"
 
 class ICanvasRenderer
 {
@@ -16,6 +17,10 @@ class ICanvasRenderer
 	ICanvasRenderer& operator=(const ICanvasRenderer&) = default;
 	ICanvasRenderer(ICanvasRenderer&&)				   = default;
 	ICanvasRenderer& operator=(ICanvasRenderer&&)	   = default;
+
+	virtual bufferStruct exportCanvas()												  = 0;
+	virtual bool		 exportBitmap(std::string fileName, std::string fileLocation) = 0;
+	virtual std::pair<float, float> getWindowDPI()									  = 0;
 
 	// Called once per frame
 	virtual void beginFrame()					   = 0;

@@ -1,7 +1,7 @@
 set(FILE_LIST
-    TextHistory.h
-    ToolHistory.h
-    History.h
+    Export.h
+    FileLocation.h
+    Import.h
 )
 
 registerFilesToFormat(FILES ${FILE_LIST})

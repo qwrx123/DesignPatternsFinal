@@ -25,21 +25,7 @@ add_executable(projectTests
     TextTest.cpp
     TextHistoryTest.cpp
     ToolHistoryTest.cpp
-
-    ${CMAKE_SOURCE_DIR}/classes/Tools/ToolManager.cpp
-    ${CMAKE_SOURCE_DIR}/classes/Tools/BrushTool.cpp
-    ${CMAKE_SOURCE_DIR}/classes/Tools/Stroke.cpp
-    ${CMAKE_SOURCE_DIR}/classes/Tools/StrokeManager.cpp
-    ${CMAKE_SOURCE_DIR}/classes/Tools/EraserTool.cpp
-
-    ${CMAKE_SOURCE_DIR}/classes/Rendering/CanvasRenderer.cpp
-
-    ${CMAKE_SOURCE_DIR}/classes/TextClass/Text.cpp
-    ${CMAKE_SOURCE_DIR}/classes/TextClass/TextManager.cpp
-    ${CMAKE_SOURCE_DIR}/classes/TextClass/TextBox.cpp
-
-    ${CMAKE_SOURCE_DIR}/classes/Canvas/TextHistory.cpp
-    ${CMAKE_SOURCE_DIR}/classes/Canvas/ToolHistory.cpp
+    FileTests.cpp
 )
 
 target_include_directories(projectTests PRIVATE ${PROJECT_COMMON_INCLUDE_DIRS} ${FREETYPE_INCLUDE_DIRS})
@@ -48,6 +34,13 @@ target_link_libraries(projectTests
     PRIVATE
     ${GLEW_LIBRARIES}
     TextClass
+    File
+    Input
+    Rendering
+    ToolBar
+    Tools
+    WindowClass
+    Canvas
     glfw
     GLEW::GLEW
     OpenGL::GL

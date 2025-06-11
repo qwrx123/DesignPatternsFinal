@@ -1,5 +1,6 @@
 #include "StrokeManager.h"
 #include "Stroke.h"
+#include "History.h"
 #include <cassert>
 #include <cmath>
 
@@ -61,7 +62,11 @@ StrokeManager& StrokeManager::operator=(StrokeManager&& other) noexcept
 void StrokeManager::addStroke(std::shared_ptr<IStroke> stroke)
 {
 	strokes_.push_back(std::move(stroke));
-	History.push(strokes_.back());
+	if (!strokes_.empty())
+	{
+		auto cloned = std::make_shared<Stroke>(*std::dynamic_pointer_cast<Stroke>(strokes_.back()));
+		brushHistory.push(cloned);
+	}
 }
 
 const std::vector<std::shared_ptr<IStroke>>& StrokeManager::getStrokes() const
@@ -82,6 +87,8 @@ void StrokeManager::replaceStrokes(std::vector<std::shared_ptr<IStroke>> new_str
 void StrokeManager::splitEraseWithPath(const std::shared_ptr<IStroke>& eraser_path,
 									   float						   eraser_radius)
 {
+	auto clonedStrokes = cloneStrokes();
+	eraserHistory.push(clonedStrokes);
 	std::vector<std::shared_ptr<IStroke>> updated_strokes;
 
 	// For each existing stroke
@@ -105,7 +112,6 @@ void StrokeManager::splitEraseWithPath(const std::shared_ptr<IStroke>& eraser_pa
 				new_stroke->addPoint(p);
 			}
 			updated_strokes.push_back(new_stroke);
-			History.push(std::make_shared<Stroke>(*new_stroke));
 		}
 	}
 
@@ -203,21 +209,53 @@ void StrokeManager::removeLastStroke()
 
 void StrokeManager::undoStroke()
 {
-	if (!getStrokes().empty() && !History.isEmpty())
+	if (!getStrokes().empty() && !brushHistory.isEmpty())
 	{
-		History.undo();
+		brushHistory.undo();
 		removeLastStroke();
 	}
 }
 void StrokeManager::redoStroke()
 {
-	if (!History.isLastUndoneEmpty())
+	if (!brushHistory.isLastUndoneEmpty())
 	{
-		History.redo();
-		addStroke(History.peek());
+		brushHistory.redo();
+		reAddStroke(brushHistory.peek());
 	}
 }
-ToolHistory StrokeManager::getHistory() const
+
+void StrokeManager::reAddStroke(std::shared_ptr<IStroke> stroke)
 {
-	return History;
+	strokes_.push_back(std::move(stroke));
+}
+
+void StrokeManager::undoErase()
+{
+	if (!eraserHistory.isEmpty())
+	{
+		eraserHistory.undo();
+		if (!eraserHistory.isEmpty())
+		{
+			replaceStrokes(eraserHistory.peek());
+		}
+	}
+}
+
+void StrokeManager::redoErase()
+{
+	if (!eraserHistory.isLastUndoneEmpty())
+	{
+		eraserHistory.redo();
+		replaceStrokes(eraserHistory.peek());
+	}
+}
+
+History<std::shared_ptr<IStroke>> StrokeManager::getBrushHistory()
+{
+	return brushHistory;
+}
+
+History<std::vector<std::shared_ptr<IStroke>>> StrokeManager::getEraserHistory()
+{
+	return eraserHistory;
 }

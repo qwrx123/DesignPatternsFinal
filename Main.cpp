@@ -65,6 +65,10 @@ int main()
 	inputManager->registerReceiver(textManager);
 	inputManager->setResizeCallback([&](int w, int h) { CanvasRenderer::resize(w, h); });
 
+	toolManager->setBounds(Bounds{.top	  = defaultMenuBarHeight,
+								  .bottom = defaultWindowHeight,
+								  .left	  = 0,
+								  .right  = defaultWindowWidth});
 	toolManager->registerTool(
 		"brush",
 		std::make_shared<BrushTool>(
@@ -77,7 +81,8 @@ int main()
 		Bounds(defaultFontSize + defaultMenuBarHeight, defaultWindowHeight, 0, defaultWindowWidth),
 		"Delius", defaultFontSize, Color{.r = 0.0F, .g = 0.0F, .b = 0.0F, .a = 1.0F}, true));
 
-	menuBar->setBounds(Bounds(0, defaultMenuBarHeight, 0, static_cast<float>(INT_MAX)));
+	menuBar->setBounds(
+		Bounds{.top = 0, .bottom = defaultMenuBarHeight, .left = 0, .right = defaultWindowWidth});
 	menuBar->setToolPointer(toolManager);
 	menuBar->setTextPointer(textManager);
 	menuBar->setDefaultButtons();

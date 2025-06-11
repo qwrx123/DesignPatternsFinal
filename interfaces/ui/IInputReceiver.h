@@ -28,6 +28,7 @@ class IInputReceiver
 	virtual void onMouseButton(MouseButton button, KeyAction action, double x, double y) = 0;
 	virtual void onKey(int key, KeyAction action)										 = 0;
 	virtual void onChar(unsigned int codepoint)											 = 0;
+	virtual void onResize(int width, int height)										 = 0;
 };
 
 #endif	// IINPUTRECEIVER

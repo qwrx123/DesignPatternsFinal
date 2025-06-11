@@ -168,7 +168,7 @@ void EraserTool::redoStroke()
 	stroke_manager->redoStroke();
 }
 
-ToolHistory EraserTool::getHistory() const
+History<std::vector<std::shared_ptr<IStroke>>> EraserTool::getHistory() const
 {
-	return stroke_manager->getHistory();
+	return stroke_manager->getEraserHistory();
 }

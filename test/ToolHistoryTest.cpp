@@ -5,17 +5,15 @@
 #include "Stroke.h"
 #include "EraserTool.h"
 #include "StrokeManager.h"
-#include "ToolHistory.h"
+#include "History.h"
 
 class ToolHistoryTest : public ::testing::Test {
 protected:
     void SetUp() override 
     {
-        history = std::make_shared<ToolHistory>();
+        history = std::make_shared<History<std::shared_ptr<IStroke>>>();
         brushStrokeManager = std::make_shared<StrokeManager>();
         brush = std::make_shared<BrushTool>(brushStrokeManager, Color{1.0F, 0.0F, 0.0F, 1.0F}, 5.0F);
-        //eraserStrokeManager = std::make_shared<StrokeManager>();
-        //eraser = std::make_shared<EraserTool>(eraserStrokeManager, 3.0F);
         s1 = std::make_shared<Stroke>();
         s2 = std::make_shared<Stroke>();
         s3 = std::make_shared<Stroke>();
@@ -57,18 +55,6 @@ protected:
         history->push(s1);
         history->push(s2);
         history->push(s3);
-
-        /*
-        eraser->beginStroke(p1);
-        eraser->addPoint(p2);
-        eraser->endStroke(p3);
-        eraser->beginStroke(p4);
-        eraser->addPoint(p5);
-        eraser->endStroke(p6);
-        eraser->beginStroke(p7);
-        eraser->addPoint(p8);
-        eraser->endStroke(p9);
-        */
     }
 
     void TearDown() override 
@@ -76,11 +62,9 @@ protected:
 
     }
 
-    std::shared_ptr<ToolHistory> history;
+    std::shared_ptr<History<std::shared_ptr<IStroke>>> history;
     std::shared_ptr<BrushTool> brush;
-    //std::shared_ptr<EraserTool> eraser;
     std::shared_ptr<StrokeManager> brushStrokeManager;
-    //std::shared_ptr<StrokeManager> eraserStrokeManager;
     std::shared_ptr<IStroke> s1;
     std::shared_ptr<IStroke> s2;
     std::shared_ptr<IStroke> s3;
@@ -352,151 +336,26 @@ TEST_F(ToolHistoryTest, BrushHistoryCheck)
     EXPECT_EQ(exp3[2].y, act3[2].y);
 }
 
-/*
-TEST_F(ToolHistoryTest, EraserUndo)
+TEST_F(ToolHistoryTest, UndoAll)
 {
-    eraser->undoStroke();
-    expected = s2;
-    actual = eraser->getHistory().peek();
-    const auto& exp = expected->getPoints();
-    const auto& act = actual->getPoints();
-    ASSERT_EQ(exp.size(), 3);
-    ASSERT_EQ(act.size(), 3);
-    EXPECT_EQ(exp.size(), act.size());
-    EXPECT_EQ(exp[0].x, act[0].x);
-    EXPECT_EQ(exp[0].y, act[0].y);
-    EXPECT_EQ(exp[1].x, act[1].x);
-    EXPECT_EQ(exp[1].y, act[1].y);
-    EXPECT_EQ(exp[2].x, act[2].x);
-    EXPECT_EQ(exp[2].y, act[2].y);
-    actual = eraserStrokeManager->getStrokes().back();
-    const auto& act2 = actual->getPoints();
-    ASSERT_EQ(exp.size(), 3);
-    ASSERT_EQ(act2.size(), 3);
-    EXPECT_EQ(exp.size(), act2.size());
-    EXPECT_EQ(exp[0].x, act2[0].x);
-    EXPECT_EQ(exp[0].y, act2[0].y);
-    EXPECT_EQ(exp[1].x, act2[1].x);
-    EXPECT_EQ(exp[1].y, act2[1].y);
-    EXPECT_EQ(exp[2].x, act2[2].x);
-    EXPECT_EQ(exp[2].y, act2[2].y);
+    brush->undoStroke();
+    brush->undoStroke();
+    brush->undoStroke();
+    actual = brush->getHistory().peek();
+    expected = nullptr;
+    EXPECT_EQ(actual, expected);
 }
 
-TEST_F(ToolHistoryTest, EraserRedo)
+TEST_F(ToolHistoryTest, RedoAll)
 {
-    eraser->undoStroke();
-    eraser->undoStroke();
-    eraser->redoStroke();
-    expected = s2;
-    actual = eraser->getHistory().peek();
-    const auto& exp = expected->getPoints();
-    const auto& act = actual->getPoints();
-    ASSERT_EQ(exp.size(), 3);
-    ASSERT_EQ(act.size(), 3);
-    EXPECT_EQ(exp.size(), act.size());
-    EXPECT_EQ(exp[0].x, act[0].x);
-    EXPECT_EQ(exp[0].y, act[0].y);
-    EXPECT_EQ(exp[1].x, act[1].x);
-    EXPECT_EQ(exp[1].y, act[1].y);
-    EXPECT_EQ(exp[2].x, act[2].x);
-    EXPECT_EQ(exp[2].y, act[2].y);
-    actual = eraserStrokeManager->getStrokes().back();
-    const auto& act2 = actual->getPoints();
-    ASSERT_EQ(exp.size(), 3);
-    ASSERT_EQ(act2.size(), 3);
-    EXPECT_EQ(exp.size(), act2.size());
-    EXPECT_EQ(exp[0].x, act2[0].x);
-    EXPECT_EQ(exp[0].y, act2[0].y);
-    EXPECT_EQ(exp[1].x, act2[1].x);
-    EXPECT_EQ(exp[1].y, act2[1].y);
-    EXPECT_EQ(exp[2].x, act2[2].x);
-    EXPECT_EQ(exp[2].y, act2[2].y);
-}
-
-TEST_F(ToolHistoryTest, DoubleEraserUndo)
-{
-    eraser->undoStroke();
-    eraser->undoStroke();
-    expected = s1;
-    actual = eraser->getHistory().peek();
-    const auto& exp = expected->getPoints();
-    const auto& act = actual->getPoints();
-    ASSERT_EQ(exp.size(), 3);
-    ASSERT_EQ(act.size(), 3);
-    EXPECT_EQ(exp.size(), act.size());
-    EXPECT_EQ(exp[0].x, act[0].x);
-    EXPECT_EQ(exp[0].y, act[0].y);
-    EXPECT_EQ(exp[1].x, act[1].x);
-    EXPECT_EQ(exp[1].y, act[1].y);
-    EXPECT_EQ(exp[2].x, act[2].x);
-    EXPECT_EQ(exp[2].y, act[2].y);
-    actual = eraserStrokeManager->getStrokes().back();
-    const auto& act2 = actual->getPoints();
-    ASSERT_EQ(exp.size(), 3);
-    ASSERT_EQ(act2.size(), 3);
-    EXPECT_EQ(exp.size(), act2.size());
-    EXPECT_EQ(exp[0].x, act2[0].x);
-    EXPECT_EQ(exp[0].y, act2[0].y);
-    EXPECT_EQ(exp[1].x, act2[1].x);
-    EXPECT_EQ(exp[1].y, act2[1].y);
-    EXPECT_EQ(exp[2].x, act2[2].x);
-    EXPECT_EQ(exp[2].y, act2[2].y);
-}
-
-TEST_F(ToolHistoryTest, DoubleEraserRedo)
-{
-    eraser->undoStroke();
-    eraser->undoStroke();
-    eraser->undoStroke();
-    eraser->redoStroke();
-    eraser->redoStroke();
-    expected = s2;
-    actual = eraser->getHistory().peek();
-    const auto& exp = expected->getPoints();
-    const auto& act = actual->getPoints();
-    ASSERT_EQ(exp.size(), 3);
-    ASSERT_EQ(act.size(), 3);
-    EXPECT_EQ(exp.size(), act.size());
-    EXPECT_EQ(exp[0].x, act[0].x);
-    EXPECT_EQ(exp[0].y, act[0].y);
-    EXPECT_EQ(exp[1].x, act[1].x);
-    EXPECT_EQ(exp[1].y, act[1].y);
-    EXPECT_EQ(exp[2].x, act[2].x);
-    EXPECT_EQ(exp[2].y, act[2].y);
-    actual = eraserStrokeManager->getStrokes().back();
-    const auto& act2 = actual->getPoints();
-    ASSERT_EQ(exp.size(), 3);
-    ASSERT_EQ(act2.size(), 3);
-    EXPECT_EQ(exp.size(), act2.size());
-    EXPECT_EQ(exp[0].x, act2[0].x);
-    EXPECT_EQ(exp[0].y, act2[0].y);
-    EXPECT_EQ(exp[1].x, act2[1].x);
-    EXPECT_EQ(exp[1].y, act2[1].y);
-    EXPECT_EQ(exp[2].x, act2[2].x);
-    EXPECT_EQ(exp[2].y, act2[2].y);
-}
-
-TEST_F(ToolHistoryTest, EraserUndoneCheck)
-{
-    eraser->undoStroke();
-    eraser->undoStroke();
-    eraser->undoStroke();
-    expected = s1;
-    actual = eraser->getHistory().peekLastUndone();
-    const auto& exp = expected->getPoints();
-    const auto& act = actual->getPoints();
-    ASSERT_EQ(exp.size(), 3);
-    ASSERT_EQ(act.size(), 3);
-    EXPECT_EQ(exp.size(), act.size());
-    EXPECT_EQ(exp[0].x, act[0].x);
-    EXPECT_EQ(exp[0].y, act[0].y);
-    EXPECT_EQ(exp[1].x, act[1].x);
-    EXPECT_EQ(exp[1].y, act[1].y);
-    EXPECT_EQ(exp[2].x, act[2].x);
-    EXPECT_EQ(exp[2].y, act[2].y);
-    eraser->redoStroke();
-    expected = s2;
-    actual = eraser->getHistory().peekLastUndone();
+    brush->undoStroke();
+    brush->undoStroke();
+    brush->undoStroke();
+    brush->redoStroke();
+    brush->redoStroke();
+    brush->redoStroke();
+    actual = brush->getHistory().peek();
+    expected = s3;
     const auto& exp2 = expected->getPoints();
     const auto& act2 = actual->getPoints();
     ASSERT_EQ(exp2.size(), 3);
@@ -508,64 +367,29 @@ TEST_F(ToolHistoryTest, EraserUndoneCheck)
     EXPECT_EQ(exp2[1].y, act2[1].y);
     EXPECT_EQ(exp2[2].x, act2[2].x);
     EXPECT_EQ(exp2[2].y, act2[2].y);
-    eraser->redoStroke();
-    expected = s3;
-    actual = eraser->getHistory().peekLastUndone();
-    const auto& exp3 = expected->getPoints();
-    const auto& act3 = actual->getPoints();
-    ASSERT_EQ(exp3.size(), 3);
-    ASSERT_EQ(act3.size(), 3);
-    EXPECT_EQ(exp3.size(), act3.size());
-    EXPECT_EQ(exp3[0].x, act3[0].x);
-    EXPECT_EQ(exp3[0].y, act3[0].y);
-    EXPECT_EQ(exp3[1].x, act3[1].x);
-    EXPECT_EQ(exp3[1].y, act3[1].y);
-    EXPECT_EQ(exp3[2].x, act3[2].x);
-    EXPECT_EQ(exp3[2].y, act3[2].y);
+    actual = brush->getHistory().peekLastUndone();
+    expected = nullptr;
+    EXPECT_EQ(actual, expected);
 }
 
-TEST_F(ToolHistoryTest, EraserHistoryCheck)
-{
-    expected = s3;
-    actual = eraser->getHistory().peek();
-    const auto& exp = expected->getPoints();
-    const auto& act = actual->getPoints();
-    ASSERT_EQ(exp.size(), 3);
-    ASSERT_EQ(act.size(), 3);
-    EXPECT_EQ(exp.size(), act.size());
-    EXPECT_EQ(exp[0].x, act[0].x);
-    EXPECT_EQ(exp[0].y, act[0].y);
-    EXPECT_EQ(exp[1].x, act[1].x);
-    EXPECT_EQ(exp[1].y, act[1].y);
-    EXPECT_EQ(exp[2].x, act[2].x);
-    EXPECT_EQ(exp[2].y, act[2].y);
-    eraser->undoStroke();
-    expected = s2;
-    actual = eraser->getHistory().peek();
-    const auto& exp2 = expected->getPoints();
-    const auto& act2 = actual->getPoints();
-    ASSERT_EQ(exp2.size(), 3);
-    ASSERT_EQ(act2.size(), 3);
-    EXPECT_EQ(exp2.size(), act2.size());
-    EXPECT_EQ(exp2[0].x, act2[0].x);
-    EXPECT_EQ(exp2[0].y, act2[0].y);
-    EXPECT_EQ(exp2[1].x, act2[1].x);
-    EXPECT_EQ(exp2[1].y, act2[1].y);
-    EXPECT_EQ(exp2[2].x, act2[2].x);
-    EXPECT_EQ(exp2[2].y, act2[2].y);
-    eraser->undoStroke();
-    expected = s1;
-    actual = eraser->getHistory().peek();
-    const auto& exp3 = expected->getPoints();
-    const auto& act3 = actual->getPoints();
-    ASSERT_EQ(exp3.size(), 3);
-    ASSERT_EQ(act3.size(), 3);
-    EXPECT_EQ(exp3.size(), act3.size());
-    EXPECT_EQ(exp3[0].x, act3[0].x);
-    EXPECT_EQ(exp3[0].y, act3[0].y);
-    EXPECT_EQ(exp3[1].x, act3[1].x);
-    EXPECT_EQ(exp3[1].y, act3[1].y);
-    EXPECT_EQ(exp3[2].x, act3[2].x);
-    EXPECT_EQ(exp3[2].y, act3[2].y);
+TEST_F(ToolHistoryTest, UndoOnEmpty){
+    brush->undoStroke();
+    brush->undoStroke();
+    brush->undoStroke();
+    EXPECT_TRUE(brush->getHistory().isEmpty());
+    EXPECT_EQ(brush->getHistory().undoneSize(), 3);
+    brush->undoStroke();
+    EXPECT_TRUE(brush->getHistory().isEmpty());
+    EXPECT_EQ(brush->getHistory().undoneSize(), 3);
 }
-*/
+
+TEST_F(ToolHistoryTest, RedoOnEmpty){
+    brush->undoStroke();
+    EXPECT_EQ(brush->getHistory().size(), 2);
+    brush->redoStroke();
+    EXPECT_TRUE(brush->getHistory().isLastUndoneEmpty());
+    EXPECT_EQ(brush->getHistory().size(), 3);
+    brush->redoStroke();
+    EXPECT_TRUE(brush->getHistory().isLastUndoneEmpty());
+    EXPECT_EQ(brush->getHistory().size(), 3);
+}

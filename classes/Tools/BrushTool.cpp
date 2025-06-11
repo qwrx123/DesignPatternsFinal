@@ -153,7 +153,7 @@ void BrushTool::redoStroke()
 	stroke_manager->redoStroke();
 }
 
-ToolHistory BrushTool::getHistory() const
+History<std::shared_ptr<IStroke>> BrushTool::getHistory() const
 {
-	return stroke_manager->getHistory();
+	return stroke_manager->getBrushHistory();
 }

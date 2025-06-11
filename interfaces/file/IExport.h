@@ -1,16 +1,17 @@
 #pragma once
 
 #include "IFiles.h"
+#include <memory>
 
 class IExport : public IFiles
 {
    public:
 	IExport()						   = default;
-	virtual ~IExport()				   = default;
+	~IExport() override				   = default;
 	IExport(const IExport&)			   = default;
 	IExport& operator=(const IExport&) = default;
 	IExport(IExport&&)				   = default;
 	IExport& operator=(IExport&&)	   = default;
 
-	[[nodiscard]] virtual void exportFile(void*, ssize_t) = 0;
+	virtual bool exportFile(bufferStruct, imageInfo) = 0;
 };

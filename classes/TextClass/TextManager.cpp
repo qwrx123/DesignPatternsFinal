@@ -119,7 +119,9 @@ std::vector<std::shared_ptr<IText>> TextManager::copyTexts() const
 }
 
 void TextManager::onMouseMove(double x, double y) {}
+
 void TextManager::onMouseButton(MouseButton button, KeyAction action, double x, double y) {}
+
 void TextManager::onKey(int key, KeyAction action)
 {
 	if (active && (action == KeyAction::Press || action == KeyAction::Repeat))
@@ -142,6 +144,7 @@ void TextManager::onKey(int key, KeyAction action)
 		}
 	}
 }
+
 void TextManager::onChar(unsigned int codepoint)
 {
 	if (active)
@@ -161,6 +164,8 @@ void TextManager::onChar(unsigned int codepoint)
 		}
 	}
 }
+
+void TextManager::onResize(int width, int height) {}
 
 void TextManager::insertTab()
 {
@@ -226,6 +231,7 @@ void TextManager::handleEnter()
 		texts.back()->getContent(), texts.back()->getBounds(), texts.back()->getFontName(),
 		texts.back()->getFontSize(), texts.back()->getColor(), texts.back()->isEditable()));
 }
+
 void TextManager::setFontSize(int size)
 {
 	fontSize = size;

@@ -3,7 +3,7 @@
 
 #include "IDrawingTool.h"
 #include "IStrokeManager.h"
-#include "ToolHistory.h"
+#include "History.h"
 #include "Stroke.h"
 
 class EraserTool : public IDrawingTool
@@ -34,9 +34,9 @@ class EraserTool : public IDrawingTool
 	void				setThickness(float thickness) override;
 	[[nodiscard]] float getThickness() const override;
 
-	void		undoStroke() override;
-	void		redoStroke() override;
-	ToolHistory getHistory() const;
+	void										   undoStroke() override;
+	void										   redoStroke() override;
+	History<std::vector<std::shared_ptr<IStroke>>> getHistory() const;
 
    private:
 	std::shared_ptr<Stroke>			erase_path;
