@@ -70,10 +70,10 @@ int main()
 								  .left	  = 0,
 								  .right  = defaultWindowWidth});
 	toolManager->registerTool(
-		"brush",
+		"Brush",
 		std::make_shared<BrushTool>(layerManager, Color{.r = 0.0F, .g = 0.0F, .b = 0.0F, .a = 1.0F},
 									defaultThickness));
-	toolManager->registerTool("eraser",
+	toolManager->registerTool("Eraser",
 							  std::make_shared<EraserTool>(layerManager, defaultEraserSize));
 
 	textManager->registerTextTool(std::make_shared<Text>(
@@ -110,7 +110,7 @@ int main()
 		}
 
 		auto current_tool = toolManager->getActiveTool();
-		if (toolManager->getActiveToolName() == "brush")
+		if (toolManager->getActiveToolName() == "Brush")
 		{
 			auto brush		 = std::dynamic_pointer_cast<BrushTool>(current_tool);
 			auto live_stroke = brush->getCurrentStroke();
