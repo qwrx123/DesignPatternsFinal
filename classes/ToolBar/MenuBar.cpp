@@ -132,7 +132,7 @@ void MenuBar::setDefaultButtons()
 			   .bottom = midDiv,
 			   .left   = buttons.at(buttons.size() - 1)->getBounds().right + 1,
 			   .right  = buttons.at(buttons.size() - 1)->getBounds().right + defaultButtonWidth},
-		black));
+		white));
 	addButton(std::make_shared<ButtonClass>(
 		"eraser",
 		Bounds{.top	   = midDiv,
@@ -147,7 +147,7 @@ void MenuBar::setDefaultButtons()
 			   .bottom = midDiv,
 			   .left   = buttons.at(buttons.size() - 1)->getBounds().right + 1,
 			   .right  = buttons.at(buttons.size() - 1)->getBounds().right + defaultButtonWidth},
-		black));
+		white));
 
 	// Size slider
 	addButton(std::make_shared<SliderButton>(
@@ -280,17 +280,17 @@ void MenuBar::setDefaultButtons()
 
 	// Add Layer button
 	addButton(std::make_shared<ButtonClass>(
-    	"addLayer",
+    	"Add Layer",
     	Bounds{
      		.top = bounds.top,
         	.bottom = midDiv,
         	.left = buttons.at(buttons.size() - 1)->getBounds().right + 1,
         	.right = buttons.at(buttons.size() - 1)->getBounds().right + defaultButtonWidth},
-    	black));
+    	white));
 
 	// Layer dropdown menu
 	addButton(std::make_shared<ButtonClass>(
-    	"displayLayers",
+    	"Display Layers",
     	Bounds{
         	.top = bounds.top,
         	.bottom = midDiv,
@@ -523,7 +523,7 @@ void MenuBar::onButton(const std::shared_ptr<IButton>& button, const std::string
 		if (text->isTextToolActive())
 		{
 			text->setTextToolInactive();
-			button->setColor(black);
+			button->setColor(white);
 		}
 		else
 		{

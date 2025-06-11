@@ -14,6 +14,7 @@
 static const Color lighterGray			= {.r = 0.8F, .g = 0.8F, .b = 0.8F, .a = 1.0F};
 static const Color lightGray			= {.r = 0.7F, .g = 0.7F, .b = 0.7F, .a = 1.0F};
 static const Color gray					= {.r = 0.5F, .g = 0.5F, .b = 0.5F, .a = 1.0F};
+static const Color black				= {.r = 0.0F, .g = 0.0F, .b = 0.0F, .a = 1.0F};
 static const Color darkGray				= {.r = 0.3F, .g = 0.3F, .b = 0.3F, .a = 1.0F};
 static const Color sliderColor			= {.r = 0.0F, .g = 0.5F, .b = 1.0F, .a = 1.0F};
 static const int   labelSize			= 14;
@@ -101,6 +102,22 @@ void CanvasRenderer::drawButton(const IButton& button)
 	glEnd();
 
 	glDisable(GL_BLEND);
+
+	// Render label text on top:
+	std::string label = button.getLabel();
+
+	// Compute center position of button
+	float centerX = (button.getBounds().left + button.getBounds().right) / 2.0F;
+	float centerY = (button.getBounds().top + button.getBounds().bottom) / 2.0F;
+
+	// Adjust label centering offset (approximate tuning value)
+	float textX = centerX - (static_cast<float>(label.length()) * labelSize) / labelCenteringFactor;
+	float textY = centerY + buttonLabelYOffset;
+
+	if (label != "color")
+	{
+		renderLabel(label, textX, textY, black);
+	}
 }
 
 void CanvasRenderer::drawMenu(const IMenu& menu)
