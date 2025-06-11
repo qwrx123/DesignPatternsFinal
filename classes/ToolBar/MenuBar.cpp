@@ -9,6 +9,7 @@
 const int defaultButtonWidth = 50;
 const int defaultSliderWidth = 100;
 const int sliderMargin = 7;
+const int exportButtonMargin = 100;
 
 const Color black	 = {.r = 0.0F, .g = 0.0F, .b = 0.0F, .a = 1.0F};
 const Color brown = {.r = 0.45F, .g = 0.24F, .b = 0.06F, .a = 1.0F};
@@ -277,6 +278,14 @@ void MenuBar::setDefaultButtons()
 		black));
 	
 	setSliderButtonValues();
+
+	addButton(std::make_shared<ButtonClass>(
+		"export",
+		Bounds{.top	   = midDiv,
+			   .bottom = bounds.bottom,
+			   .left   = buttons.at(buttons.size() - 1)->getBounds().right + 1,
+			   .right  = buttons.at(buttons.size() - 1)->getBounds().right + defaultButtonWidth},
+		gray));
 }
 
 void MenuBar::addButton(std::shared_ptr<IButton> button)

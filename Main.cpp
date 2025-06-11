@@ -13,6 +13,7 @@
 #include "MenuBar.h"
 #include "ButtonClass.h"
 #include "TextManager.h"
+#include "FileLocation.h"
 
 const int		  defaultWindowWidth  = 800;
 const int		  defaultWindowHeight = 600;
@@ -118,10 +119,14 @@ int main()
 				}
 			}
 		}
-
+		bool exportCanvas = false;
 		renderer->drawMenu(*menuBar);
 		for (const auto& button : menuBar->getButtons())
 		{
+			if (button->getLabel() == "export" && button->isPressed())
+			{
+				exportCanvas = true;
+			}
 			if (button->getLabel() == "size" || button->getLabel() == "red" ||
 				button->getLabel() == "green" || button->getLabel() == "blue" ||
 				button->getLabel() == "opacity")
@@ -136,6 +141,17 @@ int main()
 
 		renderer->endFrame();
 		inputManager->endFrame();
+
+		if (exportCanvas)
+		{
+			glFlush();
+			glFinish();
+			std::string fileLocation = FileLocation::getDownloadLocation();
+			std::string fileName	 = "DaisyExport";
+
+			renderer->exportBitmap(fileName, fileLocation);
+			std::cout << "Canvas exported to: " << fileLocation << fileName << ".bmp\n";
+		}
 	}
 
 	glfwDestroyWindow(window);
