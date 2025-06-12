@@ -28,7 +28,6 @@ target_include_directories(Tools
 target_link_libraries(
     Tools
     glfw
-    Canvas
 )
 
 if(WIN32)

@@ -95,7 +95,22 @@ std::shared_ptr<IText> TextManager::getTextAt(double x, double y) const
 
 void TextManager::clearAll()
 {
-	texts.clear();
+	for (size_t i = texts.size(); i-- > 0;)
+	{
+		auto& text = texts.at(i);
+		if (text->isEditable())
+		{
+			if (texts.size() > 1)
+			{
+				removeText(text);
+			}
+			else
+			{
+				text->setContent("");
+			}
+		}
+	}
+	textHistory.clear();
 }
 
 std::vector<std::shared_ptr<IText>> TextManager::copyTexts() const
@@ -272,7 +287,7 @@ void TextManager::redoText()
 	}
 }
 
-TextHistory TextManager::getHistory()
+History<std::shared_ptr<IText>> TextManager::getHistory()
 {
 	return textHistory;
 }

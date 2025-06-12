@@ -1,6 +1,4 @@
 set(FILE_LIST
-    TextHistory.h
-    ToolHistory.h
     History.h
 )
 

@@ -21,6 +21,7 @@ class IHistoryStack
 	virtual void						 pop()			 = 0;
 	[[nodiscard]] virtual T				 peek()			 = 0;
 	[[nodiscard]] virtual std::vector<T> getHistory()	 = 0;
+	virtual void						 clear()		 = 0;
 };
 
 #endif

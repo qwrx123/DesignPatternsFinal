@@ -75,6 +75,12 @@ class MenuBar : public IMenu, public IInputReceiver
 				  double y, int itCount);
 	void sliderLogic(const std::shared_ptr<SliderButton>& slider, const std::string& label,
 					 double x, double y);
+	void onColorButton(const std::shared_ptr<IButton>& button, const std::string& label, double x,
+					   double y, int itCount);
+	void onHistoryButton(const std::shared_ptr<IButton>& button, const std::string& label, double x,
+						 double y, int itCount);
+	void onToolButton(const std::shared_ptr<IButton>& button, const std::string& label, double x,
+					  double y, int itCount);
 };
 
 #endif	// MENU_BAR_H

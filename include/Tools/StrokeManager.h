@@ -27,8 +27,10 @@ class StrokeManager : public IStrokeManager
 	void redoStroke() override;
 	void undoErase() override;
 	void redoErase() override;
-	History<std::shared_ptr<IStroke>>			   getBrushHistory();
-	History<std::vector<std::shared_ptr<IStroke>>> getEraserHistory();
+	History<std::shared_ptr<IStroke>>			   getBrushHistory() override;
+	History<std::vector<std::shared_ptr<IStroke>>> getEraserHistory() override;
+	void										   updateEraserHistory() override;
+	void										   undoAll() override;
 
    private:
 	[[nodiscard]] std::vector<std::shared_ptr<IStroke>> cloneStrokes() const;

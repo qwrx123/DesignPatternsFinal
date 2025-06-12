@@ -40,7 +40,6 @@ target_link_libraries(projectTests
     ToolBar
     Tools
     WindowClass
-    Canvas
     glfw
     GLEW::GLEW
     OpenGL::GL

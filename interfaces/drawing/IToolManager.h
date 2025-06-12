@@ -28,8 +28,9 @@ class IToolManager
 	virtual void				 setBounds(const Bounds& bounds) = 0;
 	[[nodiscard]] virtual Bounds getBounds()					 = 0;
 
-	virtual void undoStroke() = 0;
-	virtual void redoStroke() = 0;
+	virtual void undoStroke()	= 0;
+	virtual void redoStroke()	= 0;
+	virtual void clearStrokes() = 0;
 };
 
 #endif	// ITOOL_MANAGER_H

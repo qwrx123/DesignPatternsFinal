@@ -132,3 +132,8 @@ void ToolManager::redoStroke()
 {
 	current_tool->redoStroke();
 }
+
+void ToolManager::clearStrokes()
+{
+	current_tool->clearStrokes();
+}

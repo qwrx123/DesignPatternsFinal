@@ -157,3 +157,8 @@ History<std::shared_ptr<IStroke>> BrushTool::getHistory() const
 {
 	return stroke_manager->getBrushHistory();
 }
+
+void BrushTool::clearStrokes()
+{
+	stroke_manager->clear();
+}

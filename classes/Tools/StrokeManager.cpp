@@ -87,8 +87,6 @@ void StrokeManager::replaceStrokes(std::vector<std::shared_ptr<IStroke>> new_str
 void StrokeManager::splitEraseWithPath(const std::shared_ptr<IStroke>& eraser_path,
 									   float						   eraser_radius)
 {
-	auto clonedStrokes = cloneStrokes();
-	eraserHistory.push(clonedStrokes);
 	std::vector<std::shared_ptr<IStroke>> updated_strokes;
 
 	// For each existing stroke
@@ -115,7 +113,6 @@ void StrokeManager::splitEraseWithPath(const std::shared_ptr<IStroke>& eraser_pa
 		}
 	}
 	replaceStrokes(std::move(updated_strokes));
-	eraserHistory.push(strokes_);
 }
 
 std::vector<std::shared_ptr<IStroke>> StrokeManager::cloneStrokes() const
@@ -214,6 +211,10 @@ void StrokeManager::undoStroke()
 		brushHistory.undo();
 		removeLastStroke();
 	}
+	else if (!brushHistory.isEmpty())
+	{
+		brushHistory.undo();
+	}
 }
 void StrokeManager::redoStroke()
 {
@@ -258,4 +259,17 @@ History<std::shared_ptr<IStroke>> StrokeManager::getBrushHistory()
 History<std::vector<std::shared_ptr<IStroke>>> StrokeManager::getEraserHistory()
 {
 	return eraserHistory;
+}
+
+void StrokeManager::updateEraserHistory()
+{
+	auto clonedStrokes = cloneStrokes();
+	eraserHistory.push(clonedStrokes);
+}
+
+void StrokeManager::undoAll()
+{
+	eraserHistory.clear();
+	brushHistory.clear();
+	strokes_.clear();
 }

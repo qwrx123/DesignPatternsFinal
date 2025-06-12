@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include "TextHistory.h"
+#include "History.h"
 #include "TextManager.h"
 #include "Text.h"
 #include <GLFW/glfw3.h>
@@ -8,7 +8,7 @@ class TextHistoryTest : public ::testing::Test {
 protected:
     void SetUp() override 
     {
-        testHistory = new TextHistory();
+        testHistory = new History<std::shared_ptr<IText>>();
         textManager = new TextManager();
         textManager->registerTextTool(std::make_shared<Text>(
         "",
@@ -34,7 +34,7 @@ protected:
         delete textManager;
     }
 
-    TextHistory* testHistory;
+    History<std::shared_ptr<IText>>* testHistory;
     TextManager* textManager;
     std::shared_ptr<IText> empty;
     std::shared_ptr<IText> a;
@@ -61,7 +61,8 @@ TEST_F(TextHistoryTest, Redo)
 {
     testHistory->undo();
     testHistory->undo();
-    actual = testHistory->redo();
+    testHistory->redo();
+    actual = testHistory->peek();
     expected = ab;
     EXPECT_EQ(actual->getContent(), expected->getContent());
     EXPECT_EQ(testHistory->undoneSize(), 1);

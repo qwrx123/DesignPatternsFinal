@@ -9,7 +9,6 @@ add_subdirectory(Rendering)
 add_subdirectory(Input)
 add_subdirectory(ToolBar)
 add_subdirectory(File)
-add_subdirectory(Canvas)
 
 find_package(OpenGL REQUIRED)
 find_package(glfw3 3.3 REQUIRED)

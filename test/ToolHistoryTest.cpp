@@ -12,8 +12,9 @@ protected:
     void SetUp() override 
     {
         history = std::make_shared<History<std::shared_ptr<IStroke>>>();
-        brushStrokeManager = std::make_shared<StrokeManager>();
-        brush = std::make_shared<BrushTool>(brushStrokeManager, Color{1.0F, 0.0F, 0.0F, 1.0F}, 5.0F);
+        strokeManager = std::make_shared<StrokeManager>();
+        brush = std::make_shared<BrushTool>(strokeManager, Color{1.0F, 0.0F, 0.0F, 1.0F}, 5.0F);
+        eraser = std::make_shared<EraserTool>(strokeManager, 5.0F);
         s1 = std::make_shared<Stroke>();
         s2 = std::make_shared<Stroke>();
         s3 = std::make_shared<Stroke>();
@@ -64,7 +65,8 @@ protected:
 
     std::shared_ptr<History<std::shared_ptr<IStroke>>> history;
     std::shared_ptr<BrushTool> brush;
-    std::shared_ptr<StrokeManager> brushStrokeManager;
+    std::shared_ptr<EraserTool> eraser;
+    std::shared_ptr<StrokeManager> strokeManager;
     std::shared_ptr<IStroke> s1;
     std::shared_ptr<IStroke> s2;
     std::shared_ptr<IStroke> s3;
@@ -136,7 +138,7 @@ TEST_F(ToolHistoryTest, BrushUndo)
     EXPECT_EQ(exp[1].y, act[1].y);
     EXPECT_EQ(exp[2].x, act[2].x);
     EXPECT_EQ(exp[2].y, act[2].y);
-    actual = brushStrokeManager->getStrokes().back();
+    actual = strokeManager->getStrokes().back();
     const auto& act2 = actual->getPoints();
     ASSERT_EQ(exp.size(), 3);
     ASSERT_EQ(act2.size(), 3);
@@ -167,7 +169,7 @@ TEST_F(ToolHistoryTest, BrushRedo)
     EXPECT_EQ(exp[1].y, act[1].y);
     EXPECT_EQ(exp[2].x, act[2].x);
     EXPECT_EQ(exp[2].y, act[2].y);
-    actual = brushStrokeManager->getStrokes().back();
+    actual = strokeManager->getStrokes().back();
     const auto& act2 = actual->getPoints();
     ASSERT_EQ(exp.size(), 3);
     ASSERT_EQ(act2.size(), 3);
@@ -197,7 +199,7 @@ TEST_F(ToolHistoryTest, DoubleBrushUndo)
     EXPECT_EQ(exp[1].y, act[1].y);
     EXPECT_EQ(exp[2].x, act[2].x);
     EXPECT_EQ(exp[2].y, act[2].y);
-    actual = brushStrokeManager->getStrokes().back();
+    actual = strokeManager->getStrokes().back();
     const auto& act2 = actual->getPoints();
     ASSERT_EQ(exp.size(), 3);
     ASSERT_EQ(act2.size(), 3);
@@ -230,7 +232,7 @@ TEST_F(ToolHistoryTest, DoubleBrushRedo)
     EXPECT_EQ(exp[1].y, act[1].y);
     EXPECT_EQ(exp[2].x, act[2].x);
     EXPECT_EQ(exp[2].y, act[2].y);
-    actual = brushStrokeManager->getStrokes().back();
+    actual = strokeManager->getStrokes().back();
     const auto& act2 = actual->getPoints();
     ASSERT_EQ(exp.size(), 3);
     ASSERT_EQ(act2.size(), 3);
@@ -372,7 +374,8 @@ TEST_F(ToolHistoryTest, RedoAll)
     EXPECT_EQ(actual, expected);
 }
 
-TEST_F(ToolHistoryTest, UndoOnEmpty){
+TEST_F(ToolHistoryTest, UndoOnEmpty)
+{
     brush->undoStroke();
     brush->undoStroke();
     brush->undoStroke();
@@ -383,7 +386,8 @@ TEST_F(ToolHistoryTest, UndoOnEmpty){
     EXPECT_EQ(brush->getHistory().undoneSize(), 3);
 }
 
-TEST_F(ToolHistoryTest, RedoOnEmpty){
+TEST_F(ToolHistoryTest, RedoOnEmpty)
+{
     brush->undoStroke();
     EXPECT_EQ(brush->getHistory().size(), 2);
     brush->redoStroke();
@@ -393,3 +397,462 @@ TEST_F(ToolHistoryTest, RedoOnEmpty){
     EXPECT_TRUE(brush->getHistory().isLastUndoneEmpty());
     EXPECT_EQ(brush->getHistory().size(), 3);
 }
+
+TEST_F(ToolHistoryTest, EraseStroke)
+{
+    EXPECT_EQ(strokeManager->getStrokes().size(), 3);
+    eraser->beginStroke(p1);
+    EXPECT_EQ(eraser->getHistory().size(), 1);
+    EXPECT_EQ(eraser->getHistory().peek().size(), 3);
+    eraser->addPoint(p2);
+    eraser->endStroke(p3);
+    EXPECT_EQ(strokeManager->getStrokes().size(), 2);
+    EXPECT_EQ(eraser->getHistory().size(), 2);
+    EXPECT_EQ(eraser->getHistory().peek().size(), 2);
+    expected = strokeManager->getStrokes().back();
+    actual = eraser->getHistory().peek().back();
+    const auto& exp = expected->getPoints();
+    const auto& act = actual->getPoints();
+    ASSERT_EQ(exp.size(), 3);
+    ASSERT_EQ(act.size(), 3);
+    EXPECT_EQ(exp.size(), act.size());
+    EXPECT_EQ(exp[0].x, act[0].x);
+    EXPECT_EQ(exp[0].y, act[0].y);
+    EXPECT_EQ(exp[1].x, act[1].x);
+    EXPECT_EQ(exp[1].y, act[1].y);
+    EXPECT_EQ(exp[2].x, act[2].x);
+    EXPECT_EQ(exp[2].y, act[2].y);
+    expected = strokeManager->getStrokes().front();
+    actual = eraser->getHistory().peek().front();
+    const auto& exp2 = expected->getPoints();
+    const auto& act2 = actual->getPoints();
+    ASSERT_EQ(exp2.size(), 3);
+    ASSERT_EQ(act2.size(), 3);
+    EXPECT_EQ(exp2.size(), act2.size());
+    EXPECT_EQ(exp2[0].x, act2[0].x);
+    EXPECT_EQ(exp2[0].y, act2[0].y);
+    EXPECT_EQ(exp2[1].x, act2[1].x);
+    EXPECT_EQ(exp2[1].y, act2[1].y);
+    EXPECT_EQ(exp2[2].x, act2[2].x);
+    EXPECT_EQ(exp2[2].y, act2[2].y);
+}
+
+TEST_F(ToolHistoryTest, UndoErase)
+{
+    eraser->beginStroke(p1);
+    eraser->addPoint(p2);
+    eraser->endStroke(p3);
+    eraser->undoStroke();
+    EXPECT_EQ(strokeManager->getStrokes().size(), 3);
+    EXPECT_EQ(eraser->getHistory().size(), 1);
+    EXPECT_EQ(eraser->getHistory().peek().size(), 3);
+    EXPECT_EQ(eraser->getHistory().undoneSize(), 1);
+    expected = strokeManager->getStrokes().back();
+    actual = eraser->getHistory().peek().back();
+    const auto& exp = expected->getPoints();
+    const auto& act = actual->getPoints();
+    ASSERT_EQ(exp.size(), 3);
+    ASSERT_EQ(act.size(), 3);
+    EXPECT_EQ(exp.size(), act.size());
+    EXPECT_EQ(exp[0].x, act[0].x);
+    EXPECT_EQ(exp[0].y, act[0].y);
+    EXPECT_EQ(exp[1].x, act[1].x);
+    EXPECT_EQ(exp[1].y, act[1].y);
+    EXPECT_EQ(exp[2].x, act[2].x);
+    EXPECT_EQ(exp[2].y, act[2].y);
+    expected = strokeManager->getStrokes().front();
+    actual = eraser->getHistory().peek().front();
+    const auto& exp2 = expected->getPoints();
+    const auto& act2 = actual->getPoints();
+    ASSERT_EQ(exp2.size(), 3);
+    ASSERT_EQ(act2.size(), 3);
+    EXPECT_EQ(exp2.size(), act2.size());
+    EXPECT_EQ(exp2[0].x, act2[0].x);
+    EXPECT_EQ(exp2[0].y, act2[0].y);
+    EXPECT_EQ(exp2[1].x, act2[1].x);
+    EXPECT_EQ(exp2[1].y, act2[1].y);
+    EXPECT_EQ(exp2[2].x, act2[2].x);
+    EXPECT_EQ(exp2[2].y, act2[2].y);
+}
+
+TEST_F(ToolHistoryTest, RedoErase)
+{
+    eraser->beginStroke(p1);
+    eraser->addPoint(p2);
+    eraser->endStroke(p3);
+    eraser->undoStroke();
+    EXPECT_EQ(eraser->getHistory().undoneSize(), 1);
+    eraser->redoStroke();
+    EXPECT_EQ(strokeManager->getStrokes().size(), 2);
+    EXPECT_EQ(eraser->getHistory().size(), 2);
+    EXPECT_EQ(eraser->getHistory().peek().size(), 2);
+    EXPECT_EQ(eraser->getHistory().undoneSize(), 0);
+    expected = strokeManager->getStrokes().back();
+    actual = eraser->getHistory().peek().back();
+    const auto& exp = expected->getPoints();
+    const auto& act = actual->getPoints();
+    ASSERT_EQ(exp.size(), 3);
+    ASSERT_EQ(act.size(), 3);
+    EXPECT_EQ(exp.size(), act.size());
+    EXPECT_EQ(exp[0].x, act[0].x);
+    EXPECT_EQ(exp[0].y, act[0].y);
+    EXPECT_EQ(exp[1].x, act[1].x);
+    EXPECT_EQ(exp[1].y, act[1].y);
+    EXPECT_EQ(exp[2].x, act[2].x);
+    EXPECT_EQ(exp[2].y, act[2].y);
+    expected = strokeManager->getStrokes().front();
+    actual = eraser->getHistory().peek().front();
+    const auto& exp2 = expected->getPoints();
+    const auto& act2 = actual->getPoints();
+    ASSERT_EQ(exp2.size(), 3);
+    ASSERT_EQ(act2.size(), 3);
+    EXPECT_EQ(exp2.size(), act2.size());
+    EXPECT_EQ(exp2[0].x, act2[0].x);
+    EXPECT_EQ(exp2[0].y, act2[0].y);
+    EXPECT_EQ(exp2[1].x, act2[1].x);
+    EXPECT_EQ(exp2[1].y, act2[1].y);
+    EXPECT_EQ(exp2[2].x, act2[2].x);
+    EXPECT_EQ(exp2[2].y, act2[2].y);
+}
+
+TEST_F(ToolHistoryTest, FirstUndoEraseThenUndoBrush)
+{
+    eraser->beginStroke(p1);
+    eraser->addPoint(p2);
+    eraser->endStroke(p3);
+    eraser->undoStroke();
+    brush->undoStroke();
+    EXPECT_EQ(strokeManager->getStrokes().size(), 2);
+    EXPECT_EQ(eraser->getHistory().size(), 1);
+    EXPECT_EQ(eraser->getHistory().peek().size(), 3);
+    EXPECT_EQ(eraser->getHistory().undoneSize(), 1);
+    EXPECT_EQ(brush->getHistory().size(), 2);
+    EXPECT_EQ(brush->getHistory().undoneSize(), 1);
+    expected = s2;
+    actual = strokeManager->getStrokes().back();
+    const auto& exp = expected->getPoints();
+    const auto& act = actual->getPoints();
+    ASSERT_EQ(exp.size(), 3);
+    ASSERT_EQ(act.size(), 3);
+    EXPECT_EQ(exp.size(), act.size());
+    EXPECT_EQ(exp[0].x, act[0].x);
+    EXPECT_EQ(exp[0].y, act[0].y);
+    EXPECT_EQ(exp[1].x, act[1].x);
+    EXPECT_EQ(exp[1].y, act[1].y);
+    EXPECT_EQ(exp[2].x, act[2].x);
+    EXPECT_EQ(exp[2].y, act[2].y);
+    expected = s1;
+    actual = strokeManager->getStrokes().front();
+    const auto& exp2 = expected->getPoints();
+    const auto& act2 = actual->getPoints();
+    ASSERT_EQ(exp2.size(), 3);
+    ASSERT_EQ(act2.size(), 3);
+    EXPECT_EQ(exp2.size(), act2.size());
+    EXPECT_EQ(exp2[0].x, act2[0].x);
+    EXPECT_EQ(exp2[0].y, act2[0].y);
+    EXPECT_EQ(exp2[1].x, act2[1].x);
+    EXPECT_EQ(exp2[1].y, act2[1].y);
+    EXPECT_EQ(exp2[2].x, act2[2].x);
+    EXPECT_EQ(exp2[2].y, act2[2].y);
+}
+
+TEST_F(ToolHistoryTest, FirstRedoEraseThenUndoBrush)
+{
+    eraser->beginStroke(p1);
+    eraser->addPoint(p2);
+    eraser->endStroke(p3);
+    eraser->undoStroke();
+    eraser->redoStroke();
+    brush->undoStroke();
+    EXPECT_EQ(strokeManager->getStrokes().size(), 1);
+    EXPECT_EQ(eraser->getHistory().size(), 2);
+    EXPECT_EQ(eraser->getHistory().peek().size(), 2);
+    EXPECT_EQ(eraser->getHistory().undoneSize(), 0);
+    EXPECT_EQ(brush->getHistory().size(), 2);
+    EXPECT_EQ(brush->getHistory().undoneSize(), 1);
+    expected = s2;
+    actual = strokeManager->getStrokes().back();
+    const auto& exp = expected->getPoints();
+    const auto& act = actual->getPoints();
+    ASSERT_EQ(exp.size(), 3);
+    ASSERT_EQ(act.size(), 3);
+    EXPECT_EQ(exp.size(), act.size());
+    EXPECT_EQ(exp[0].x, act[0].x);
+    EXPECT_EQ(exp[0].y, act[0].y);
+    EXPECT_EQ(exp[1].x, act[1].x);
+    EXPECT_EQ(exp[1].y, act[1].y);
+    EXPECT_EQ(exp[2].x, act[2].x);
+    EXPECT_EQ(exp[2].y, act[2].y);
+    expected = s2;
+    actual = strokeManager->getStrokes().front();
+    const auto& exp2 = expected->getPoints();
+    const auto& act2 = actual->getPoints();
+    ASSERT_EQ(exp2.size(), 3);
+    ASSERT_EQ(act2.size(), 3);
+    EXPECT_EQ(exp2.size(), act2.size());
+    EXPECT_EQ(exp2[0].x, act2[0].x);
+    EXPECT_EQ(exp2[0].y, act2[0].y);
+    EXPECT_EQ(exp2[1].x, act2[1].x);
+    EXPECT_EQ(exp2[1].y, act2[1].y);
+    EXPECT_EQ(exp2[2].x, act2[2].x);
+    EXPECT_EQ(exp2[2].y, act2[2].y);
+}
+
+TEST_F(ToolHistoryTest, FirstUndoEraseThenRedoBrush)
+{
+    eraser->beginStroke(p1);
+    eraser->addPoint(p2);
+    eraser->endStroke(p3);
+    eraser->undoStroke();
+    brush->undoStroke();
+    brush->redoStroke();
+    EXPECT_EQ(strokeManager->getStrokes().size(), 3);
+    EXPECT_EQ(eraser->getHistory().size(), 1);
+    EXPECT_EQ(eraser->getHistory().peek().size(), 3);
+    EXPECT_EQ(eraser->getHistory().undoneSize(), 1);
+    EXPECT_EQ(brush->getHistory().size(), 3);
+    EXPECT_EQ(brush->getHistory().undoneSize(), 0);
+    expected = s3;
+    actual = strokeManager->getStrokes().back();
+    const auto& exp = expected->getPoints();
+    const auto& act = actual->getPoints();
+    ASSERT_EQ(exp.size(), 3);
+    ASSERT_EQ(act.size(), 3);
+    EXPECT_EQ(exp.size(), act.size());
+    EXPECT_EQ(exp[0].x, act[0].x);
+    EXPECT_EQ(exp[0].y, act[0].y);
+    EXPECT_EQ(exp[1].x, act[1].x);
+    EXPECT_EQ(exp[1].y, act[1].y);
+    EXPECT_EQ(exp[2].x, act[2].x);
+    EXPECT_EQ(exp[2].y, act[2].y);
+    expected = s1;
+    actual = strokeManager->getStrokes().front();
+    const auto& exp2 = expected->getPoints();
+    const auto& act2 = actual->getPoints();
+    ASSERT_EQ(exp2.size(), 3);
+    ASSERT_EQ(act2.size(), 3);
+    EXPECT_EQ(exp2.size(), act2.size());
+    EXPECT_EQ(exp2[0].x, act2[0].x);
+    EXPECT_EQ(exp2[0].y, act2[0].y);
+    EXPECT_EQ(exp2[1].x, act2[1].x);
+    EXPECT_EQ(exp2[1].y, act2[1].y);
+    EXPECT_EQ(exp2[2].x, act2[2].x);
+    EXPECT_EQ(exp2[2].y, act2[2].y);  
+}
+
+TEST_F(ToolHistoryTest, FirstRedoEraseThenRedoBrush)
+{
+    eraser->beginStroke(p1);
+    eraser->addPoint(p2);
+    eraser->endStroke(p3);
+    eraser->undoStroke();
+    eraser->redoStroke();
+    brush->undoStroke();
+    brush->redoStroke();
+    EXPECT_EQ(strokeManager->getStrokes().size(), 2);
+    EXPECT_EQ(eraser->getHistory().size(), 2);
+    EXPECT_EQ(eraser->getHistory().peek().size(), 2);
+    EXPECT_EQ(eraser->getHistory().undoneSize(), 0);
+    EXPECT_EQ(brush->getHistory().size(), 3);
+    EXPECT_EQ(brush->getHistory().undoneSize(), 0);
+    expected = s3;
+    actual = strokeManager->getStrokes().back();
+    const auto& exp = expected->getPoints();
+    const auto& act = actual->getPoints();
+    ASSERT_EQ(exp.size(), 3);
+    ASSERT_EQ(act.size(), 3);
+    EXPECT_EQ(exp.size(), act.size());
+    EXPECT_EQ(exp[0].x, act[0].x);
+    EXPECT_EQ(exp[0].y, act[0].y);
+    EXPECT_EQ(exp[1].x, act[1].x);
+    EXPECT_EQ(exp[1].y, act[1].y);
+    EXPECT_EQ(exp[2].x, act[2].x);
+    EXPECT_EQ(exp[2].y, act[2].y);
+    expected = s2;
+    actual = strokeManager->getStrokes().front();
+    const auto& exp2 = expected->getPoints();
+    const auto& act2 = actual->getPoints();
+    ASSERT_EQ(exp2.size(), 3);
+    ASSERT_EQ(act2.size(), 3);
+    EXPECT_EQ(exp2.size(), act2.size());
+    EXPECT_EQ(exp2[0].x, act2[0].x);
+    EXPECT_EQ(exp2[0].y, act2[0].y);
+    EXPECT_EQ(exp2[1].x, act2[1].x);
+    EXPECT_EQ(exp2[1].y, act2[1].y);
+    EXPECT_EQ(exp2[2].x, act2[2].x);
+    EXPECT_EQ(exp2[2].y, act2[2].y);
+}
+
+TEST_F(ToolHistoryTest, FirstUndoBrushThenUndoErase)
+{
+    eraser->beginStroke(p1);
+    eraser->addPoint(p2);
+    eraser->endStroke(p3);
+    brush->undoStroke();
+    eraser->undoStroke();
+    EXPECT_EQ(strokeManager->getStrokes().size(), 3);
+    EXPECT_EQ(eraser->getHistory().size(), 1);
+    EXPECT_EQ(eraser->getHistory().peek().size(), 3);
+    EXPECT_EQ(eraser->getHistory().undoneSize(), 1);
+    EXPECT_EQ(brush->getHistory().size(), 2);
+    EXPECT_EQ(brush->getHistory().undoneSize(), 1);
+    expected = s3;
+    actual = strokeManager->getStrokes().back();
+    const auto& exp = expected->getPoints();
+    const auto& act = actual->getPoints();
+    ASSERT_EQ(exp.size(), 3);
+    ASSERT_EQ(act.size(), 3);
+    EXPECT_EQ(exp.size(), act.size());
+    EXPECT_EQ(exp[0].x, act[0].x);
+    EXPECT_EQ(exp[0].y, act[0].y);
+    EXPECT_EQ(exp[1].x, act[1].x);
+    EXPECT_EQ(exp[1].y, act[1].y);
+    EXPECT_EQ(exp[2].x, act[2].x);
+    EXPECT_EQ(exp[2].y, act[2].y);
+    expected = s1;
+    actual = strokeManager->getStrokes().front();
+    const auto& exp2 = expected->getPoints();
+    const auto& act2 = actual->getPoints();
+    ASSERT_EQ(exp2.size(), 3);
+    ASSERT_EQ(act2.size(), 3);
+    EXPECT_EQ(exp2.size(), act2.size());
+    EXPECT_EQ(exp2[0].x, act2[0].x);
+    EXPECT_EQ(exp2[0].y, act2[0].y);
+    EXPECT_EQ(exp2[1].x, act2[1].x);
+    EXPECT_EQ(exp2[1].y, act2[1].y);
+    EXPECT_EQ(exp2[2].x, act2[2].x);
+    EXPECT_EQ(exp2[2].y, act2[2].y);
+}
+
+TEST_F(ToolHistoryTest, FirstUndoBrushThenRedoErase)
+{
+    eraser->beginStroke(p1);
+    eraser->addPoint(p2);
+    eraser->endStroke(p3);
+    brush->undoStroke();
+    eraser->undoStroke();
+    eraser->redoStroke();
+    EXPECT_EQ(strokeManager->getStrokes().size(), 2);
+    EXPECT_EQ(eraser->getHistory().size(), 2);
+    EXPECT_EQ(eraser->getHistory().peek().size(), 2);
+    EXPECT_EQ(eraser->getHistory().undoneSize(), 0);
+    EXPECT_EQ(brush->getHistory().size(), 2);
+    EXPECT_EQ(brush->getHistory().undoneSize(), 1);
+    expected = s3;
+    actual = strokeManager->getStrokes().back();
+    const auto& exp = expected->getPoints();
+    const auto& act = actual->getPoints();
+    ASSERT_EQ(exp.size(), 3);
+    ASSERT_EQ(act.size(), 3);
+    EXPECT_EQ(exp.size(), act.size());
+    EXPECT_EQ(exp[0].x, act[0].x);
+    EXPECT_EQ(exp[0].y, act[0].y);
+    EXPECT_EQ(exp[1].x, act[1].x);
+    EXPECT_EQ(exp[1].y, act[1].y);
+    EXPECT_EQ(exp[2].x, act[2].x);
+    EXPECT_EQ(exp[2].y, act[2].y);
+    expected = s2;
+    actual = strokeManager->getStrokes().front();
+    const auto& exp2 = expected->getPoints();
+    const auto& act2 = actual->getPoints();
+    ASSERT_EQ(exp2.size(), 3);
+    ASSERT_EQ(act2.size(), 3);
+    EXPECT_EQ(exp2.size(), act2.size());
+    EXPECT_EQ(exp2[0].x, act2[0].x);
+    EXPECT_EQ(exp2[0].y, act2[0].y);
+    EXPECT_EQ(exp2[1].x, act2[1].x);
+    EXPECT_EQ(exp2[1].y, act2[1].y);
+    EXPECT_EQ(exp2[2].x, act2[2].x);
+    EXPECT_EQ(exp2[2].y, act2[2].y);
+}
+
+TEST_F(ToolHistoryTest, FirstRedoBrushThenUndoErase)
+{
+    eraser->beginStroke(p1);
+    eraser->addPoint(p2);
+    eraser->endStroke(p3);
+    brush->undoStroke();
+    brush->redoStroke();
+    eraser->undoStroke();
+    EXPECT_EQ(strokeManager->getStrokes().size(), 3);
+    EXPECT_EQ(eraser->getHistory().size(), 1);
+    EXPECT_EQ(eraser->getHistory().peek().size(), 3);
+    EXPECT_EQ(eraser->getHistory().undoneSize(), 1);
+    EXPECT_EQ(brush->getHistory().size(), 3);
+    EXPECT_EQ(brush->getHistory().undoneSize(), 0);
+    expected = s3;
+    actual = strokeManager->getStrokes().back();
+    const auto& exp = expected->getPoints();
+    const auto& act = actual->getPoints();
+    ASSERT_EQ(exp.size(), 3);
+    ASSERT_EQ(act.size(), 3);
+    EXPECT_EQ(exp.size(), act.size());
+    EXPECT_EQ(exp[0].x, act[0].x);
+    EXPECT_EQ(exp[0].y, act[0].y);
+    EXPECT_EQ(exp[1].x, act[1].x);
+    EXPECT_EQ(exp[1].y, act[1].y);
+    EXPECT_EQ(exp[2].x, act[2].x);
+    EXPECT_EQ(exp[2].y, act[2].y);
+    expected = s1;
+    actual = strokeManager->getStrokes().front();
+    const auto& exp2 = expected->getPoints();
+    const auto& act2 = actual->getPoints();
+    ASSERT_EQ(exp2.size(), 3);
+    ASSERT_EQ(act2.size(), 3);
+    EXPECT_EQ(exp2.size(), act2.size());
+    EXPECT_EQ(exp2[0].x, act2[0].x);
+    EXPECT_EQ(exp2[0].y, act2[0].y);
+    EXPECT_EQ(exp2[1].x, act2[1].x);
+    EXPECT_EQ(exp2[1].y, act2[1].y);
+    EXPECT_EQ(exp2[2].x, act2[2].x);
+    EXPECT_EQ(exp2[2].y, act2[2].y);
+}
+
+TEST_F(ToolHistoryTest, FirstRedoBrushThenRedoErase)
+{
+    eraser->beginStroke(p1);
+    eraser->addPoint(p2);
+    eraser->endStroke(p3);
+    brush->undoStroke();
+    brush->redoStroke();
+    eraser->undoStroke();
+    eraser->redoStroke();
+    EXPECT_EQ(strokeManager->getStrokes().size(), 2);
+    EXPECT_EQ(eraser->getHistory().size(), 2);
+    EXPECT_EQ(eraser->getHistory().peek().size(), 2);
+    EXPECT_EQ(eraser->getHistory().undoneSize(), 0);
+    EXPECT_EQ(brush->getHistory().size(), 3);
+    EXPECT_EQ(brush->getHistory().undoneSize(), 0);
+    expected = s3;
+    actual = strokeManager->getStrokes().back();
+    const auto& exp = expected->getPoints();
+    const auto& act = actual->getPoints();
+    ASSERT_EQ(exp.size(), 3);
+    ASSERT_EQ(act.size(), 3);
+    EXPECT_EQ(exp.size(), act.size());
+    EXPECT_EQ(exp[0].x, act[0].x);
+    EXPECT_EQ(exp[0].y, act[0].y);
+    EXPECT_EQ(exp[1].x, act[1].x);
+    EXPECT_EQ(exp[1].y, act[1].y);
+    EXPECT_EQ(exp[2].x, act[2].x);
+    EXPECT_EQ(exp[2].y, act[2].y);
+    expected = s2;
+    actual = strokeManager->getStrokes().front();
+    const auto& exp2 = expected->getPoints();
+    const auto& act2 = actual->getPoints();
+    ASSERT_EQ(exp2.size(), 3);
+    ASSERT_EQ(act2.size(), 3);
+    EXPECT_EQ(exp2.size(), act2.size());
+    EXPECT_EQ(exp2[0].x, act2[0].x);
+    EXPECT_EQ(exp2[0].y, act2[0].y);
+    EXPECT_EQ(exp2[1].x, act2[1].x);
+    EXPECT_EQ(exp2[1].y, act2[1].y);
+    EXPECT_EQ(exp2[2].x, act2[2].x);
+    EXPECT_EQ(exp2[2].y, act2[2].y);
+}
+
+/*
+    TEST: 
+    redid the eraser and undid the lines, stoped halfway, 
+    redid eraser tried to undo more lines
+*/

@@ -88,3 +88,10 @@ std::vector<T> History<T>::getUndoneHistory() const
 {
 	return undoneHistory;
 }
+
+template <typename T>
+void History<T>::clear()
+{
+	undoneHistory.clear();
+	history.clear();
+}

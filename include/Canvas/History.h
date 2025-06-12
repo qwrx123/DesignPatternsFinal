@@ -29,11 +29,11 @@ class History : public IHistoryStack<T>
 	[[nodiscard]] bool			 isLastUndoneEmpty() const;
 	[[nodiscard]] size_t		 undoneSize() const;
 	[[nodiscard]] std::vector<T> getUndoneHistory() const;
+	void						 clear() override;
 
    private:
 	std::vector<T> history;
 	std::vector<T> undoneHistory;
-	int			   limit = 100;
 };
 
 #include "History.tpp"

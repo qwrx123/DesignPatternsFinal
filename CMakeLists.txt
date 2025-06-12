@@ -47,7 +47,6 @@ set(PROJECT_COMMON_INCLUDE_DIRS
 	${CMAKE_SOURCE_DIR}/classes/TextClass
 	${CMAKE_SOURCE_DIR}/classes/Tools
 	${CMAKE_SOURCE_DIR}/classes/ToolBar
-	${CMAKE_SOURCE_DIR}/classes/Canvas
 )
 
 # Set up installing

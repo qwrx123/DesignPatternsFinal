@@ -3,7 +3,6 @@
 
 #include "IToolManager.h"
 #include "IInputReceiver.h"
-#include "ToolHistory.h"
 #include <unordered_map>
 
 class ToolManager : public IToolManager, public IInputReceiver
@@ -38,6 +37,7 @@ class ToolManager : public IToolManager, public IInputReceiver
 
 	void undoStroke() override;
 	void redoStroke() override;
+	void clearStrokes() override;
 
    private:
 	std::unordered_map<std::string, std::shared_ptr<IDrawingTool>> tools;

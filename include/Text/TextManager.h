@@ -6,7 +6,7 @@
 #include "ITextManager.h"
 #include "Text.h"
 #include "IInputReceiver.h"
-#include "TextHistory.h"
+#include "History.h"
 
 class TextManager : public ITextManager, public IInputReceiver
 {
@@ -33,15 +33,15 @@ class TextManager : public ITextManager, public IInputReceiver
 
 	void clearAll() override;
 
-	void		onMouseMove(double x, double y) override;
-	void		onMouseButton(MouseButton button, KeyAction action, double x, double y) override;
-	void		onKey(int key, KeyAction action) override;
-	void		onChar(unsigned int codepoint) override;
-	void		onResize(int width, int height) override;
-	void		setFontSize(int size) override;
-	void		undoText() override;
-	void		redoText() override;
-	TextHistory getHistory();
+	void onMouseMove(double x, double y) override;
+	void onMouseButton(MouseButton button, KeyAction action, double x, double y) override;
+	void onKey(int key, KeyAction action) override;
+	void onChar(unsigned int codepoint) override;
+	void onResize(int width, int height) override;
+	void setFontSize(int size) override;
+	void undoText() override;
+	void redoText() override;
+	History<std::shared_ptr<IText>> getHistory();
 
    private:
 	std::vector<std::shared_ptr<IText>> texts;
@@ -54,7 +54,7 @@ class TextManager : public ITextManager, public IInputReceiver
 	int			fontSize = 0;
 	Color		color	 = {.r = 0.0F, .g = 0.0F, .b = 0.0F, .a = 1.0F};
 
-	TextHistory textHistory;
+	History<std::shared_ptr<IText>> textHistory;
 
 	void insertTab();
 	void handleBackspace();

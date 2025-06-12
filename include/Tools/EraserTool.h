@@ -34,9 +34,10 @@ class EraserTool : public IDrawingTool
 	void				setThickness(float thickness) override;
 	[[nodiscard]] float getThickness() const override;
 
-	void										   undoStroke() override;
-	void										   redoStroke() override;
-	History<std::vector<std::shared_ptr<IStroke>>> getHistory() const;
+	void														 undoStroke() override;
+	void														 redoStroke() override;
+	[[nodiscard]] History<std::vector<std::shared_ptr<IStroke>>> getHistory() const;
+	void														 clearStrokes() override;
 
    private:
 	std::shared_ptr<Stroke>			erase_path;
