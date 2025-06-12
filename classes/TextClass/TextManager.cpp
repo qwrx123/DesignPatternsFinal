@@ -259,7 +259,7 @@ void TextManager::setFontSize(int size)
 
 void TextManager::undoText()
 {
-	if (!textHistory.isEmpty() && !texts.empty())
+	if (!textHistory.isEmpty() && !texts.empty() && active)
 	{
 		if (texts.back()->getContent().empty() && texts.size() != 1)
 		{
@@ -281,7 +281,7 @@ void TextManager::undoText()
 
 void TextManager::redoText()
 {
-	if (!textHistory.isLastUndoneEmpty() && !texts.empty())
+	if (!textHistory.isLastUndoneEmpty() && !texts.empty() && active)
 	{
 		textHistory.redo();
 		texts.back() = textHistory.peek();
