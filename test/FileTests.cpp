@@ -1,7 +1,9 @@
 #include <gtest/gtest.h>
 #include <filesystem>
+#include <cstring>
 #include "Export.h"
 #include "Import.h"
+#include "Image.h"
 
 TEST(FileTestsExport, FolderExists) 
 {
@@ -229,4 +231,95 @@ TEST(FileTestsImport, ReadBmpFile)
     }
 
     std::filesystem::remove(location + fileName + ".bmp");
+}
+
+class FileTestsImage : public ::testing::Test
+{
+protected:
+    Image image;
+    bufferStruct fileStruct;
+    bufferStruct originalData;
+    imageInfo imageInfo;
+    void SetUp() override
+    {
+        image = Image();
+        fileStruct = {std::make_unique<char[]>(4 * 6), 4 * 6};
+        imageInfo = {.width = 3, .height = 2, .horizontalResolution = 3780, .verticalResolution = 3780, .pixelType = pixelType::PIXEL_TYPE_RGBA};
+    
+        int* buffer = reinterpret_cast<int*>(fileStruct.bufferLocation.get());
+        buffer[0] = 0xFF0000FF;
+        buffer[1] = 0x00FF00FF; 
+        buffer[2] = 0x0000FFFF; 
+        buffer[3] = 0xFFFFFFFF; 
+        buffer[4] = 0x000000FF; 
+        buffer[5] = 0x808080FF;
+
+        originalData = {std::make_unique<char[]>(4 * 6), 4 * 6};
+        std::memcpy(originalData.bufferLocation.get(), buffer, fileStruct.bufferSize);
+    }
+};
+
+TEST_F(FileTestsImage, getPixelData)
+{
+    ASSERT_TRUE(image.importImage(fileStruct, imageInfo));
+    
+    const char* pixelData = image.getPixelData();
+    
+    for (size_t i = 0; i < fileStruct.bufferSize; i++)
+    {
+        EXPECT_EQ(pixelData[i], originalData.bufferLocation.get()[i]);
+    }
+}
+
+TEST_F(FileTestsImage, getDimensions)
+{
+    ASSERT_TRUE(image.importImage(fileStruct, imageInfo));
+    
+    auto dimensions = image.getDimensions();
+    
+    EXPECT_EQ(dimensions.first, imageInfo.width);
+    EXPECT_EQ(dimensions.second, imageInfo.height);
+}
+
+TEST_F(FileTestsImage, getCoordinates)
+{
+    ASSERT_TRUE(image.importImage(fileStruct, imageInfo));
+    
+    auto coordinates = image.getCoordinates();
+    
+    EXPECT_EQ(coordinates.first, 0);
+    EXPECT_EQ(coordinates.second, 0);
+}
+
+TEST_F(FileTestsImage, setCoordinates)
+{
+    ASSERT_TRUE(image.importImage(fileStruct, imageInfo));
+    
+    size_t newX = 10;
+    size_t newY = 20;
+    
+    ASSERT_TRUE(image.setCoordinates(newX, newY));
+    
+    auto coordinates = image.getCoordinates();
+    
+    EXPECT_EQ(coordinates.first, newX);
+    EXPECT_EQ(coordinates.second, newY);
+}
+
+TEST_F(FileTestsImage, setResolution)
+{
+    ASSERT_TRUE(image.importImage(fileStruct, imageInfo));
+
+    size_t Horizontal = 2000;
+    size_t Vertical = 2000;
+    std::pair<size_t, size_t> dimensions = image.getDimensions();
+    ASSERT_TRUE(image.setResolution(Horizontal, Vertical));
+
+    size_t newHorizontal = 4000;
+    size_t newVertical = 4000;
+    ASSERT_TRUE(image.setResolution(newHorizontal, newVertical));
+    std::pair<size_t, size_t> newDimensions = image.getDimensions();
+    
+    EXPECT_EQ(dimensions.first, newDimensions.first/2);
+    EXPECT_EQ(dimensions.second, newDimensions.second/2);
 }
