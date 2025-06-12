@@ -7,20 +7,25 @@ bool Image::importImage(const bufferStruct& buffer, const imageInfo& image)
 
 const char* const Image::getPixelData()
 {
-	return nullptr;
+	return pixelData.get();
 }
 
 std::pair<size_t, size_t> Image::getCoordinates() const
 {
-    return std::pair<size_t, size_t>();
+    return coordinates;
 }
 
 bool Image::setBounds(Bounds)
 {
-	return false;
+	if (pixelData == nullptr || width == 0 || height == 0)
+    {
+        return false;
+    }
+
+    return false;
 }
 
 std::pair<size_t, size_t> Image::getDimensions() const
 {
-	return std::pair<size_t, size_t>();
+	return dimensions
 }
