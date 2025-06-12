@@ -294,6 +294,11 @@ bufferStruct CanvasRenderer::exportCanvas(Bounds boundingBox)
 	int boxWidth  = static_cast<int>(boundingBox.right - boundingBox.left);
 	int boxHeight = static_cast<int>(boundingBox.bottom - boundingBox.top);
 
+	if (boxWidth <= 0 || boxHeight <= 0)
+	{
+		return canvasBuffer;
+	}
+
 	// RGBA format size
 	canvasBuffer.bufferSize = static_cast<size_t>(width) * static_cast<size_t>(height) * 4;
 
@@ -311,8 +316,8 @@ bufferStruct CanvasRenderer::exportCanvas(Bounds boundingBox)
 #else
 	glReadBuffer(GL_BACK);
 #endif
-	glReadPixels(boundingBox.left, height - boundingBox.bottom, boxWidth, boxHeight, GL_RGBA,
-				 GL_UNSIGNED_BYTE, canvasBuffer.bufferLocation.get());
+	glReadPixels(static_cast<int>(boundingBox.left), height - static_cast<int>(boundingBox.bottom),
+				 boxWidth, boxHeight, GL_RGBA, GL_UNSIGNED_BYTE, canvasBuffer.bufferLocation.get());
 
 	std::vector<char> scanLine(width * pixelSize);
 	char*			  scanLineBuff = scanLine.data();
@@ -363,6 +368,11 @@ bool CanvasRenderer::exportBitmap(std::string fileName, std::string fileLocation
 	if (boundingBox.top >= boundingBox.bottom)
 	{
 		boundingBox.bottom = static_cast<float>(height);
+	}
+
+	if (boundingBox.right - boundingBox.left < 0 || boundingBox.bottom - boundingBox.top < 0)
+	{
+		return false;
 	}
 
 	width  = static_cast<int>(boundingBox.right - boundingBox.left);

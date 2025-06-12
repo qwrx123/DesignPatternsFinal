@@ -150,7 +150,9 @@ int main()
 			std::string fileLocation = FileLocation::getDownloadLocation();
 			std::string fileName	 = "DaisyExport";
 
-			renderer->exportBitmap(fileName, fileLocation, {menuBar->getBounds().bottom, 0, 0, 0});
+			renderer->exportBitmap(
+				fileName, fileLocation,
+				{.top = menuBar->getBounds().bottom, .bottom = 0, .left = 0, .right = 0});
 			std::cout << "Canvas exported to: " << fileLocation << fileName << ".bmp\n";
 		}
 	}
