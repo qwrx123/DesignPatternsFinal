@@ -1,7 +1,18 @@
 #include "Image.h"
 #include <cstring>
 
-Image::Image(const Image& other) {}
+Image::Image(const Image& other)
+	: resolution(other.resolution),
+	  dimensions(other.dimensions),
+	  coordinates(other.coordinates),
+	  width(other.width),
+	  height(other.height),
+	  pixelType(other.pixelType)
+{
+	// NOLINTNEXTLINE(cppcoreguidelines-avoid-c-arrays,modernize-avoid-c-arrays)
+	pixelData = std::make_unique<char[]>(other.width * other.height);
+	std::memcpy(pixelData.get(), other.pixelData.get(), other.width * other.height);
+}
 
 Image& Image::operator=(const Image& other)
 {
@@ -9,6 +20,17 @@ Image& Image::operator=(const Image& other)
 	{
 		return *this;
 	}
+
+	resolution	= other.resolution;
+	dimensions	= other.dimensions;
+	coordinates = other.coordinates;
+	width		= other.width;
+	height		= other.height;
+	pixelType	= other.pixelType;
+
+	// NOLINTNEXTLINE(cppcoreguidelines-avoid-c-arrays,modernize-avoid-c-arrays)
+	pixelData = std::make_unique<char[]>(other.width * other.height);
+	std::memcpy(pixelData.get(), other.pixelData.get(), other.width * other.height);
 
 	return *this;
 }
