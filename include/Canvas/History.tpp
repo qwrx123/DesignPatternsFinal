@@ -95,3 +95,9 @@ void History<T>::clear()
 	undoneHistory.clear();
 	history.clear();
 }
+
+template <typename T>
+void History<T>::clearUndone()
+{
+	undoneHistory.clear();
+}

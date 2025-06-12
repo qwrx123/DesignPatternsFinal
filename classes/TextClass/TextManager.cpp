@@ -168,6 +168,7 @@ void TextManager::onChar(unsigned int codepoint)
 		{
 			if (text->isEditable())
 			{
+				textHistory.clearUndone();
 				std::string content = text->getContent();
 				content += static_cast<char>(codepoint);
 				text->setContent(content);

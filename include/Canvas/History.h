@@ -30,6 +30,7 @@ class History : public IHistoryStack<T>
 	[[nodiscard]] size_t		 undoneSize() const;
 	[[nodiscard]] std::vector<T> getUndoneHistory() const;
 	void						 clear() override;
+	void						 clearUndone() override;
 
    private:
 	std::vector<T> history;

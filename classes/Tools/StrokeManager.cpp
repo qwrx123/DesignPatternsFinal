@@ -65,6 +65,7 @@ void StrokeManager::addStroke(std::shared_ptr<IStroke> stroke)
 	if (!strokes_.empty())
 	{
 		auto cloned = std::make_shared<Stroke>(*std::dynamic_pointer_cast<Stroke>(strokes_.back()));
+		brushHistory.clearUndone();
 		brushHistory.push(cloned);
 	}
 }
@@ -265,6 +266,7 @@ void StrokeManager::updateEraserHistory()
 {
 	auto clonedStrokes = cloneStrokes();
 	eraserHistory.push(clonedStrokes);
+	eraserHistory.clearUndone();
 }
 
 void StrokeManager::undoAll()

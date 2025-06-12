@@ -22,6 +22,7 @@ class IHistoryStack
 	[[nodiscard]] virtual T				 peek()			 = 0;
 	[[nodiscard]] virtual std::vector<T> getHistory()	 = 0;
 	virtual void						 clear()		 = 0;
+	virtual void						 clearUndone()	 = 0;
 };
 
 #endif
