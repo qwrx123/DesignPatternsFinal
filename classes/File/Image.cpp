@@ -81,6 +81,13 @@ bool Image::setBounds(Bounds imageBounds)
 	return false;
 }
 
+bool Image::setCoordinates(size_t x, size_t y)
+{
+	coordinates.first  = x;
+	coordinates.second = y;
+	return true;
+}
+
 bool Image::setResolution(size_t horizontal, size_t vertical)
 {
 	if (horizontal == 0 || vertical == 0)
@@ -92,6 +99,40 @@ bool Image::setResolution(size_t horizontal, size_t vertical)
 	{
 		return true;
 	}
+
+    float horizontalChange = static_cast<float>(horizontal) / resolution.first;
+    float verticalChange   = static_cast<float>(vertical) / resolution.second;
+    if (horizontalChange <= 0 || verticalChange <= 0)
+    {
+        return false;
+    }
+
+    size_t newWidth  = static_cast<size_t>(width * horizontalChange);
+    size_t newHeight = static_cast<size_t>(height * verticalChange);
+    size_t newSize = newWidth * newHeight * 4;
+    std::unique_ptr<char[]> newPixelData = std::make_unique<char[]>(newSize);
+
+    char* oldData = pixelData.get();
+    char* newData = newPixelData.get();
+
+    int* oldPixel = reinterpret_cast<int*>(oldData);
+    int* newPixel = reinterpret_cast<int*>(newData);
+
+    for (size_t i = 0; i < newHeight; i++)
+    {
+        for (size_t j = 0; j < newWidth; j++)
+        {
+            size_t index = ((i * newWidth) + j);
+            size_t oldIndex = static_cast<size_t>((i / verticalChange) * width) +
+                                static_cast<size_t>(j / horizontalChange);
+
+            newPixel[index] = oldPixel[oldIndex];
+        }
+    }
+
+    pixelData = std::move(newPixelData);
+    dimensions.first  = newWidth;
+    dimensions.second = newHeight;
 
 	resolution.first  = horizontal;
 	resolution.second = vertical;

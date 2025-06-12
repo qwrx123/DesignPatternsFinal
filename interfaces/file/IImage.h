@@ -13,10 +13,13 @@ class IImage
 	IImage(IImage&&)				 = default;
 	IImage& operator=(IImage&&)		 = default;
 
-	virtual bool importImage(const bufferStruct& buffer, const imageInfo& image) = 0;
-	[[nodiscard]] virtual const char*				getPixelData() const		 = 0;
-	[[nodiscard]] virtual std::pair<size_t, size_t> getDimensions() const		 = 0;
-	[[nodiscard]] virtual std::pair<size_t, size_t> getCoordinates() const		 = 0;
-	virtual bool									setBounds(Bounds)			 = 0;
-	virtual bool setResolution(size_t horizontal, size_t vertical)				 = 0;
+	virtual bool importImage(const bufferStruct& buffer, const imageInfo& image)	   = 0;
+	[[nodiscard]] virtual const char*				getPixelData() const			   = 0;
+	[[nodiscard]] virtual std::pair<size_t, size_t> getDimensions() const			   = 0;
+	[[nodiscard]] virtual std::pair<size_t, size_t> getCoordinates() const			   = 0;
+	virtual bool									setCoordinates(size_t x, size_t y) = 0;
+	virtual bool setResolution(size_t horizontal, size_t vertical)					   = 0;
+
+   private:
+	virtual bool setBounds(Bounds) = 0;
 };

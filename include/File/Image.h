@@ -18,10 +18,11 @@ class Image : public IImage
 	[[nodiscard]] const char*				getPixelData() const override;
 	[[nodiscard]] std::pair<size_t, size_t> getDimensions() const override;
 	[[nodiscard]] std::pair<size_t, size_t> getCoordinates() const override;
-	bool									setBounds(Bounds imageBounds) override;
+	bool									setCoordinates(size_t x, size_t y) override;
 	bool setResolution(size_t horizontal, size_t vertical) override;
 
    private:
+	bool setBounds(Bounds imageBounds) override;
 	// NOLINTNEXTLINE(cppcoreguidelines-avoid-c-arrays,modernize-avoid-c-arrays)
 	std::unique_ptr<char[]>	  pixelData	  = nullptr;
 	size_t					  width		  = 0;
