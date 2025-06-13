@@ -26,7 +26,7 @@ class CanvasRenderer : public ICanvasRenderer
 	void		beginFrame() override;
 	void		drawStroke(const IStroke& stroke) override;
 	static void renderText(const IText& text);
-	void		renderImage(const IImage& image);
+	void		renderImage(const IImage& image) override;
 	void		drawButton(const IButton& button) override;
 	void		drawMenu(const IMenu& menu) override;
 	static void drawSliderButton(const IButton& button, float value);
