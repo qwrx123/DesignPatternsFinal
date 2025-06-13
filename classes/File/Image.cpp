@@ -125,22 +125,25 @@ bool Image::setResolution(size_t horizontal, size_t vertical)
 		return true;
 	}
 
-	float horizontalChange = static_cast<float>(horizontal) / resolution.first;
-	float verticalChange   = static_cast<float>(vertical) / resolution.second;
+	float horizontalChange = static_cast<float>(horizontal) / static_cast<float>(resolution.first);
+	float verticalChange   = static_cast<float>(vertical) / static_cast<float>(resolution.second);
 	if (horizontalChange <= 0 || verticalChange <= 0)
 	{
 		return false;
 	}
 
-	size_t					newWidth	 = static_cast<size_t>(width * horizontalChange);
-	size_t					newHeight	 = static_cast<size_t>(height * verticalChange);
-	size_t					newSize		 = newWidth * newHeight * 4;
+	auto   newWidth	 = static_cast<size_t>(static_cast<float>(width) * horizontalChange);
+	auto   newHeight = static_cast<size_t>(static_cast<float>(height) * verticalChange);
+	size_t newSize	 = newWidth * newHeight * 4;
+	// NOLINTNEXTLINE(cppcoreguidelines-avoid-c-arrays,modernize-avoid-c-arrays)
 	std::unique_ptr<char[]> newPixelData = std::make_unique<char[]>(newSize);
 
 	char* oldData = pixelData.get();
 	char* newData = newPixelData.get();
 
+	// NOLINTNEXTLINE(cppcoreguidelines-pro-type-reinterpret-cast)
 	int* oldPixel = reinterpret_cast<int*>(oldData);
+	// NOLINTNEXTLINE(cppcoreguidelines-pro-type-reinterpret-cast)
 	int* newPixel = reinterpret_cast<int*>(newData);
 
 	for (size_t i = 0; i < newHeight; i++)
@@ -148,9 +151,11 @@ bool Image::setResolution(size_t horizontal, size_t vertical)
 		for (size_t j = 0; j < newWidth; j++)
 		{
 			size_t index	= ((i * newWidth) + j);
-			size_t oldIndex = static_cast<size_t>((i / verticalChange) * width) +
-							  static_cast<size_t>(j / horizontalChange);
+			size_t oldIndex = static_cast<size_t>((static_cast<float>(i) / verticalChange) *
+												  static_cast<float>(width)) +
+							  static_cast<size_t>(static_cast<float>(j) / horizontalChange);
 
+			// NOLINTNEXTLINE(cppcoreguidelines-pro-bounds-pointer-arithmetic)
 			newPixel[index] = oldPixel[oldIndex];
 		}
 	}
