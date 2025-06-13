@@ -323,3 +323,105 @@ TEST_F(FileTestsImage, setResolution)
     EXPECT_EQ(dimensions.first, newDimensions.first/2);
     EXPECT_EQ(dimensions.second, newDimensions.second/2);
 }
+
+TEST_F(FileTestsImage, importImage)
+{
+    EXPECT_TRUE(image.importImage(fileStruct, imageInfo));
+    
+    auto dimensions = image.getDimensions();
+    EXPECT_EQ(dimensions.first, imageInfo.width);
+    EXPECT_EQ(dimensions.second, imageInfo.height);
+    
+    bufferStruct emptyBuffer = {nullptr, 0};
+    struct imageInfo emptyImageInfo = {};
+    EXPECT_FALSE(image.importImage(emptyBuffer, emptyImageInfo));
+}
+
+TEST_F(FileTestsImage, copyConstructor)
+{
+    ASSERT_TRUE(image.importImage(fileStruct, imageInfo));
+    
+    Image imageCopy(image);
+
+    auto originalDimensions = image.getDimensions();
+    auto copyDimensions = imageCopy.getDimensions();
+    EXPECT_EQ(originalDimensions.first, copyDimensions.first);
+    EXPECT_EQ(originalDimensions.second, copyDimensions.second);
+    
+    auto originalCoordinates = image.getCoordinates();
+    auto copyCoordinates = imageCopy.getCoordinates();
+    EXPECT_EQ(originalCoordinates.first, copyCoordinates.first);
+    EXPECT_EQ(originalCoordinates.second, copyCoordinates.second);
+    
+    const char* originalPixelData = image.getPixelData();
+    const char* copyPixelData = imageCopy.getPixelData();
+    
+    for (size_t i = 0; i < fileStruct.bufferSize; i++)
+    {
+        EXPECT_EQ(originalPixelData[i], copyPixelData[i]);
+    }
+}
+
+TEST_F(FileTestsImage, assignmentOperator)
+{
+    ASSERT_TRUE(image.importImage(fileStruct, imageInfo));
+    
+    Image imageAssigned;
+    imageAssigned = image;
+    
+    auto originalDimensions = image.getDimensions();
+    auto assignedDimensions = imageAssigned.getDimensions();
+    EXPECT_EQ(originalDimensions.first, assignedDimensions.first);
+    EXPECT_EQ(originalDimensions.second, assignedDimensions.second);
+    
+    auto originalCoordinates = image.getCoordinates();
+    auto assignedCoordinates = imageAssigned.getCoordinates();
+    EXPECT_EQ(originalCoordinates.first, assignedCoordinates.first);
+    EXPECT_EQ(originalCoordinates.second, assignedCoordinates.second);
+    
+    const char* originalPixelData = image.getPixelData();
+    const char* assignedPixelData = imageAssigned.getPixelData();
+    
+    for (size_t i = 0; i < fileStruct.bufferSize; i++)
+    {
+        EXPECT_EQ(originalPixelData[i], assignedPixelData[i]);
+    }
+    
+    imageAssigned = imageAssigned;
+    auto selfAssignedDimensions = imageAssigned.getDimensions();
+    EXPECT_EQ(originalDimensions.first, selfAssignedDimensions.first);
+    EXPECT_EQ(originalDimensions.second, selfAssignedDimensions.second);
+}
+
+TEST_F(FileTestsImage, setResolutionEdgeCases)
+{
+    ASSERT_TRUE(image.importImage(fileStruct, imageInfo));
+    
+    EXPECT_FALSE(image.setResolution(0, 100));
+    EXPECT_FALSE(image.setResolution(100, 0));
+    EXPECT_FALSE(image.setResolution(0, 0));
+    
+    EXPECT_TRUE(image.setResolution(imageInfo.horizontalResolution, imageInfo.verticalResolution));
+    auto originalDimensions = image.getDimensions();
+    
+    auto unchangedDimensions = image.getDimensions();
+    EXPECT_EQ(originalDimensions.first, unchangedDimensions.first);
+    EXPECT_EQ(originalDimensions.second, unchangedDimensions.second);
+}
+
+TEST_F(FileTestsImage, setResolutionScaling)
+{
+    ASSERT_TRUE(image.importImage(fileStruct, imageInfo));
+    
+    auto originalDimensions = image.getDimensions();
+    
+    size_t doubledHorizontal = imageInfo.horizontalResolution * 2;
+    size_t doubledVertical = imageInfo.verticalResolution * 2;
+    
+    ASSERT_TRUE(image.setResolution(doubledHorizontal, doubledVertical));
+    
+    auto doubledDimensions = image.getDimensions();
+    EXPECT_EQ(originalDimensions.first * 2, doubledDimensions.first);
+    EXPECT_EQ(originalDimensions.second * 2, doubledDimensions.second);
+}
+

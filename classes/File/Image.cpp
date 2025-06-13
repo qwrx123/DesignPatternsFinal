@@ -1,19 +1,25 @@
 #include "Image.h"
 #include <cstring>
 
+/// @brief The constructor for the Image class
+/// @param other The Image object to copy from
 Image::Image(const Image& other)
 	: resolution(other.resolution),
 	  dimensions(other.dimensions),
 	  coordinates(other.coordinates),
 	  width(other.width),
 	  height(other.height),
-	  pixelType(other.pixelType)
+	  pixelType(other.pixelType),
+	  bufferSize(other.bufferSize)
 {
 	// NOLINTNEXTLINE(cppcoreguidelines-avoid-c-arrays,modernize-avoid-c-arrays)
-	pixelData = std::make_unique<char[]>(other.width * other.height);
-	std::memcpy(pixelData.get(), other.pixelData.get(), other.width * other.height);
+	pixelData = std::make_unique<char[]>(bufferSize);
+	std::memcpy(pixelData.get(), other.pixelData.get(), bufferSize);
 }
 
+/// @brief The assignment operator for the Image class
+/// @param other The Image object to copy from
+/// @return A reference to the current Image object
 Image& Image::operator=(const Image& other)
 {
 	if (this == &other)
@@ -27,14 +33,19 @@ Image& Image::operator=(const Image& other)
 	width		= other.width;
 	height		= other.height;
 	pixelType	= other.pixelType;
+	bufferSize	= other.bufferSize;
 
 	// NOLINTNEXTLINE(cppcoreguidelines-avoid-c-arrays,modernize-avoid-c-arrays)
-	pixelData = std::make_unique<char[]>(other.width * other.height);
-	std::memcpy(pixelData.get(), other.pixelData.get(), other.width * other.height);
+	pixelData = std::make_unique<char[]>(other.bufferSize);
+	std::memcpy(pixelData.get(), other.pixelData.get(), other.bufferSize);
 
 	return *this;
 }
 
+/// @brief A function to import an image from a buffer and image information
+/// @param buffer The buffer containing the pixel data
+/// @param image The image information containing width, height, and pixel type
+/// @return true if the import was successful, false otherwise
 bool Image::importImage(const bufferStruct& buffer, const imageInfo& image)
 {
 	if (buffer.bufferLocation == nullptr || buffer.bufferSize == 0)
@@ -53,6 +64,7 @@ bool Image::importImage(const bufferStruct& buffer, const imageInfo& image)
 
 	width		= image.width;
 	height		= image.height;
+	bufferSize	= buffer.bufferSize;
 	pixelType	= image.pixelType;
 	coordinates = {0, 0};
 	dimensions	= {width, height};
@@ -61,6 +73,8 @@ bool Image::importImage(const bufferStruct& buffer, const imageInfo& image)
 	return true;
 }
 
+/// @brief Get the pixel data of the image
+/// @return A pointer to the pixel data
 const char* Image::getPixelData() const
 {
 	return pixelData.get();
@@ -71,6 +85,9 @@ std::pair<size_t, size_t> Image::getCoordinates() const
 	return coordinates;
 }
 
+/// @brief Set the bounds of the image
+/// @param imageBounds The bounds to set for the image
+/// @return True if the bounds were set successfully, false otherwise
 bool Image::setBounds(Bounds imageBounds)
 {
 	if (pixelData == nullptr || width == 0 || height == 0)
@@ -81,6 +98,10 @@ bool Image::setBounds(Bounds imageBounds)
 	return false;
 }
 
+/// @brief Set the coordinates of the image
+/// @param x The x coordinate to set
+/// @param y The y coordinate to set
+/// @return True if successful, false otherwise
 bool Image::setCoordinates(size_t x, size_t y)
 {
 	coordinates.first  = x;
@@ -88,6 +109,10 @@ bool Image::setCoordinates(size_t x, size_t y)
 	return true;
 }
 
+/// @brief Set the resolution of the image, Scaling if nessary
+/// @param horizontal The horizontal resultion to set
+/// @param vertical The vertical resolution to set
+/// @return True if successful, false otherwise
 bool Image::setResolution(size_t horizontal, size_t vertical)
 {
 	if (horizontal == 0 || vertical == 0)
@@ -131,6 +156,7 @@ bool Image::setResolution(size_t horizontal, size_t vertical)
 	}
 
 	pixelData		  = std::move(newPixelData);
+	bufferSize		  = newSize;
 	dimensions.first  = newWidth;
 	dimensions.second = newHeight;
 
@@ -139,6 +165,8 @@ bool Image::setResolution(size_t horizontal, size_t vertical)
 	return true;
 }
 
+/// @brief Get the dimensions of the image
+/// @return A pair containing the width and height of the image
 std::pair<size_t, size_t> Image::getDimensions() const
 {
 	return dimensions;

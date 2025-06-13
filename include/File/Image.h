@@ -25,6 +25,7 @@ class Image : public IImage
 	bool setBounds(Bounds imageBounds) override;
 	// NOLINTNEXTLINE(cppcoreguidelines-avoid-c-arrays,modernize-avoid-c-arrays)
 	std::unique_ptr<char[]>	  pixelData	  = nullptr;
+	size_t					  bufferSize  = 0;
 	size_t					  width		  = 0;
 	size_t					  height	  = 0;
 	pixelType				  pixelType	  = pixelType::PIXEL_TYPE_UNKNOWN;
