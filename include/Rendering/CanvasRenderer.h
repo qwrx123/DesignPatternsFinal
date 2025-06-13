@@ -7,6 +7,7 @@
 #include "IText.h"
 #include "Font.h"
 #include "Color.h"
+#include "IImage.h"
 #include <GLFW/glfw3.h>
 
 class CanvasRenderer : public ICanvasRenderer
@@ -25,6 +26,7 @@ class CanvasRenderer : public ICanvasRenderer
 	void		beginFrame() override;
 	void		drawStroke(const IStroke& stroke) override;
 	static void renderText(const IText& text);
+	void		renderImage(const IImage& image);
 	void		drawButton(const IButton& button) override;
 	void		drawMenu(const IMenu& menu) override;
 	static void drawSliderButton(const IButton& button, float value);

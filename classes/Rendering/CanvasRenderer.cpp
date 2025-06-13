@@ -374,3 +374,38 @@ std::pair<float, float> CanvasRenderer::getWindowDPI()
 
 	return {dpiX, dpiY};
 }
+
+void CanvasRenderer::renderImage(const IImage& image)
+{
+	auto [dimWidth, wimHeight] = image.getDimensions();
+	GLsizei		imageWidth	   = static_cast<GLsizei>(dimWidth);
+	GLsizei		imageHeight	   = static_cast<GLsizei>(wimHeight);
+	GLenum		format		   = GL_RGBA;
+	GLenum		type		   = GL_UNSIGNED_BYTE;
+	const void* pixelData	   = image.getPixelData();
+
+	GLint posX = image.getCoordinates().first;
+	GLint posY = image.getCoordinates().second + imageHeight;
+
+	int width  = 0;
+	int height = 0;
+	glfwGetFramebufferSize(window_, &width, &height);
+
+	if (height < image.getCoordinates().second || width < image.getCoordinates().first)
+	{
+		return;
+	}
+
+	if (posY > height)
+	{
+		int	   remRow	= posY - height;
+		size_t scanLine = imageWidth * 4;
+		pixelData		= static_cast<const char*>(pixelData) + (remRow * scanLine);
+		imageHeight -= remRow;
+		posY -= remRow;
+	}
+
+	glRasterPos2i(posX, posY);
+
+	glDrawPixels(imageWidth, imageHeight, format, type, pixelData);
+}
