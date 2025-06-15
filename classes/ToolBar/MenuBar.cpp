@@ -410,7 +410,7 @@ void MenuBar::handleDropdownButtons(KeyAction action, double x, double y, bool& 
         for (size_t i = 0; i < layerDeleteButtons.size(); ++i)
         {
             auto& delBtn = layerDeleteButtons[i];
-            if (delBtn->getBounds().contains(x, y) && action == KeyAction::Press)
+            if (delBtn->getBounds().contains(x, y) && action == KeyAction::Press && layerDeleteButtons.size() > 1)
             {
                 layerManager->removeLayer((int)i);
                 dropdownOpen = false;
@@ -731,6 +731,7 @@ void MenuBar::rebuildLayerDropdownButtons()
 		layerDropdownButtons.push_back(layerBtn);
 
         // Delete button ("X") aligned right
+		Color deleteColor = (layers.size() > 1) ? red : gray;
         auto deleteBtn = std::make_shared<ButtonClass>(
             "X",
             Bounds{
@@ -739,7 +740,7 @@ void MenuBar::rebuildLayerDropdownButtons()
                 .left = right - buttonHeight,
                 .right = right
             },
-            red);
+            deleteColor);
         layerDeleteButtons.push_back(deleteBtn);
     }
 }
