@@ -136,9 +136,13 @@ int main()
 		}
 
 		menuBar->update();
-		for (const auto& dropdown : menuBar->getLayerDropdownButtons())
+		for (size_t i = 0; i < menuBar->getLayerDropdownButtons().size(); ++i)
 		{
-			renderer->drawButton(*dropdown);
+			const auto& dropdown = menuBar->getLayerDropdownButtons()[i];
+			bool isBeingRenamed	 = menuBar->isRenaming() && (i == menuBar->getLayerBeingRenamed());
+			std::string renameBuffer = isBeingRenamed ? menuBar->getRenameBuffer() : "";
+
+			renderer->drawButton(*dropdown, isBeingRenamed, 0, renameBuffer);
 		}
 		for (const auto& layerDelete : menuBar->getLayerDeleteButtons())
 		{

@@ -4,6 +4,7 @@
 #include "IStroke.h"
 #include <vector>
 #include <memory>
+#include <string>
 
 class Layer
 {
@@ -16,6 +17,9 @@ class Layer
 	Layer(Layer&& other) noexcept			 = default;
 	Layer& operator=(Layer&& other) noexcept = default;
 
+	void					  setName(const std::string& name);
+	[[nodiscard]] std::string getName() const;
+
 	void addStroke(std::shared_ptr<IStroke> stroke);
 	void setStrokes(std::vector<std::shared_ptr<IStroke>> new_strokes);
 	void clear();
@@ -23,6 +27,7 @@ class Layer
 
    private:
 	std::vector<std::shared_ptr<IStroke>> strokes;
+	std::string							  layerName;
 };
 
 #endif	// LAYER_H

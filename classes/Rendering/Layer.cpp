@@ -1,6 +1,17 @@
 #include "Layer.h"
 
-Layer::Layer() = default;
+Layer::Layer() : layerName("Layer 1") {}
+
+
+void Layer::setName(const std::string& name) 
+{ 
+    layerName = name; 
+}
+
+std::string Layer::getName() const 
+{ 
+    return layerName; 
+}
 
 void Layer::addStroke(std::shared_ptr<IStroke> stroke) {
     strokes.push_back(std::move(stroke));

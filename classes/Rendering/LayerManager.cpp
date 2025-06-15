@@ -11,7 +11,10 @@ bool LayerManager::addLayer() {
     if (layers.size() >= maxLayers()) {
         return false;
     }
-    layers.push_back(std::make_shared<Layer>());
+	std::shared_ptr<Layer> newLayer	 = std::make_shared<Layer>();
+    std::string layerName = "Layer " + std::to_string(layers.size() + 1);
+	newLayer->setName(layerName);
+	layers.push_back(newLayer);
     active_layer_index = layers.size() - 1;
     return true;
 }
@@ -39,15 +42,18 @@ size_t LayerManager::getActiveLayerIndex() const {
 
 void LayerManager::removeLayer(int index)
 {
-    if (index >= 0 && index < static_cast<int>(layers.size()))
+    if (index >= 0 && index < layers.size())
     {
         layers.erase(layers.begin() + index);
 
         // Adjust active layer if necessary
         if (getActiveLayerIndex() >= static_cast<int>(layers.size()))
+        {
             active_layer_index = static_cast<int>(layers.size()) - 1;
-
+        }
         if (getActiveLayerIndex() < 0 && !layers.empty())
+        {
             active_layer_index = 0;
+        }
     }
 }

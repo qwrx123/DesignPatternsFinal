@@ -6,6 +6,7 @@
 #include <cmath>
 #include <cassert>
 #include <string>
+#include <GLFW/glfw3.h>
 
 const int defaultButtonWidth = 50;
 const int defaultSliderWidth = 100;
@@ -298,6 +299,17 @@ void MenuBar::setDefaultButtons()
         	.left = buttons.at(buttons.size() - 1)->getBounds().right + 1,
         	.right = buttons.at(buttons.size() - 1)->getBounds().right + defaultSliderWidth},
     	white));
+
+	// Rename Layer button
+	addButton(std::make_shared<ButtonClass>(
+    	"Rename Layer",
+    	Bounds{
+        	.top = bounds.top,
+        	.bottom = midDiv,
+        	.left = buttons.at(buttons.size() - 1)->getBounds().right + 1,
+        	.right = buttons.at(buttons.size() - 1)->getBounds().right + defaultSliderWidth
+    	},
+    	white));
 }
 
 void MenuBar::addButton(std::shared_ptr<IButton> button)
@@ -379,7 +391,7 @@ void MenuBar::onMouseButton(MouseButton click, KeyAction action, double x, doubl
 		    }
 
 			// Consider clicks on Select Layer or Add Layer as "inside dropdown"
-			if (button->getLabel() == "Select Layer" || button->getLabel() == "Add Layer")
+			if (button->getLabel() == "Select Layer" || button->getLabel() == "Add Layer" || button->getLabel() == "Rename Layer")
 			{
 				clickedInsideDropdown = true;
 			}
@@ -406,34 +418,59 @@ void MenuBar::handleDropdownButtons(KeyAction action, double x, double y, bool& 
 		return;
 	}
 
-        // First: handle delete clicks
-        for (size_t i = 0; i < layerDeleteButtons.size(); ++i)
+    // Handle layer delete clicks
+    for (size_t i = 0; i < layerDeleteButtons.size(); ++i)
+    {
+        auto& delBtn = layerDeleteButtons[i];
+        if (delBtn->getBounds().contains(x, y) && action == KeyAction::Press && layerDeleteButtons.size() > 1)
         {
-            auto& delBtn = layerDeleteButtons[i];
-            if (delBtn->getBounds().contains(x, y) && action == KeyAction::Press && layerDeleteButtons.size() > 1)
-            {
-                layerManager->removeLayer((int)i);
-                clickedInsideDropdown = true;
-                return;
-            }
+            layerManager->removeLayer((int)i);
+            clickedInsideDropdown = true;
+            return;
         }
+    }
 
-        // Then: handle normal layer selection clicks
-        for (size_t i = 0; i < layerDropdownButtons.size(); ++i)
+    // Handle layer selection clicks
+    for (size_t i = 0; i < layerDropdownButtons.size(); ++i)
+    {
+        auto& btn = layerDropdownButtons[i];
+        if (btn->getBounds().contains(x, y) && action == KeyAction::Press)
         {
-            auto& btn = layerDropdownButtons[i];
-            if (btn->getBounds().contains(x, y) && action == KeyAction::Press)
-            {
-                layerManager->setActiveLayer(static_cast<int>(i));
-                clickedInsideDropdown = true;
-            }
+            layerManager->setActiveLayer(static_cast<int>(i));
+            clickedInsideDropdown = true;
         }
+    }
 }
 
+void MenuBar::onKey(int key, KeyAction action)
+{
+    if (!renamingLayer) 
+	{
+		return;
+	}
 
-void MenuBar::onKey(int key, KeyAction action) {}
+    if (key == GLFW_KEY_BACKSPACE && action == KeyAction::Press)
+    {
+        if (!renameBuffer.empty())
+		{
+            renameBuffer.pop_back();
+		}
+    }
+    else if (key == GLFW_KEY_ENTER && action == KeyAction::Press)
+    {
+        // Apply the name change
+        layerManager->getAllLayers()[layerBeingRenamed]->setName(renameBuffer);
+        renamingLayer = false;
+        layerBeingRenamed = -1;
+    }
+}
 
-void MenuBar::onChar(unsigned int codepoint) {}
+void MenuBar::onChar(unsigned int codepoint) {
+	if (renamingLayer)
+    {
+        renameBuffer += static_cast<char>(codepoint);
+    }
+}
 
 void MenuBar::onResize(int width, int height)
 {
@@ -566,6 +603,15 @@ void MenuBar::onButton(const std::shared_ptr<IButton>& button, const std::string
     	{
         	layerDropdownButtons.clear();
         	layerDeleteButtons.clear();
+    	}
+	}
+	else if (label == "Rename Layer")
+	{
+    	if (layerManager && !layerManager->getAllLayers().empty())
+    	{
+        	renamingLayer = true;
+        	layerBeingRenamed = (int)layerManager->getActiveLayerIndex();
+			renameBuffer.clear();
     	}
 	}
 	else
@@ -709,7 +755,7 @@ void MenuBar::rebuildLayerDropdownButtons()
 
     for (size_t i = 0; i < layers.size(); ++i)
     {
-        std::string layerName = "Layer " + std::to_string(i + 1);
+        std::string layerName = layers[i]->getName();
         
         // Main selection button (full width minus delete button space)
 		Color layerColor = (layers[i] == layerManager->getActiveLayer()) ? gray : white;
@@ -753,4 +799,26 @@ void MenuBar::update()
     {
         rebuildLayerDropdownButtons();
     }
+}
+
+void MenuBar::beginRenameLayer(int layerIndex)
+{
+    renamingLayer = true;
+    layerBeingRenamed = layerIndex;
+    renameBuffer = layerManager->getAllLayers()[layerIndex]->getName();
+}
+
+bool MenuBar::isRenaming() const 
+{ 
+	return renamingLayer; 
+
+}
+std::string MenuBar::getRenameBuffer() const 
+{ 
+	return renameBuffer; 
+}
+
+int MenuBar::getLayerBeingRenamed() const 
+{ 
+	return layerBeingRenamed; 
 }

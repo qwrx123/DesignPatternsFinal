@@ -63,6 +63,11 @@ class MenuBar : public IMenu, public IInputReceiver
 	void handleDropdownButtons(KeyAction action, double x, double y, bool& clickedInsideDropdown);
 	void update();
 
+	void					  beginRenameLayer(int layerIndex);
+	[[nodiscard]] bool		  isRenaming() const;
+	[[nodiscard]] std::string getRenameBuffer() const;
+	[[nodiscard]] int		  getLayerBeingRenamed() const;
+
    private:
 	std::string							  label;
 	Bounds								  bounds;
@@ -75,6 +80,10 @@ class MenuBar : public IMenu, public IInputReceiver
 	bool								  dropdownOpen = false;
 	std::vector<std::shared_ptr<IButton>> layerDropdownButtons;
 	std::vector<std::shared_ptr<IButton>> layerDeleteButtons;
+	std::vector<std::shared_ptr<IButton>> layerRenameButtons;
+	bool								  renamingLayer		= false;
+	int									  layerBeingRenamed = -1;
+	std::string							  renameBuffer;
 
 	float halfHeight	= 0;
 	float quarterHeight = 0;

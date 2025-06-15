@@ -25,7 +25,9 @@ class CanvasRenderer : public ICanvasRenderer
 	void		beginFrame() override;
 	void		drawStroke(const IStroke& stroke) override;
 	static void renderText(const IText& text);
-	void		drawButton(const IButton& button) override;
+	void drawButton(const IButton& button, bool renamingLayer = false, int layerBeingRenamed = -1,
+					const std::string& renameBuffer = "") override;
+
 	void		drawMenu(const IMenu& menu) override;
 	static void drawSliderButton(const IButton& button, float value);
 	void		endFrame() override;
