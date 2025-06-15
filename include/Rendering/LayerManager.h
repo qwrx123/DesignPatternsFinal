@@ -38,6 +38,9 @@ class LayerManager
 		return maxNumOfLayers;
 	}
 
+	// Removes the selected layer
+	void removeLayer(int index);
+
    private:
 	std::vector<std::shared_ptr<Layer>> layers;
 	size_t								active_layer_index	   = 0;

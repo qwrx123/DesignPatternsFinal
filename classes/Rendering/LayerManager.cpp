@@ -36,3 +36,18 @@ const std::vector<std::shared_ptr<Layer>>& LayerManager::getAllLayers() const {
 size_t LayerManager::getActiveLayerIndex() const {
     return active_layer_index;
 }
+
+void LayerManager::removeLayer(int index)
+{
+    if (index >= 0 && index < static_cast<int>(layers.size()))
+    {
+        layers.erase(layers.begin() + index);
+
+        // Adjust active layer if necessary
+        if (getActiveLayerIndex() >= static_cast<int>(layers.size()))
+            active_layer_index = static_cast<int>(layers.size()) - 1;
+
+        if (getActiveLayerIndex() < 0 && !layers.empty())
+            active_layer_index = 0;
+    }
+}

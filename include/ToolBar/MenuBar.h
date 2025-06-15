@@ -58,8 +58,10 @@ class MenuBar : public IMenu, public IInputReceiver
 	void setLayerPointer(std::shared_ptr<LayerManager> ptr);
 
 	[[nodiscard]] const std::vector<std::shared_ptr<IButton>>& getLayerDropdownButtons() const;
+	[[nodiscard]] const std::vector<std::shared_ptr<IButton>>& getLayerDeleteButtons() const;
 	void													   rebuildLayerDropdownButtons();
 	void handleDropdownButtons(KeyAction action, double x, double y, bool& clickedInsideDropdown);
+	void update();
 
    private:
 	std::string							  label;
@@ -72,6 +74,7 @@ class MenuBar : public IMenu, public IInputReceiver
 	std::shared_ptr<LayerManager>		  layerManager;
 	bool								  dropdownOpen = false;
 	std::vector<std::shared_ptr<IButton>> layerDropdownButtons;
+	std::vector<std::shared_ptr<IButton>> layerDeleteButtons;
 
 	float halfHeight	= 0;
 	float quarterHeight = 0;

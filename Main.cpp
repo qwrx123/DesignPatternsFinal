@@ -135,11 +135,15 @@ int main()
 			}
 		}
 
+		menuBar->update();
 		for (const auto& dropdown : menuBar->getLayerDropdownButtons())
 		{
 			renderer->drawButton(*dropdown);
 		}
-		menuBar->rebuildLayerDropdownButtons();
+		for (const auto& layerDelete : menuBar->getLayerDeleteButtons())
+		{
+			renderer->drawButton(*layerDelete);
+		}
 
 		renderer->endFrame();
 		inputManager->endFrame();
