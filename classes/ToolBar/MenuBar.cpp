@@ -712,6 +712,7 @@ void MenuBar::rebuildLayerDropdownButtons()
         std::string layerName = "Layer " + std::to_string(i + 1);
         
         // Main selection button (full width minus delete button space)
+		Color layerColor = (layers[i] == layerManager->getActiveLayer()) ? gray : white;
 		auto layerBtn = std::make_shared<ButtonClass>(
 			layerName,
 			Bounds {
@@ -720,7 +721,7 @@ void MenuBar::rebuildLayerDropdownButtons()
 				.left = left,
 				.right = right - buttonHeight,
 			},
-			white);
+			layerColor);
 		layerDropdownButtons.push_back(layerBtn);
 
         // Delete button ("X") aligned right

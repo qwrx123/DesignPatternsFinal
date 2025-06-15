@@ -12,7 +12,6 @@ bool LayerManager::addLayer() {
         return false;
     }
     layers.push_back(std::make_shared<Layer>());
-    active_layer_index = layers.size() - 1;
     return true;
 }
 
