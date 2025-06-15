@@ -391,7 +391,7 @@ void MenuBar::onMouseButton(MouseButton click, KeyAction action, double x, doubl
 	handleDropdownButtons(action, x, y, clickedInsideDropdown);
 
 	// Close dropdown if click was outside all valid zones
-	if (dropdownOpen && !clickedInsideDropdown)
+	if (dropdownOpen && !clickedInsideDropdown && action == KeyAction::Press)
 	{
 		dropdownOpen = false;
 		layerDropdownButtons.clear();
@@ -413,9 +413,6 @@ void MenuBar::handleDropdownButtons(KeyAction action, double x, double y, bool& 
             if (delBtn->getBounds().contains(x, y) && action == KeyAction::Press && layerDeleteButtons.size() > 1)
             {
                 layerManager->removeLayer((int)i);
-                dropdownOpen = false;
-                layerDropdownButtons.clear();
-                layerDeleteButtons.clear();
                 clickedInsideDropdown = true;
                 return;
             }
@@ -428,10 +425,6 @@ void MenuBar::handleDropdownButtons(KeyAction action, double x, double y, bool& 
             if (btn->getBounds().contains(x, y) && action == KeyAction::Press)
             {
                 layerManager->setActiveLayer(static_cast<int>(i));
-                std::cout << "Layer " << i + 1 << " selected\n";
-                dropdownOpen = false;
-                layerDropdownButtons.clear();
-                layerDeleteButtons.clear();
                 clickedInsideDropdown = true;
             }
         }
