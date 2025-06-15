@@ -5,6 +5,7 @@
 #include <iostream>
 #include <cmath>
 #include <cassert>
+#include <string>
 
 const int defaultButtonWidth = 50;
 const int defaultSliderWidth = 100;
@@ -394,6 +395,7 @@ void MenuBar::onMouseButton(MouseButton click, KeyAction action, double x, doubl
 	{
 		dropdownOpen = false;
 		layerDropdownButtons.clear();
+		layerDeleteButtons.clear();
 	}
 }
 
@@ -608,7 +610,7 @@ void MenuBar::sliderLogic(const std::shared_ptr<SliderButton>& slider, const std
 						   .a = tool->getActiveTool()->getColor().a};
 		tool->getActiveTool()->setColor(newToolColor);
 
-		if (buttons.at(selectedIndex)->getLabel() != "eraser") {
+		if (buttons.at(selectedIndex)->getLabel() != "Eraser") {
 			buttons.at(selectedIndex)->setColor(newToolColor);
 		}
 
@@ -628,7 +630,7 @@ void MenuBar::sliderLogic(const std::shared_ptr<SliderButton>& slider, const std
 						   .a = tool->getActiveTool()->getColor().a};
 		tool->getActiveTool()->setColor(newToolColor);
 
-		if (buttons.at(selectedIndex)->getLabel() != "eraser") {
+		if (buttons.at(selectedIndex)->getLabel() != "Eraser") {
 			buttons.at(selectedIndex)->setColor(newToolColor);
 		}
 
@@ -648,7 +650,7 @@ void MenuBar::sliderLogic(const std::shared_ptr<SliderButton>& slider, const std
 						   .a = tool->getActiveTool()->getColor().a};
 		tool->getActiveTool()->setColor(newToolColor);
 
-		if (buttons.at(selectedIndex)->getLabel() != "eraser") {
+		if (buttons.at(selectedIndex)->getLabel() != "Eraser") {
 			buttons.at(selectedIndex)->setColor(newToolColor);
 		}
 		
@@ -668,7 +670,7 @@ void MenuBar::sliderLogic(const std::shared_ptr<SliderButton>& slider, const std
 						   .a = value};
 		tool->getActiveTool()->setColor(newToolColor);
 
-		if (buttons.at(selectedIndex)->getLabel() != "eraser") {
+		if (buttons.at(selectedIndex)->getLabel() != "Eraser") {
 			buttons.at(selectedIndex)->setColor(newToolColor);
 		}
 		
