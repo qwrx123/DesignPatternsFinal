@@ -35,6 +35,7 @@ EraserTool::~EraserTool() = default;
 
 void EraserTool::beginStroke(const Point& start)
 {
+	stroke_manager->updateEraserHistory();
 	drawing	   = true;
 	erase_path = std::make_shared<Stroke>(Color{.r = 1.0F, .g = 1.0F, .b = 1.0F, .a = 0.0F},
 										  eraser_thickness);
@@ -109,6 +110,7 @@ void EraserTool::endStroke(const Point& end)
 	{
 		erase_path->addPoint(end);
 		stroke_manager->splitEraseWithPath(erase_path, eraser_thickness);
+		stroke_manager->updateEraserHistory();
 		erase_path = nullptr;
 	}
 }
@@ -156,4 +158,24 @@ void EraserTool::setThickness(float thickness)
 float EraserTool::getThickness() const
 {
 	return eraser_thickness;
+}
+
+void EraserTool::undoStroke()
+{
+	stroke_manager->undoErase();
+}
+
+void EraserTool::redoStroke()
+{
+	stroke_manager->redoErase();
+}
+
+History<std::vector<std::shared_ptr<IStroke>>> EraserTool::getHistory() const
+{
+	return stroke_manager->getEraserHistory();
+}
+
+void EraserTool::clearStrokes()
+{
+	stroke_manager->clear();
 }

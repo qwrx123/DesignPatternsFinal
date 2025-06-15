@@ -35,6 +35,10 @@ class ToolManager : public IToolManager, public IInputReceiver
 	void onChar(unsigned int codepoint) override;
 	void onResize(int width, int height) override;
 
+	void undoStroke() override;
+	void redoStroke() override;
+	void clearStrokes() override;
+
    private:
 	std::unordered_map<std::string, std::shared_ptr<IDrawingTool>> tools;
 	std::shared_ptr<IDrawingTool>								   current_tool;

@@ -122,3 +122,18 @@ void ToolManager::onResize(int width, int height)
 	setBounds(Bounds{
 		.top = bounds.top, .bottom = (float) height, .left = bounds.left, .right = (float) width});
 }
+
+void ToolManager::undoStroke()
+{
+	current_tool->undoStroke();
+}
+
+void ToolManager::redoStroke()
+{
+	current_tool->redoStroke();
+}
+
+void ToolManager::clearStrokes()
+{
+	current_tool->clearStrokes();
+}
