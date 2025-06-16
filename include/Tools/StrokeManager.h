@@ -12,17 +12,15 @@ class StrokeManager : public IStrokeManager
 	StrokeManager(std::shared_ptr<LayerManager> layer_manager);
 	~StrokeManager() override;
 
-	StrokeManager(const StrokeManager& other);
-	StrokeManager& operator=(const StrokeManager& other);
-	StrokeManager(StrokeManager&& other) noexcept;
-	StrokeManager& operator=(StrokeManager&& other) noexcept;
+	StrokeManager(const StrokeManager& other)				 = delete;
+	StrokeManager& operator=(const StrokeManager& other)	 = delete;
+	StrokeManager(StrokeManager&& other) noexcept			 = delete;
+	StrokeManager& operator=(StrokeManager&& other) noexcept = delete;
 
 	void addStroke(std::shared_ptr<IStroke> stroke) override;
 	[[nodiscard]] const std::vector<std::shared_ptr<IStroke>>& getStrokes() const override;
 	void													   clear() override;
 	void replaceStrokes(std::vector<std::shared_ptr<IStroke>> new_strokes) override;
-	void splitEraseWithPath(const std::shared_ptr<IStroke>& eraser_path,
-							float							eraser_radius) override;
 	void removeLastStroke() override;
 	void undoStroke() override;
 	void redoStroke() override;
@@ -34,18 +32,10 @@ class StrokeManager : public IStrokeManager
 	void										   undoAll() override;
 
    private:
-	[[nodiscard]] std::vector<std::shared_ptr<IStroke>> cloneStrokes() const;
+	std::shared_ptr<LayerManager> layer_manager;
 
-	std::vector<std::shared_ptr<IStroke>> strokes_;
-	std::shared_ptr<LayerManager>		  layer_manager;
-
-	void							  isErased(const auto& stroke_pts, size_t i, bool& is_erased,
-											   std::vector<std::shared_ptr<IStroke>>& updated_strokes,
-											   std::vector<Point>& current_segment, const std::shared_ptr<IStroke>& eraser_path,
-											   float eraser_radius, const std::shared_ptr<IStroke>& stroke);
-	History<std::shared_ptr<IStroke>> brushHistory;
+	History<std::shared_ptr<IStroke>>			   brushHistory;
 	History<std::vector<std::shared_ptr<IStroke>>> eraserHistory;
-	void										   reAddStroke(std::shared_ptr<IStroke> stroke);
 };
 
 #endif	// STROKEMANAGER_H

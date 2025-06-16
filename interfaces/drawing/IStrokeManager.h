@@ -9,8 +9,9 @@
 class IStrokeManager
 {
    public:
-	IStrokeManager()								 = default;
-	virtual ~IStrokeManager()						 = default;
+	IStrokeManager()		  = default;
+	virtual ~IStrokeManager() = default;
+
 	IStrokeManager(const IStrokeManager&)			 = default;
 	IStrokeManager& operator=(const IStrokeManager&) = default;
 	IStrokeManager(IStrokeManager&&)				 = default;
@@ -19,9 +20,7 @@ class IStrokeManager
 	virtual void addStroke(std::shared_ptr<IStroke> stroke)									   = 0;
 	[[nodiscard]] virtual const std::vector<std::shared_ptr<IStroke>>& getStrokes() const	   = 0;
 	virtual void													   clear()				   = 0;
-	virtual void splitEraseWithPath(const std::shared_ptr<IStroke>& eraser_path,
-									float							eraser_radius)									   = 0;
-	virtual void removeLastStroke()															   = 0;
+	virtual void													   removeLastStroke()	   = 0;
 	virtual void replaceStrokes(std::vector<std::shared_ptr<IStroke>> new_strokes)			   = 0;
 	virtual void undoStroke()																   = 0;
 	virtual void redoStroke()																   = 0;

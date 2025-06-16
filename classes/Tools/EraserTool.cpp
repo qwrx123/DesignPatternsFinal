@@ -221,17 +221,6 @@ void EraserTool::splitEraseWithPath(const std::shared_ptr<IStroke>& eraser_path,
 void EraserTool::replaceStrokes(std::vector<std::shared_ptr<IStroke>> new_strokes)
 {
 	layer_manager->getActiveLayer()->setStrokes(new_strokes);
-
-	std::vector<std::shared_ptr<IStroke>> allStrokes;
-
-	// Collect strokes across all layers
-	for (const auto& layer : layer_manager->getAllLayers())
-	{
-		const auto& layerStrokes = layer->getStrokes();
-		allStrokes.insert(allStrokes.end(), layerStrokes.begin(), layerStrokes.end());
-	}
-
-	stroke_manager->replaceStrokes(allStrokes);
 }
 
 void EraserTool::isErased(const std::vector<Point>& stroke_pts, size_t i, bool& is_erased,

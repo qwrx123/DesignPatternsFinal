@@ -88,7 +88,6 @@ void BrushTool::endStroke(const Point& end)
 	if (current_stroke)
 	{
 		current_stroke->addPoint(end);
-		layer_manager->getActiveLayer()->addStroke(current_stroke);
 		stroke_manager->addStroke(current_stroke);
 		current_stroke.reset();
 	}
