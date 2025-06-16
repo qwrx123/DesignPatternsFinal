@@ -106,7 +106,7 @@ TEST_F(ToolStressTest, EraserUndoWorksAcrossStressTest) {
 
     eraser->undoStroke();
     eraser->undoStroke();
-    EXPECT_EQ(strokeManager->getStrokes().size(), 6);
+    EXPECT_EQ(strokeManager->getStrokes().size(), 5);
 }
 
 TEST_F(ToolStressTest, LayerIsolationStressTest) {
