@@ -2,6 +2,7 @@
 #define LAYER_H
 
 #include "IStroke.h"
+#include "History.h"
 #include <vector>
 #include <memory>
 #include <string>
@@ -25,9 +26,15 @@ class Layer
 	void clear();
 	[[nodiscard]] const std::vector<std::shared_ptr<IStroke>>& getStrokes() const;
 
+	void														 updateEraserHistory();
+	void														 undoErase();
+	void														 redoErase();
+	[[nodiscard]] History<std::vector<std::shared_ptr<IStroke>>> getEraserHistory() const;
+
    private:
-	std::vector<std::shared_ptr<IStroke>> strokes;
-	std::string							  layerName;
+	std::vector<std::shared_ptr<IStroke>>		   strokes;
+	History<std::vector<std::shared_ptr<IStroke>>> eraserHistory;
+	std::string									   layerName;
 };
 
 #endif	// LAYER_H

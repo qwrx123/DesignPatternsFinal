@@ -38,34 +38,29 @@ EraserTool::~EraserTool() = default;
 
 void EraserTool::beginStroke(const Point& start)
 {
-	// stroke_manager->updateEraserHistory();
 	drawing	   = true;
 	erase_path = std::make_shared<Stroke>(Color{.r = 1.0F, .g = 1.0F, .b = 1.0F, .a = 0.0F},
 										  eraser_thickness);
 	erase_path->addPoint(start);
+
+	if (layer_manager->getActiveLayer()->getEraserHistory().isEmpty())
+	{
+		layer_manager->getActiveLayer()->updateEraserHistory();
+	}
 }
 
 void EraserTool::addPoint(const Point& point)
 {
-	if (!erase_path)
-	{
-		return;
-	}
+	if (!erase_path) return;
 
-	// Add point to visual eraser path
 	erase_path->addPoint(point);
 
 	const auto& points = erase_path->getPoints();
-	if (points.size() < 2)
-	{
-		return;
-	}
+	if (points.size() < 2) return;
 
 	const Point& a = points[points.size() - 2];
 	const Point& b = points[points.size() - 1];
 
-	// Check if this segment meaningfully overlaps any stroke (fast test)
-	// We'll construct a mini stroke only if it does
 	bool intersects = false;
 
 	auto active_layer = layer_manager->getActiveLayer();
@@ -89,13 +84,9 @@ void EraserTool::addPoint(const Point& point)
 			}
 		}
 
-		if (intersects)
-		{
-			break;
-		}
+		if (intersects) break;
 	}
 
-	// If intersection is likely, send mini path to stroke manager
 	if (intersects)
 	{
 		auto segment_path = std::make_shared<Stroke>(
@@ -114,7 +105,7 @@ void EraserTool::endStroke(const Point& end)
 	{
 		erase_path->addPoint(end);
 		splitEraseWithPath(erase_path, eraser_thickness);
-		stroke_manager->updateEraserHistory();
+		layer_manager->getActiveLayer()->updateEraserHistory();
 		erase_path = nullptr;
 	}
 }
@@ -129,7 +120,8 @@ std::string EraserTool::getName()
 	return "Eraser";
 }
 
-void  EraserTool::setColor(const Color& color) {}
+void EraserTool::setColor(const Color& color) {}
+
 Color EraserTool::getColor() const
 {
 	return eraser_color;
@@ -153,10 +145,7 @@ bool EraserTool::isDrawing() const
 void EraserTool::setThickness(float thickness)
 {
 	eraser_thickness = thickness;
-	if (erase_path)
-	{
-		erase_path->setThickness(thickness);
-	}
+	if (erase_path) erase_path->setThickness(thickness);
 }
 
 float EraserTool::getThickness() const
@@ -166,17 +155,12 @@ float EraserTool::getThickness() const
 
 void EraserTool::undoStroke()
 {
-	stroke_manager->undoErase();
+	layer_manager->getActiveLayer()->undoErase();
 }
 
 void EraserTool::redoStroke()
 {
-	stroke_manager->redoErase();
-}
-
-History<std::vector<std::shared_ptr<IStroke>>> EraserTool::getHistory() const
-{
-	return stroke_manager->getEraserHistory();
+	layer_manager->getActiveLayer()->redoErase();
 }
 
 void EraserTool::clearStrokes()
@@ -220,7 +204,7 @@ void EraserTool::splitEraseWithPath(const std::shared_ptr<IStroke>& eraser_path,
 
 void EraserTool::replaceStrokes(std::vector<std::shared_ptr<IStroke>> new_strokes)
 {
-	layer_manager->getActiveLayer()->setStrokes(new_strokes);
+	layer_manager->getActiveLayer()->setStrokes(std::move(new_strokes));
 }
 
 void EraserTool::isErased(const std::vector<Point>& stroke_pts, size_t i, bool& is_erased,
@@ -234,13 +218,11 @@ void EraserTool::isErased(const std::vector<Point>& stroke_pts, size_t i, bool& 
 		Point a = stroke_pts[i];
 		Point b = stroke_pts[i + 1];
 
-		// Check each eraser segment against this stroke segment
 		const auto& erase_pts = eraser_path->getPoints();
 		for (size_t j = 0; j + 1 < erase_pts.size(); ++j)
 		{
 			Point e_center = erase_pts[j];
 
-			// Erase if segment is within eraser radius
 			if (pointToSegmentDistance(e_center, a, b) <= eraser_radius)
 			{
 				is_erased = true;
@@ -250,7 +232,6 @@ void EraserTool::isErased(const std::vector<Point>& stroke_pts, size_t i, bool& 
 	}
 	else
 	{
-		// Last point in stroke: do point-to-point erasing
 		for (const auto& ep : eraser_path->getPoints())
 		{
 			auto dx = static_cast<float>(stroke_pts[i].x - ep.x);

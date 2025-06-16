@@ -24,18 +24,12 @@ class StrokeManager : public IStrokeManager
 	void removeLastStroke() override;
 	void undoStroke() override;
 	void redoStroke() override;
-	void undoErase() override;
-	void redoErase() override;
-	History<std::shared_ptr<IStroke>>			   getBrushHistory() override;
-	History<std::vector<std::shared_ptr<IStroke>>> getEraserHistory() override;
-	void										   updateEraserHistory() override;
-	void										   undoAll() override;
+	History<std::shared_ptr<IStroke>> getBrushHistory() override;
+	void							  undoAll() override;
 
    private:
-	std::shared_ptr<LayerManager> layer_manager;
-
-	History<std::shared_ptr<IStroke>>			   brushHistory;
-	History<std::vector<std::shared_ptr<IStroke>>> eraserHistory;
+	std::shared_ptr<LayerManager>	  layer_manager;
+	History<std::shared_ptr<IStroke>> brushHistory;
 };
 
 #endif	// STROKEMANAGER_H

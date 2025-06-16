@@ -79,48 +79,13 @@ void StrokeManager::redoStroke()
 	}
 }
 
-void StrokeManager::undoErase()
-{
-	if (!eraserHistory.isEmpty())
-	{
-		eraserHistory.undo();
-		if (!eraserHistory.isEmpty())
-		{
-			layer_manager->getActiveLayer()->setStrokes(eraserHistory.peek());
-		}
-	}
-}
-
-void StrokeManager::redoErase()
-{
-	if (!eraserHistory.isLastUndoneEmpty())
-	{
-		eraserHistory.redo();
-		layer_manager->getActiveLayer()->setStrokes(eraserHistory.peek());
-	}
-}
-
 History<std::shared_ptr<IStroke>> StrokeManager::getBrushHistory()
 {
 	return brushHistory;
 }
 
-History<std::vector<std::shared_ptr<IStroke>>> StrokeManager::getEraserHistory()
-{
-	return eraserHistory;
-}
-
-void StrokeManager::updateEraserHistory()
-{
-	auto active_layer = layer_manager->getActiveLayer();
-	auto strokes	  = active_layer->getStrokes();
-	eraserHistory.push(strokes);
-	eraserHistory.clearUndone();
-}
-
 void StrokeManager::undoAll()
 {
-	eraserHistory.clear();
 	brushHistory.clear();
 	layer_manager->getActiveLayer()->setStrokes({});
 }

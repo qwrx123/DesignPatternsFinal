@@ -17,19 +17,15 @@ class IStrokeManager
 	IStrokeManager(IStrokeManager&&)				 = default;
 	IStrokeManager& operator=(IStrokeManager&&)		 = default;
 
-	virtual void addStroke(std::shared_ptr<IStroke> stroke)									   = 0;
-	[[nodiscard]] virtual const std::vector<std::shared_ptr<IStroke>>& getStrokes() const	   = 0;
-	virtual void													   clear()				   = 0;
-	virtual void													   removeLastStroke()	   = 0;
-	virtual void replaceStrokes(std::vector<std::shared_ptr<IStroke>> new_strokes)			   = 0;
-	virtual void undoStroke()																   = 0;
-	virtual void redoStroke()																   = 0;
-	virtual void undoErase()																   = 0;
-	virtual void redoErase()																   = 0;
-	[[nodiscard]] virtual History<std::shared_ptr<IStroke>>				 getBrushHistory()	   = 0;
-	[[nodiscard]] virtual History<std::vector<std::shared_ptr<IStroke>>> getEraserHistory()	   = 0;
-	virtual void														 updateEraserHistory() = 0;
-	virtual void														 undoAll()			   = 0;
+	virtual void addStroke(std::shared_ptr<IStroke> stroke)								  = 0;
+	[[nodiscard]] virtual const std::vector<std::shared_ptr<IStroke>>& getStrokes() const = 0;
+	virtual void													   clear()			  = 0;
+	virtual void													   removeLastStroke() = 0;
+	virtual void replaceStrokes(std::vector<std::shared_ptr<IStroke>> new_strokes)		  = 0;
+	virtual void undoStroke()															  = 0;
+	virtual void redoStroke()															  = 0;
+	[[nodiscard]] virtual History<std::shared_ptr<IStroke>> getBrushHistory()			  = 0;
+	virtual void											undoAll()					  = 0;
 };
 
 #endif	// ISTROKEMANAGER_H
