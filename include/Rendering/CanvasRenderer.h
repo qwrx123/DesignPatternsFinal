@@ -34,8 +34,9 @@ class CanvasRenderer : public ICanvasRenderer
 	static void drawSliderButton(const IButton& button, float value);
 	void		endFrame() override;
 
-	bufferStruct			exportCanvas() override;
-	bool					exportBitmap(std::string fileName, std::string fileLocation) override;
+	bufferStruct			exportCanvas(Bounds boundingBox = {}) override;
+	bool					exportBitmap(std::string fileName, std::string fileLocation,
+										 Bounds boundingBox = {}) override;
 	std::pair<float, float> getWindowDPI() override;
 
 	static void textRenderTest();

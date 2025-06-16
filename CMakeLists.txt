@@ -134,6 +134,7 @@ target_link_libraries(GlfwTestApp
 	Tools
 	Input
 	ToolBar
+	File
 )
 
 target_include_directories(GlfwTestApp

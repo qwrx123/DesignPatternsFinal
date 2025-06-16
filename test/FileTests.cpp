@@ -265,10 +265,19 @@ TEST_F(FileTestsImage, getPixelData)
     
     const char* pixelData = image.getPixelData();
     
-    for (size_t i = 0; i < fileStruct.bufferSize; i++)
+	size_t scanLineSize = imageInfo.width * 4;
+	size_t iteration	= 0;
+
+	for (const char* scanLine = pixelData + ((imageInfo.height - 1) * scanLineSize);
+		 scanLine >= pixelData;
+		 scanLine -= scanLineSize)
     {
-        EXPECT_EQ(pixelData[i], originalData.bufferLocation.get()[i]);
-    }
+        for (size_t j = 0; j < scanLineSize; j++)
+        {
+            EXPECT_EQ(scanLine[j], originalData.bufferLocation.get()[iteration * scanLineSize + j]);
+        }
+        iteration++;
+	}
 }
 
 TEST_F(FileTestsImage, getDimensions)

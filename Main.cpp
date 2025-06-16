@@ -1,5 +1,6 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+#include <iostream>
 #include "CanvasRenderer.h"
 #include "InputManager.h"
 #include "ToolManager.h"
@@ -9,6 +10,10 @@
 #include "ButtonClass.h"
 #include "TextManager.h"
 #include "LayerManager.h"
+#include "FileLocation.h"
+#include "Image.h"
+#include "IImage.h"
+#include "Import.h"
 
 const int		  defaultWindowWidth  = 800;
 const int		  defaultWindowHeight = 600;
@@ -94,10 +99,48 @@ void initializeObjects(GLFWwindow* window, std::unique_ptr<CanvasRenderer>& rend
 	menuBar->setDefaultButtons();
 }
 
+void drawBitmap(CanvasRenderer& renderer, MenuBar& menuBar, bool shouldImport)
+{
+	static std::unique_ptr<IImage> image;
+
+	if (shouldImport)
+	{
+		Import import = Import();
+
+		std::string fileLocation = import.quarryFileLocation();
+		std::string fileName	 = "DaisyExport";
+		import.setFileLocation(fileLocation);
+		import.setFileName(fileName);
+		import.setFileType(IFiles::type::bmp);
+		if (import.importFile())
+		{
+			auto [buffer, info] = import.getImportedData();
+			image				= std::make_unique<Image>();
+			image->importImage(buffer, info);
+			image->setCoordinates(0, static_cast<size_t>(menuBar.getBounds().bottom));
+		}
+		else
+		{
+			std::cerr << "Failed to import image.\n";
+			return;
+		}
+	}
+
+	if (image == nullptr || image->getPixelData() == nullptr)
+	{
+		return;
+	}
+
+	renderer.renderImage(*image);
+}
 void renderFrame(CanvasRenderer& renderer, LayerManager& layerManager, ToolManager& toolManager,
 				 TextManager& textManager, MenuBar& menuBar)
 {
 	renderer.beginFrame();
+
+	static bool importCanvas = false;
+	drawBitmap(renderer, menuBar, importCanvas);
+	importCanvas = false;
 
 	for (const auto& layer : layerManager.getAllLayers())
 	{
@@ -121,11 +164,22 @@ void renderFrame(CanvasRenderer& renderer, LayerManager& layerManager, ToolManag
 			renderer.drawStroke(*live_stroke);
 		}
 	}
+	bool exportCanvas = false;
 
 	renderer.drawMenu(menuBar);
 
 	for (const auto& button : menuBar.getButtons())
 	{
+		if (button->getLabel() == "export" && button->isPressed())
+		{
+			exportCanvas = true;
+			button->setPressed(false);
+		}
+		if (button->getLabel() == "import" && button->isPressed())
+		{
+			importCanvas = true;
+			button->setPressed(false);
+		}
 		if (button->getLabel() == "size" || button->getLabel() == "red" ||
 			button->getLabel() == "green" || button->getLabel() == "blue" ||
 			button->getLabel() == "opacity")
@@ -152,6 +206,19 @@ void renderFrame(CanvasRenderer& renderer, LayerManager& layerManager, ToolManag
 	for (const auto& del : menuBar.getLayerDeleteButtons())
 	{
 		renderer.drawButton(*del);
+	}
+
+	if (exportCanvas)
+	{
+		glFlush();
+		glFinish();
+		std::string fileLocation = FileLocation::getDownloadLocation();
+		std::string fileName	 = "DaisyExport";
+
+		renderer.exportBitmap(
+			fileName, fileLocation,
+			{.top = menuBar.getBounds().bottom, .bottom = 0, .left = 0, .right = 0});
+		std::cout << "Canvas exported to: " << fileLocation << fileName << ".bmp\n";
 	}
 
 	renderer.endFrame();

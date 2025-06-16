@@ -227,10 +227,10 @@ bool Export::setupBmpV5Header(char* buffer, size_t buffer_size, imageInfo imageI
 	const WORD ALIGNMENT = 4;
 	const WORD PADDING	 = (imageInfo.width * (PIXEL_SIZE / CHAR_BIT)) % ALIGNMENT;
 
-	const DWORD RED_MASK   = 0xFF000000;
-	const DWORD GREEN_MASK = 0x00FF0000;
-	const DWORD BLUE_MASK  = 0x0000FF00;
-	const DWORD ALPHA_MASK = 0x000000FF;
+	const DWORD RED_MASK   = 0x000000FF;
+	const DWORD GREEN_MASK = 0x0000FF00;
+	const DWORD BLUE_MASK  = 0x00FF0000;
+	const DWORD ALPHA_MASK = 0xFF000000;
 
 	const DWORD LCS_sRGB = 0x73524742;
 
