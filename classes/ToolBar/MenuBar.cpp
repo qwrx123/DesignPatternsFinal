@@ -374,6 +374,10 @@ void MenuBar::onMouseButton(MouseButton click, KeyAction action, double x, doubl
 			{
 				std::string label = button->getLabel();
 				button->setPressed(true);
+				if (button->getLabel() == "Add Layer" || button->getLabel() == "Select Layer")
+				{
+   					button->setColor(gray);
+				}
 				onButton(button, label, x, y, itCount);
 			}
 
@@ -388,6 +392,10 @@ void MenuBar::onMouseButton(MouseButton click, KeyAction action, double x, doubl
 			if (action == KeyAction::Release) 
 			{
 				button->setPressed(false);
+				if (button->getLabel() == "Add Layer" || button->getLabel() == "Select Layer")
+				{
+    				button->setColor(white);
+				}
 		    }
 
 			// Consider clicks on Select Layer or Add Layer as "inside dropdown"
@@ -462,6 +470,14 @@ void MenuBar::onKey(int key, KeyAction action)
         layerManager->getAllLayers()[layerBeingRenamed]->setName(renameBuffer);
         renamingLayer = false;
         layerBeingRenamed = -1;
+
+		for (auto& btn : buttons)
+    	{
+        	if (btn->getLabel() == "Rename Layer")
+        	{
+            	btn->setColor(white);
+        	}
+    	}
     }
 }
 
@@ -613,6 +629,7 @@ void MenuBar::onButton(const std::shared_ptr<IButton>& button, const std::string
         	layerBeingRenamed = (int)layerManager->getActiveLayerIndex();
 			renameBuffer.clear();
     	}
+		button->setColor(gray);
 	}
 	else
 	{

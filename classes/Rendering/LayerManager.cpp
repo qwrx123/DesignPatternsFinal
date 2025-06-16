@@ -12,10 +12,11 @@ bool LayerManager::addLayer() {
         return false;
     }
 	std::shared_ptr<Layer> newLayer	 = std::make_shared<Layer>();
-    std::string layerName = "Layer " + std::to_string(layers.size() + 1);
+    std::string layerName = "Layer " + std::to_string(layer_name_counter);
 	newLayer->setName(layerName);
 	layers.push_back(newLayer);
     active_layer_index = layers.size() - 1;
+    layer_name_counter++;
     return true;
 }
 

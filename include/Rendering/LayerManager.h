@@ -43,8 +43,9 @@ class LayerManager
 
    private:
 	std::vector<std::shared_ptr<Layer>> layers;
+	int									layer_name_counter	   = 2;
 	size_t								active_layer_index	   = 0;
-	static constexpr size_t				kDefaultMaxNumOfLayers = 5;	 // this is so stupid
+	static constexpr size_t				kDefaultMaxNumOfLayers = 5;
 	size_t								maxNumOfLayers		   = kDefaultMaxNumOfLayers;
 };
 
