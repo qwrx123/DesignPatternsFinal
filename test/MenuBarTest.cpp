@@ -1,248 +1,251 @@
-// #include <GLFW/glfw3.h>
-// #include "gtest/gtest.h"
-// #include "MenuBar.h"
-// #include "ToolManager.h"
-// #include "BrushTool.h"
-// #include "EraserTool.h"
-// #include "TextManager.h"
-// #include "LayerManager.h"
+#include <GLFW/glfw3.h>
+#include "gtest/gtest.h"
+#include "MenuBar.h"
+#include "ToolManager.h"
+#include "BrushTool.h"
+#include "EraserTool.h"
+#include "TextManager.h"
+#include "StrokeManager.h"
+#include "LayerManager.h"
 
-// // Helper function to find button by label
-// std::shared_ptr<IButton> getButton(MenuBar& mb, const std::string& label) {
-//     for (const auto& btn : mb.getButtons()) {
-//         if (btn->getLabel() == label) return btn;
-//     }
-//     return nullptr;
-// }
+// Helper function to find button by label
+std::shared_ptr<IButton> getButton(MenuBar& mb, const std::string& label) {
+    for (const auto& btn : mb.getButtons()) {
+        if (btn->getLabel() == label) return btn;
+    }
+    return nullptr;
+}
 
-// class MenuBarIntegrationTest : public ::testing::Test {
-// protected:
-//     std::shared_ptr<MenuBar> menuBar;
-//     std::shared_ptr<ToolManager> toolManager;
-//     std::shared_ptr<TextManager> textManager;
-//     std::shared_ptr<LayerManager> layerManager;
+class MenuBarIntegrationTest : public ::testing::Test {
+protected:
+    std::shared_ptr<MenuBar> menuBar;
+    std::shared_ptr<ToolManager> toolManager;
+    std::shared_ptr<TextManager> textManager;
+    std::shared_ptr<LayerManager> layerManager;
+    std::shared_ptr<IStrokeManager> strokeManager;
 
-//     void SetUp() override {
-//         menuBar = std::make_shared<MenuBar>();
-        
-//         toolManager = std::make_shared<ToolManager>();
-//         toolManager->registerTool("Brush", std::make_shared<BrushTool>(layerManager, Color{1.0f, 0.0f, 0.0f, 1.0f}, 2.0f));
-//         toolManager->registerTool("Eraser", std::make_shared<EraserTool>(layerManager, 2.0f));
-//         toolManager->selectTool("Brush");
+    void SetUp() override {
+        menuBar = std::make_shared<MenuBar>();
 
-//         textManager = std::make_shared<TextManager>();
-//         layerManager = std::make_shared<LayerManager>();
+        layerManager = std::make_shared<LayerManager>();
+        strokeManager = std::make_shared<StrokeManager>(layerManager);
 
-//         menuBar->setToolPointer(toolManager);
-//         menuBar->setTextPointer(textManager);
-//         menuBar->setLayerPointer(layerManager);
-//         menuBar->setBounds({.top = 0, .bottom = 100, .left = 0, .right = 500});
-//         menuBar->setDefaultButtons();
-//     }
-// };
+        toolManager = std::make_shared<ToolManager>();
+        toolManager->registerTool("Brush", std::make_shared<BrushTool>(layerManager, strokeManager, Color{1.0f, 0.0f, 0.0f, 1.0f}, 2.0f));
+        toolManager->registerTool("Eraser", std::make_shared<EraserTool>(layerManager, strokeManager, 2.0f));  // <-- FIXED
 
-// TEST_F(MenuBarIntegrationTest, AddLayerButtonColorFlashesOnClick) {
-//     auto addButton = getButton(*menuBar, "Add Layer");
-//     menuBar->onMouseButton(MouseButton::Left, KeyAction::Press, addButton->getBounds().left + 1, addButton->getBounds().top + 1);
-//     EXPECT_EQ(addButton->getColor().r, 0.5f); // Gray while pressed
-//     menuBar->onMouseButton(MouseButton::Left, KeyAction::Release, addButton->getBounds().left + 1, addButton->getBounds().top + 1);
-//     EXPECT_EQ(addButton->getColor().r, 1.0f); // White after release
-// }
+        textManager = std::make_shared<TextManager>();
 
-// TEST_F(MenuBarIntegrationTest, RenameLayerButtonChangesColor) {
-//     layerManager->addLayer(); // Need one layer
+        menuBar->setToolPointer(toolManager);
+        menuBar->setTextPointer(textManager);
+        menuBar->setLayerPointer(layerManager);
+        menuBar->setBounds({.top = 0, .bottom = 100, .left = 0, .right = 500});
+        menuBar->setDefaultButtons();
+    }
+};
 
-//     auto renameButton = getButton(*menuBar, "Rename Layer");
+TEST_F(MenuBarIntegrationTest, AddLayerButtonColorFlashesOnClick) {
+    auto addButton = getButton(*menuBar, "Add Layer");
+    menuBar->onMouseButton(MouseButton::Left, KeyAction::Press, addButton->getBounds().left + 1, addButton->getBounds().top + 1);
+    EXPECT_EQ(addButton->getColor().r, 0.5f); // Gray while pressed
+    menuBar->onMouseButton(MouseButton::Left, KeyAction::Release, addButton->getBounds().left + 1, addButton->getBounds().top + 1);
+    EXPECT_EQ(addButton->getColor().r, 1.0f); // White after release
+}
 
-//     // Click Rename
-//     menuBar->onMouseButton(MouseButton::Left, KeyAction::Press, renameButton->getBounds().left + 1, renameButton->getBounds().top + 1);
-//     EXPECT_EQ(renameButton->getColor().r, 0.5f); // Gray while renaming
+TEST_F(MenuBarIntegrationTest, RenameLayerButtonChangesColor) {
+    layerManager->addLayer(); // Need one layer
 
-//     // Finish renaming
-//     menuBar->onKey(GLFW_KEY_ENTER, KeyAction::Press);
-//     EXPECT_EQ(renameButton->getColor().r, 1.0f); // Back to white
-// }
+    auto renameButton = getButton(*menuBar, "Rename Layer");
 
-// TEST_F(MenuBarIntegrationTest, EraserButtonColorChangesOnSelection) {
-//     auto eraserButton = getButton(*menuBar, "Eraser");
-//     auto brushButton  = getButton(*menuBar, "Brush");
+    // Click Rename
+    menuBar->onMouseButton(MouseButton::Left, KeyAction::Press, renameButton->getBounds().left + 1, renameButton->getBounds().top + 1);
+    EXPECT_EQ(renameButton->getColor().r, 0.5f); // Gray while renaming
 
-//     // Click Eraser button
-//     menuBar->onMouseButton(MouseButton::Left, KeyAction::Press, eraserButton->getBounds().left + 1, eraserButton->getBounds().top + 1);
-//     menuBar->onMouseButton(MouseButton::Left, KeyAction::Release, eraserButton->getBounds().left + 1, eraserButton->getBounds().top + 1);
-//     EXPECT_EQ(eraserButton->getColor().r, 0.5f);
+    // Finish renaming
+    menuBar->onKey(GLFW_KEY_ENTER, KeyAction::Press);
+    EXPECT_EQ(renameButton->getColor().r, 1.0f); // Back to white
+}
 
-//     // Click Brush button
-//     menuBar->onMouseButton(MouseButton::Left, KeyAction::Press, brushButton->getBounds().left + 1, brushButton->getBounds().top + 1);
-//     menuBar->onMouseButton(MouseButton::Left, KeyAction::Release, brushButton->getBounds().left + 1, brushButton->getBounds().top + 1);
-//     EXPECT_EQ(eraserButton->getColor().r, 1.0f);
-// }
+TEST_F(MenuBarIntegrationTest, EraserButtonColorChangesOnSelection) {
+    auto eraserButton = getButton(*menuBar, "Eraser");
+    auto brushButton  = getButton(*menuBar, "Brush");
 
-// TEST_F(MenuBarIntegrationTest, BrushButtonFlashesGrayAndRestoresColor) {
-//     auto brushButton = getButton(*menuBar, "Brush");
+    // Click Eraser button
+    menuBar->onMouseButton(MouseButton::Left, KeyAction::Press, eraserButton->getBounds().left + 1, eraserButton->getBounds().top + 1);
+    menuBar->onMouseButton(MouseButton::Left, KeyAction::Release, eraserButton->getBounds().left + 1, eraserButton->getBounds().top + 1);
+    EXPECT_EQ(eraserButton->getColor().r, 0.5f);
 
-//     EXPECT_EQ(brushButton->getColor().r, 1.0f); // Initial brush color = red
+    // Click Brush button
+    menuBar->onMouseButton(MouseButton::Left, KeyAction::Press, brushButton->getBounds().left + 1, brushButton->getBounds().top + 1);
+    menuBar->onMouseButton(MouseButton::Left, KeyAction::Release, brushButton->getBounds().left + 1, brushButton->getBounds().top + 1);
+    EXPECT_EQ(eraserButton->getColor().r, 1.0f);
+}
 
-//     // Press
-//     menuBar->onMouseButton(MouseButton::Left, KeyAction::Press, brushButton->getBounds().left + 1, brushButton->getBounds().top + 1);
-//     EXPECT_EQ(brushButton->getColor().r, 0.5f); // Flash gray
+TEST_F(MenuBarIntegrationTest, BrushButtonFlashesGrayAndRestoresColor) {
+    auto brushButton = getButton(*menuBar, "Brush");
 
-//     // Release
-//     menuBar->onMouseButton(MouseButton::Left, KeyAction::Release, brushButton->getBounds().left + 1, brushButton->getBounds().top + 1);
-//     EXPECT_EQ(brushButton->getColor().r, toolManager->getActiveTool()->getColor().r); // Back to brush color
-// }
+    EXPECT_EQ(brushButton->getColor().r, 1.0f); // Initial brush color = red
 
-// TEST_F(MenuBarIntegrationTest, DropdownOpensAndClosesProperly) {
-//     auto dropdownButton = getButton(*menuBar, "Select Layer");
+    // Press
+    menuBar->onMouseButton(MouseButton::Left, KeyAction::Press, brushButton->getBounds().left + 1, brushButton->getBounds().top + 1);
+    EXPECT_EQ(brushButton->getColor().r, 0.5f); // Flash gray
 
-//     // Initially closed
-//     EXPECT_FALSE(menuBar->getLayerDropdownButtons().size() > 0);
+    // Release
+    menuBar->onMouseButton(MouseButton::Left, KeyAction::Release, brushButton->getBounds().left + 1, brushButton->getBounds().top + 1);
+    EXPECT_EQ(brushButton->getColor().r, toolManager->getActiveTool()->getColor().r); // Back to brush color
+}
 
-//     // Open dropdown
-//     menuBar->onMouseButton(MouseButton::Left, KeyAction::Press, dropdownButton->getBounds().left + 1, dropdownButton->getBounds().top + 1);
-//     menuBar->update();
+TEST_F(MenuBarIntegrationTest, DropdownOpensAndClosesProperly) {
+    auto dropdownButton = getButton(*menuBar, "Select Layer");
 
-//     EXPECT_TRUE(menuBar->getLayerDropdownButtons().size() > 0);
+    // Initially closed
+    EXPECT_FALSE(menuBar->getLayerDropdownButtons().size() > 0);
 
-//     // Close dropdown (press again)
-//     menuBar->onMouseButton(MouseButton::Left, KeyAction::Press, dropdownButton->getBounds().left + 1, dropdownButton->getBounds().top + 1);
-//     menuBar->update();
+    // Open dropdown
+    menuBar->onMouseButton(MouseButton::Left, KeyAction::Press, dropdownButton->getBounds().left + 1, dropdownButton->getBounds().top + 1);
+    menuBar->update();
 
-//     EXPECT_EQ(menuBar->getLayerDropdownButtons().size(), 0);
-// }
+    EXPECT_TRUE(menuBar->getLayerDropdownButtons().size() > 0);
 
-// TEST_F(MenuBarIntegrationTest, DropdownShowsCorrectLayerCount) {
-//     layerManager->addLayer(); // Layer 1
-//     layerManager->addLayer(); // Layer 2
+    // Close dropdown (press again)
+    menuBar->onMouseButton(MouseButton::Left, KeyAction::Press, dropdownButton->getBounds().left + 1, dropdownButton->getBounds().top + 1);
+    menuBar->update();
 
-//     auto dropdownButton = getButton(*menuBar, "Select Layer");
+    EXPECT_EQ(menuBar->getLayerDropdownButtons().size(), 0);
+}
 
-//     menuBar->onMouseButton(MouseButton::Left, KeyAction::Press, dropdownButton->getBounds().left + 1, dropdownButton->getBounds().top + 1);
-//     menuBar->update();
+TEST_F(MenuBarIntegrationTest, DropdownShowsCorrectLayerCount) {
+    layerManager->addLayer(); // Layer 1
+    layerManager->addLayer(); // Layer 2
 
-//     EXPECT_EQ(menuBar->getLayerDropdownButtons().size(), 3);
-// }
+    auto dropdownButton = getButton(*menuBar, "Select Layer");
 
-// TEST_F(MenuBarIntegrationTest, CanSelectLayerFromDropdown) {
-//     layerManager->addLayer(); // Layer 1
-//     layerManager->addLayer(); // Layer 2
+    menuBar->onMouseButton(MouseButton::Left, KeyAction::Press, dropdownButton->getBounds().left + 1, dropdownButton->getBounds().top + 1);
+    menuBar->update();
 
-//     auto dropdownButton = getButton(*menuBar, "Select Layer");
+    EXPECT_EQ(menuBar->getLayerDropdownButtons().size(), 3);
+}
 
-//     menuBar->onMouseButton(MouseButton::Left, KeyAction::Press, dropdownButton->getBounds().left + 1, dropdownButton->getBounds().top + 1);
-//     menuBar->update();
+TEST_F(MenuBarIntegrationTest, CanSelectLayerFromDropdown) {
+    layerManager->addLayer(); // Layer 1
+    layerManager->addLayer(); // Layer 2
 
-//     auto dropdownLayers = menuBar->getLayerDropdownButtons();
+    auto dropdownButton = getButton(*menuBar, "Select Layer");
 
-//     // Click second layer button (index 1)
-//     auto layerBtn = dropdownLayers[1];
-//     menuBar->onMouseButton(MouseButton::Left, KeyAction::Press, layerBtn->getBounds().left + 1, layerBtn->getBounds().top + 1);
-//     menuBar->update();
+    menuBar->onMouseButton(MouseButton::Left, KeyAction::Press, dropdownButton->getBounds().left + 1, dropdownButton->getBounds().top + 1);
+    menuBar->update();
 
-//     EXPECT_EQ(layerManager->getActiveLayerIndex(), 1);
-// }
+    auto dropdownLayers = menuBar->getLayerDropdownButtons();
 
-// TEST_F(MenuBarIntegrationTest, CanDeleteLayerFromDropdown) {
-//     layerManager->addLayer();
-//     layerManager->addLayer();
+    // Click second layer button (index 1)
+    auto layerBtn = dropdownLayers[1];
+    menuBar->onMouseButton(MouseButton::Left, KeyAction::Press, layerBtn->getBounds().left + 1, layerBtn->getBounds().top + 1);
+    menuBar->update();
 
-//     auto dropdownButton = getButton(*menuBar, "Select Layer");
+    EXPECT_EQ(layerManager->getActiveLayerIndex(), 1);
+}
 
-//     menuBar->onMouseButton(MouseButton::Left, KeyAction::Press, dropdownButton->getBounds().left + 1, dropdownButton->getBounds().top + 1);
-//     menuBar->update();
+TEST_F(MenuBarIntegrationTest, CanDeleteLayerFromDropdown) {
+    layerManager->addLayer();
+    layerManager->addLayer();
 
-//     auto deleteButtons = menuBar->getLayerDeleteButtons();
+    auto dropdownButton = getButton(*menuBar, "Select Layer");
 
-//     // Delete first layer
-//     auto deleteBtn = deleteButtons[0];
-//     menuBar->onMouseButton(MouseButton::Left, KeyAction::Press, deleteBtn->getBounds().left + 1, deleteBtn->getBounds().top + 1);
-//     menuBar->update();
+    menuBar->onMouseButton(MouseButton::Left, KeyAction::Press, dropdownButton->getBounds().left + 1, dropdownButton->getBounds().top + 1);
+    menuBar->update();
 
-//     EXPECT_EQ(layerManager->getAllLayers().size(), 2);
-// }
+    auto deleteButtons = menuBar->getLayerDeleteButtons();
 
-// TEST_F(MenuBarIntegrationTest, RenameBufferAcceptsCharacters) {
-//     layerManager->addLayer();
+    // Delete first layer
+    auto deleteBtn = deleteButtons[0];
+    menuBar->onMouseButton(MouseButton::Left, KeyAction::Press, deleteBtn->getBounds().left + 1, deleteBtn->getBounds().top + 1);
+    menuBar->update();
 
-//     auto renameButton = getButton(*menuBar, "Rename Layer");
+    EXPECT_EQ(layerManager->getAllLayers().size(), 2);
+}
 
-//     // Begin renaming mode
-//     menuBar->onMouseButton(MouseButton::Left, KeyAction::Press, renameButton->getBounds().left + 1, renameButton->getBounds().top + 1);
+TEST_F(MenuBarIntegrationTest, RenameBufferAcceptsCharacters) {
+    layerManager->addLayer();
 
-//     // Type characters: "ABC"
-//     menuBar->onChar('A');
-//     menuBar->onChar('B');
-//     menuBar->onChar('C');
+    auto renameButton = getButton(*menuBar, "Rename Layer");
 
-//     EXPECT_EQ(menuBar->getRenameBuffer(), "ABC");
-// }
+    // Begin renaming mode
+    menuBar->onMouseButton(MouseButton::Left, KeyAction::Press, renameButton->getBounds().left + 1, renameButton->getBounds().top + 1);
 
-// TEST_F(MenuBarIntegrationTest, RenameBufferHandlesBackspace) {
-//     layerManager->addLayer();
+    // Type characters: "ABC"
+    menuBar->onChar('A');
+    menuBar->onChar('B');
+    menuBar->onChar('C');
 
-//     auto renameButton = getButton(*menuBar, "Rename Layer");
+    EXPECT_EQ(menuBar->getRenameBuffer(), "ABC");
+}
 
-//     menuBar->onMouseButton(MouseButton::Left, KeyAction::Press, renameButton->getBounds().left + 1, renameButton->getBounds().top + 1);
-//     menuBar->onChar('A');
-//     menuBar->onChar('B');
-//     menuBar->onChar('C');
+TEST_F(MenuBarIntegrationTest, RenameBufferHandlesBackspace) {
+    layerManager->addLayer();
 
-//     // Backspace once: should leave "AB"
-//     menuBar->onKey(GLFW_KEY_BACKSPACE, KeyAction::Press);
+    auto renameButton = getButton(*menuBar, "Rename Layer");
 
-//     EXPECT_EQ(menuBar->getRenameBuffer(), "AB");
-// }
+    menuBar->onMouseButton(MouseButton::Left, KeyAction::Press, renameButton->getBounds().left + 1, renameButton->getBounds().top + 1);
+    menuBar->onChar('A');
+    menuBar->onChar('B');
+    menuBar->onChar('C');
 
-// TEST_F(MenuBarIntegrationTest, RenameBufferAppliesNameOnEnter) {
-//     layerManager->addLayer();
-//     layerManager->setActiveLayer(0);
+    // Backspace once: should leave "AB"
+    menuBar->onKey(GLFW_KEY_BACKSPACE, KeyAction::Press);
 
-//     auto renameButton = getButton(*menuBar, "Rename Layer");
+    EXPECT_EQ(menuBar->getRenameBuffer(), "AB");
+}
 
-//     menuBar->onMouseButton(MouseButton::Left, KeyAction::Press, renameButton->getBounds().left + 1, renameButton->getBounds().top + 1);
+TEST_F(MenuBarIntegrationTest, RenameBufferAppliesNameOnEnter) {
+    layerManager->addLayer();
+    layerManager->setActiveLayer(0);
+
+    auto renameButton = getButton(*menuBar, "Rename Layer");
+
+    menuBar->onMouseButton(MouseButton::Left, KeyAction::Press, renameButton->getBounds().left + 1, renameButton->getBounds().top + 1);
     
-//     // Simulate clearing the buffer
-//     menuBar->onKey(GLFW_KEY_BACKSPACE, KeyAction::Press);
-//     menuBar->onKey(GLFW_KEY_BACKSPACE, KeyAction::Press);
-//     menuBar->onKey(GLFW_KEY_BACKSPACE, KeyAction::Press);
-//     menuBar->onKey(GLFW_KEY_BACKSPACE, KeyAction::Press);
-//     menuBar->onKey(GLFW_KEY_BACKSPACE, KeyAction::Press);
-//     menuBar->onKey(GLFW_KEY_BACKSPACE, KeyAction::Press);
-//     menuBar->onKey(GLFW_KEY_BACKSPACE, KeyAction::Press);
+    // Simulate clearing the buffer
+    menuBar->onKey(GLFW_KEY_BACKSPACE, KeyAction::Press);
+    menuBar->onKey(GLFW_KEY_BACKSPACE, KeyAction::Press);
+    menuBar->onKey(GLFW_KEY_BACKSPACE, KeyAction::Press);
+    menuBar->onKey(GLFW_KEY_BACKSPACE, KeyAction::Press);
+    menuBar->onKey(GLFW_KEY_BACKSPACE, KeyAction::Press);
+    menuBar->onKey(GLFW_KEY_BACKSPACE, KeyAction::Press);
+    menuBar->onKey(GLFW_KEY_BACKSPACE, KeyAction::Press);
 
-//     // Now type "New"
-//     menuBar->onChar('N');
-//     menuBar->onChar('e');
-//     menuBar->onChar('w');
+    // Now type "New"
+    menuBar->onChar('N');
+    menuBar->onChar('e');
+    menuBar->onChar('w');
 
-//     menuBar->onKey(GLFW_KEY_ENTER, KeyAction::Press);
+    menuBar->onKey(GLFW_KEY_ENTER, KeyAction::Press);
 
-//     EXPECT_EQ(layerManager->getAllLayers()[0]->getName(), "New");
-// }
+    EXPECT_EQ(layerManager->getAllLayers()[0]->getName(), "New");
+}
 
-// TEST_F(MenuBarIntegrationTest, TextButtonTogglesGreenWhenActivated) {
-//     auto textButton = getButton(*menuBar, "Text");
+TEST_F(MenuBarIntegrationTest, TextButtonTogglesGreenWhenActivated) {
+    auto textButton = getButton(*menuBar, "Text");
 
-//     // Initial color should be white
-//     EXPECT_EQ(textButton->getColor().r, 1.0f);
-//     EXPECT_EQ(textButton->getColor().g, 1.0f);
-//     EXPECT_EQ(textButton->getColor().b, 1.0f);
+    // Initial color should be white
+    EXPECT_EQ(textButton->getColor().r, 1.0f);
+    EXPECT_EQ(textButton->getColor().g, 1.0f);
+    EXPECT_EQ(textButton->getColor().b, 1.0f);
 
-//     // Simulate click to activate
-//     menuBar->onMouseButton(MouseButton::Left, KeyAction::Press, textButton->getBounds().left + 1, textButton->getBounds().top + 1);
-//     menuBar->onMouseButton(MouseButton::Left, KeyAction::Release, textButton->getBounds().left + 1, textButton->getBounds().top + 1);
+    // Simulate click to activate
+    menuBar->onMouseButton(MouseButton::Left, KeyAction::Press, textButton->getBounds().left + 1, textButton->getBounds().top + 1);
+    menuBar->onMouseButton(MouseButton::Left, KeyAction::Release, textButton->getBounds().left + 1, textButton->getBounds().top + 1);
 
-//     // Should turn green when activated
-//     EXPECT_EQ(textButton->getColor().r, 0.0f);
-//     EXPECT_EQ(textButton->getColor().g, 0.7f);
-//     EXPECT_EQ(textButton->getColor().b, 0.1f);
+    // Should turn green when activated
+    EXPECT_EQ(textButton->getColor().r, 0.0f);
+    EXPECT_EQ(textButton->getColor().g, 0.7f);
+    EXPECT_EQ(textButton->getColor().b, 0.1f);
 
-//     // Simulate click to deactivate
-//     menuBar->onMouseButton(MouseButton::Left, KeyAction::Press, textButton->getBounds().left + 1, textButton->getBounds().top + 1);
-//     menuBar->onMouseButton(MouseButton::Left, KeyAction::Release, textButton->getBounds().left + 1, textButton->getBounds().top + 1);
+    // Simulate click to deactivate
+    menuBar->onMouseButton(MouseButton::Left, KeyAction::Press, textButton->getBounds().left + 1, textButton->getBounds().top + 1);
+    menuBar->onMouseButton(MouseButton::Left, KeyAction::Release, textButton->getBounds().left + 1, textButton->getBounds().top + 1);
 
-//     // Should turn back to white
-//     EXPECT_EQ(textButton->getColor().r, 1.0f);
-//     EXPECT_EQ(textButton->getColor().g, 1.0f);
-//     EXPECT_EQ(textButton->getColor().b, 1.0f);
-// }
+    // Should turn back to white
+    EXPECT_EQ(textButton->getColor().r, 1.0f);
+    EXPECT_EQ(textButton->getColor().g, 1.0f);
+    EXPECT_EQ(textButton->getColor().b, 1.0f);
+}

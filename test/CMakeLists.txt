@@ -28,6 +28,9 @@ add_executable(projectTests
     FileTests.cpp
     LayerManagerTest.cpp
     MenuBarTest.cpp
+    EraserHistoryTest.cpp
+    ToolIntegrationTest.cpp
+    ToolStressTest.cpp
 )
 
 target_include_directories(projectTests PRIVATE ${PROJECT_COMMON_INCLUDE_DIRS} ${FREETYPE_INCLUDE_DIRS})
