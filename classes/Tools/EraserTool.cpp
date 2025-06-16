@@ -31,6 +31,11 @@ EraserTool::EraserTool(std::shared_ptr<LayerManager> layer_manager, float thickn
 {
 }
 
+EraserTool::EraserTool(std::shared_ptr<StrokeManager> stroke_manager, float thickness)
+	: stroke_manager(std::move(stroke_manager)), eraser_thickness(thickness)
+{
+}
+
 EraserTool::~EraserTool() = default;
 
 void EraserTool::beginStroke(const Point& start)

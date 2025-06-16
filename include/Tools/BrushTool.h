@@ -4,19 +4,22 @@
 #include "IDrawingTool.h"
 #include "History.h"
 #include "Stroke.h"
+#include "StrokeManager.h"
 #include "LayerManager.h"
 
 class BrushTool : public IDrawingTool
 {
    private:
-	std::shared_ptr<LayerManager> layer_manager;
-	std::shared_ptr<Stroke>		  current_stroke;
-	Color						  brush_color;
-	float						  brush_thickness;
-	bool						  active  = false;
-	bool						  drawing = false;
+	std::shared_ptr<LayerManager>	layer_manager;
+	std::shared_ptr<IStrokeManager> stroke_manager;
+	std::shared_ptr<Stroke>			current_stroke;
+	Color							brush_color;
+	float							brush_thickness;
+	bool							active	= false;
+	bool							drawing = false;
 
    public:
+	BrushTool(std::shared_ptr<IStrokeManager> stroke_manager, Color color, float thickness);
 	BrushTool(std::shared_ptr<LayerManager> layer_manager, Color color, float thickness);
 	~BrushTool() override;
 

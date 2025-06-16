@@ -139,7 +139,8 @@ int main()
 		for (size_t i = 0; i < menuBar->getLayerDropdownButtons().size(); ++i)
 		{
 			const auto& dropdown = menuBar->getLayerDropdownButtons()[i];
-			bool isBeingRenamed	 = menuBar->isRenaming() && (i == menuBar->getLayerBeingRenamed());
+			bool		isBeingRenamed =
+				menuBar->isRenaming() && ((int) i == menuBar->getLayerBeingRenamed());
 			std::string renameBuffer = isBeingRenamed ? menuBar->getRenameBuffer() : "";
 
 			renderer->drawButton(*dropdown, isBeingRenamed, 0, renameBuffer);

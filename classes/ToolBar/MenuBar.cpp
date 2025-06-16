@@ -790,7 +790,7 @@ void MenuBar::sliderLogic(const std::shared_ptr<SliderButton>& slider, const std
 void MenuBar::onToolButton(const std::shared_ptr<IButton>& button, const std::string& label, double x,
 				  double y, int itCount)
 {
-	if (label == "text")
+	if (label == "Text")
 	{
 		if (text->isTextToolActive())
 		{
@@ -803,7 +803,7 @@ void MenuBar::onToolButton(const std::shared_ptr<IButton>& button, const std::st
 			button->setColor(green);
 		}
 	}
-	else if (label == "eraser" || label == "brush")
+	else if (label == "Eraser" || label == "Brush")
 	{
 		tool->selectTool(label);
 		selectedIndex = itCount;

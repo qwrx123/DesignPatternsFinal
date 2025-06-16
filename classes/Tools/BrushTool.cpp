@@ -7,6 +7,11 @@ BrushTool::BrushTool(std::shared_ptr<LayerManager> layer_manager, Color color, f
 {
 }
 
+BrushTool::BrushTool(std::shared_ptr<IStrokeManager> stroke_manager, Color color, float thickness)
+	: stroke_manager(std::move(stroke_manager)), brush_color(color), brush_thickness(thickness)
+{
+}
+
 BrushTool::~BrushTool() = default;
 
 BrushTool::BrushTool(const BrushTool& other)

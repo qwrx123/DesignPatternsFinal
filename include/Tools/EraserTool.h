@@ -3,6 +3,7 @@
 
 #include "IDrawingTool.h"
 #include "LayerManager.h"
+#include "StrokeManager.h"
 #include "History.h"
 #include "Stroke.h"
 
@@ -10,6 +11,7 @@ class EraserTool : public IDrawingTool
 {
    public:
 	EraserTool(std::shared_ptr<LayerManager> layer_manager, float thickness);
+	EraserTool(std::shared_ptr<StrokeManager> stroke_manager, float thickness);
 	~EraserTool() override;
 
 	EraserTool(const EraserTool&)			 = default;
@@ -40,12 +42,14 @@ class EraserTool : public IDrawingTool
 	void														 clearStrokes() override;
 
    private:
-	std::shared_ptr<Stroke>		  erase_path;
-	std::shared_ptr<LayerManager> layer_manager;
-	float						  eraser_thickness;
-	bool						  active	   = false;
-	bool						  drawing	   = false;
-	Color						  eraser_color = {.r = 1.0F, .g = 1.0F, .b = 1.0F, .a = 0.0F};
+	std::shared_ptr<Stroke>			erase_path;
+	std::shared_ptr<LayerManager>	layer_manager;
+	std::shared_ptr<IStrokeManager> stroke_manager;
+
+	float eraser_thickness;
+	bool  active	   = false;
+	bool  drawing	   = false;
+	Color eraser_color = {.r = 1.0F, .g = 1.0F, .b = 1.0F, .a = 0.0F};
 
 	void splitEraseWithPath(const std::shared_ptr<IStroke>& eraser_path, float eraser_radius);
 	void replaceStrokes(std::vector<std::shared_ptr<IStroke>> new_strokes);
