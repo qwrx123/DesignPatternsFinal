@@ -1,5 +1,6 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+#include <iostream>
 #include "CanvasRenderer.h"
 #include "InputManager.h"
 #include "ToolManager.h"
@@ -122,16 +123,16 @@ void renderFrame(CanvasRenderer& renderer, LayerManager& layerManager, ToolManag
 			renderer.drawStroke(*live_stroke);
 		}
 	}
-		bool exportCanvas = false;
+	bool exportCanvas = false;
 	renderer.drawMenu(menuBar);
 
 	for (const auto& button : menuBar.getButtons())
 	{
-			if (button->getLabel() == "export" && button->isPressed())
-			{
-				exportCanvas = true;
-				button->setPressed(false);
-			}
+		if (button->getLabel() == "export" && button->isPressed())
+		{
+			exportCanvas = true;
+			button->setPressed(false);
+		}
 		if (button->getLabel() == "size" || button->getLabel() == "red" ||
 			button->getLabel() == "green" || button->getLabel() == "blue" ||
 			button->getLabel() == "opacity")
@@ -167,9 +168,9 @@ void renderFrame(CanvasRenderer& renderer, LayerManager& layerManager, ToolManag
 		std::string fileLocation = FileLocation::getDownloadLocation();
 		std::string fileName	 = "DaisyExport";
 
-		renderer->exportBitmap(
+		renderer.exportBitmap(
 			fileName, fileLocation,
-			{.top = menuBar->getBounds().bottom, .bottom = 0, .left = 0, .right = 0});
+			{.top = menuBar.getBounds().bottom, .bottom = 0, .left = 0, .right = 0});
 		std::cout << "Canvas exported to: " << fileLocation << fileName << ".bmp\n";
 	}
 
@@ -188,7 +189,6 @@ void mainLoop(GLFWwindow* window, CanvasRenderer& renderer, LayerManager& layerM
 		renderFrame(renderer, layerManager, toolManager, textManager, menuBar);
 
 		inputManager.endFrame();
-
 	}
 }
 
