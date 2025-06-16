@@ -91,3 +91,72 @@ TEST_F(MenuBarIntegrationTest, BrushButtonFlashesGrayAndRestoresColor) {
     menuBar->onMouseButton(MouseButton::Left, KeyAction::Release, brushButton->getBounds().left + 1, brushButton->getBounds().top + 1);
     EXPECT_EQ(brushButton->getColor().r, toolManager->getActiveTool()->getColor().r); // Back to brush color
 }
+
+TEST_F(MenuBarIntegrationTest, DropdownOpensAndClosesProperly) {
+    auto dropdownButton = getButton(*menuBar, "Select Layer");
+
+    // Initially closed
+    EXPECT_FALSE(menuBar->getLayerDropdownButtons().size() > 0);
+
+    // Open dropdown
+    menuBar->onMouseButton(MouseButton::Left, KeyAction::Press, dropdownButton->getBounds().left + 1, dropdownButton->getBounds().top + 1);
+    menuBar->update();
+
+    EXPECT_TRUE(menuBar->getLayerDropdownButtons().size() > 0);
+
+    // Close dropdown (press again)
+    menuBar->onMouseButton(MouseButton::Left, KeyAction::Press, dropdownButton->getBounds().left + 1, dropdownButton->getBounds().top + 1);
+    menuBar->update();
+
+    EXPECT_EQ(menuBar->getLayerDropdownButtons().size(), 0);
+}
+
+TEST_F(MenuBarIntegrationTest, DropdownShowsCorrectLayerCount) {
+    layerManager->addLayer(); // Layer 1
+    layerManager->addLayer(); // Layer 2
+
+    auto dropdownButton = getButton(*menuBar, "Select Layer");
+
+    menuBar->onMouseButton(MouseButton::Left, KeyAction::Press, dropdownButton->getBounds().left + 1, dropdownButton->getBounds().top + 1);
+    menuBar->update();
+
+    EXPECT_EQ(menuBar->getLayerDropdownButtons().size(), 3);
+}
+
+TEST_F(MenuBarIntegrationTest, CanSelectLayerFromDropdown) {
+    layerManager->addLayer(); // Layer 1
+    layerManager->addLayer(); // Layer 2
+
+    auto dropdownButton = getButton(*menuBar, "Select Layer");
+
+    menuBar->onMouseButton(MouseButton::Left, KeyAction::Press, dropdownButton->getBounds().left + 1, dropdownButton->getBounds().top + 1);
+    menuBar->update();
+
+    auto dropdownLayers = menuBar->getLayerDropdownButtons();
+
+    // Click second layer button (index 1)
+    auto layerBtn = dropdownLayers[1];
+    menuBar->onMouseButton(MouseButton::Left, KeyAction::Press, layerBtn->getBounds().left + 1, layerBtn->getBounds().top + 1);
+    menuBar->update();
+
+    EXPECT_EQ(layerManager->getActiveLayerIndex(), 1);
+}
+
+TEST_F(MenuBarIntegrationTest, CanDeleteLayerFromDropdown) {
+    layerManager->addLayer();
+    layerManager->addLayer();
+
+    auto dropdownButton = getButton(*menuBar, "Select Layer");
+
+    menuBar->onMouseButton(MouseButton::Left, KeyAction::Press, dropdownButton->getBounds().left + 1, dropdownButton->getBounds().top + 1);
+    menuBar->update();
+
+    auto deleteButtons = menuBar->getLayerDeleteButtons();
+
+    // Delete first layer
+    auto deleteBtn = deleteButtons[0];
+    menuBar->onMouseButton(MouseButton::Left, KeyAction::Press, deleteBtn->getBounds().left + 1, deleteBtn->getBounds().top + 1);
+    menuBar->update();
+
+    EXPECT_EQ(layerManager->getAllLayers().size(), 2);
+}
