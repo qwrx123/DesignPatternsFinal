@@ -11,6 +11,9 @@
 #include "TextManager.h"
 #include "LayerManager.h"
 #include "FileLocation.h"
+#include "Image.h"
+#include "IImage.h"
+#include "Import.h"
 
 const int		  defaultWindowWidth  = 800;
 const int		  defaultWindowHeight = 600;
@@ -96,6 +99,40 @@ void initializeObjects(GLFWwindow* window, std::unique_ptr<CanvasRenderer>& rend
 	menuBar->setDefaultButtons();
 }
 
+void drawBitmap(CanvasRenderer& renderer, MenuBar& menuBar, bool shouldImport)
+{
+	static std::unique_ptr<IImage> image;
+
+	if (shouldImport)
+	{
+		Import import = Import();
+
+		std::string fileLocation = import.quarryFileLocation();
+		std::string fileName	 = "DaisyExport";
+		import.setFileLocation(fileLocation);
+		import.setFileName(fileName);
+		import.setFileType(IFiles::type::bmp);
+		if (import.importFile())
+		{
+			auto [buffer, info] = import.getImportedData();
+			image				= std::make_unique<Image>();
+			image->importImage(buffer, info);
+			image->setCoordinates(0, menuBar.getBounds().bottom);
+		}
+		else
+		{
+			std::cerr << "Failed to import image.\n";
+			return;
+		}
+	}
+
+	if (image == nullptr || image->getPixelData() == nullptr)
+	{
+		return;
+	}
+
+	renderer.renderImage(*image);
+}
 void renderFrame(CanvasRenderer& renderer, LayerManager& layerManager, ToolManager& toolManager,
 				 TextManager& textManager, MenuBar& menuBar)
 {
@@ -124,6 +161,7 @@ void renderFrame(CanvasRenderer& renderer, LayerManager& layerManager, ToolManag
 		}
 	}
 	bool exportCanvas = false;
+	bool importCanvas = false;
 	renderer.drawMenu(menuBar);
 
 	for (const auto& button : menuBar.getButtons())
@@ -131,6 +169,11 @@ void renderFrame(CanvasRenderer& renderer, LayerManager& layerManager, ToolManag
 		if (button->getLabel() == "export" && button->isPressed())
 		{
 			exportCanvas = true;
+			button->setPressed(false);
+		}
+		if (button->getLabel() == "import" && button->isPressed())
+		{
+			importCanvas = true;
 			button->setPressed(false);
 		}
 		if (button->getLabel() == "size" || button->getLabel() == "red" ||
@@ -173,6 +216,8 @@ void renderFrame(CanvasRenderer& renderer, LayerManager& layerManager, ToolManag
 			{.top = menuBar.getBounds().bottom, .bottom = 0, .left = 0, .right = 0});
 		std::cout << "Canvas exported to: " << fileLocation << fileName << ".bmp\n";
 	}
+
+	drawBitmap(renderer, menuBar, importCanvas);
 
 	renderer.endFrame();
 }

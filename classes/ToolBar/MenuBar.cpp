@@ -282,11 +282,18 @@ void MenuBar::setDefaultButtons()
 	setSliderButtonValues();
 
 	addButton(std::make_shared<ButtonClass>(
+		"import",
+		Bounds{.top	   = bounds.top,
+			   .bottom = midDiv,
+			   .left   = buttons.at(buttons.size() - 1)->getBounds().right + 1,
+			   .right  = buttons.at(buttons.size() - 1)->getBounds().right + defaultButtonWidth},
+		gray));
+	addButton(std::make_shared<ButtonClass>(
 		"export",
 		Bounds{.top	   = midDiv,
 			   .bottom = bounds.bottom,
-			   .left   = buttons.at(buttons.size() - 1)->getBounds().right + 1,
-			   .right  = buttons.at(buttons.size() - 1)->getBounds().right + defaultButtonWidth},
+			   .left   = buttons.at(buttons.size() - 1)->getBounds().left,
+			   .right  = buttons.at(buttons.size() - 1)->getBounds().right},
 		gray));
 	// Undo and Redo
 	addButton(std::make_shared<ButtonClass>(
