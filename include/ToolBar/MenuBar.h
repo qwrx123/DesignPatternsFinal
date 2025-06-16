@@ -69,6 +69,11 @@ class MenuBar : public IMenu, public IInputReceiver
 	[[nodiscard]] std::string getRenameBuffer() const;
 	[[nodiscard]] int		  getLayerBeingRenamed() const;
 
+	void handleButtonPress(const std::shared_ptr<IButton>& button, const std::string& label,
+						   double x, double y, int itCount);
+	void handleButtonRelease(const std::shared_ptr<IButton>& button, const std::string& label);
+	[[nodiscard]] static bool isDropdownButton(const std::string& label);
+
    private:
 	std::string							  label;
 	Bounds								  bounds;

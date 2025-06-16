@@ -405,77 +405,83 @@ void MenuBar::onMouseMove(double x, double y)
 
 void MenuBar::onMouseButton(MouseButton click, KeyAction action, double x, double y)
 {
-	int itCount = 0;
-	bool clickedInsideDropdown = false;
+    int itCount = 0;
+    bool clickedInsideDropdown = false;
 
-	for (auto& button : buttons)
-	{
-		if (button->getBounds().contains(x, y))
-		{
-			if (action == KeyAction::Press)
-			{
-				std::string label = button->getLabel();
-				button->setPressed(true);
-				if (button->getLabel() == "Add Layer" || button->getLabel() == "Select Layer")
-				{
-   					button->setColor(gray);
-				}
-				if (button->getLabel() == "Brush")
-				{
-    				button->setColor(gray);
-				}
-				if (button->getLabel() == "Undo Text" || button->getLabel() == "Redo Text" || button->getLabel() == "Undo Strokes" || button->getLabel() == "Redo Strokes")
-				{
-    				button->setColor(gray);
-				}
-				onButton(button, label, x, y, itCount);
-			}
+    for (auto& button : buttons)
+    {
+        if (button->getBounds().contains(x, y))
+        {
+            std::string label = button->getLabel();
 
-			//change tool button color as long as it is not the eraser
-			if (button->isPressed() && button->getLabel() == "color" && buttons.at(selectedIndex)->getLabel() != "Eraser" &&
-				action == KeyAction::Release)
-			{
-				buttons.at(selectedIndex)->setColor(button->getColor());
-				setSliderButtonValues();
-			}
+            if (action == KeyAction::Press)
+            {
+                handleButtonPress(button, label, x, y, itCount);
+            }
 
-			if (action == KeyAction::Release) 
-			{
-				button->setPressed(false);
-				if (button->getLabel() == "Add Layer" || button->getLabel() == "Select Layer")
-				{
-    				button->setColor(white);
-				}
-				if (button->getLabel() == "Brush")
-				{
-    				Color brushColor = tool->getActiveTool()->getColor();
-    				button->setColor(brushColor);
-				}
-				if (button->getLabel() == "Undo Text" || button->getLabel() == "Redo Text" || button->getLabel() == "Undo Strokes" || button->getLabel() == "Redo Strokes")
-				{
-    				button->setColor(white);
-				}
-		    }
+            if (button->isPressed() && label == "color" && buttons.at(selectedIndex)->getLabel() != "Eraser" &&
+                action == KeyAction::Release)
+            {
+                buttons.at(selectedIndex)->setColor(button->getColor());
+                setSliderButtonValues();
+            }
 
-			// Consider clicks on Select Layer or Add Layer as "inside dropdown"
-			if (button->getLabel() == "Select Layer" || button->getLabel() == "Add Layer" || button->getLabel() == "Rename Layer")
-			{
-				clickedInsideDropdown = true;
-			}
-		}
+            if (action == KeyAction::Release)
+            {
+                handleButtonRelease(button, label);
+            }
 
-		itCount++;
-	}
+            if (isDropdownButton(label))
+            {
+                clickedInsideDropdown = true;
+            }
+        }
+        itCount++;
+    }
 
-	handleDropdownButtons(action, x, y, clickedInsideDropdown);
+    handleDropdownButtons(action, x, y, clickedInsideDropdown);
 
-	// Close dropdown if click was outside all valid zones
-	if (dropdownOpen && !clickedInsideDropdown && action == KeyAction::Press)
-	{
-		dropdownOpen = false;
-		layerDropdownButtons.clear();
-		layerDeleteButtons.clear();
-	}
+    if (dropdownOpen && !clickedInsideDropdown && action == KeyAction::Press)
+    {
+        dropdownOpen = false;
+        layerDropdownButtons.clear();
+        layerDeleteButtons.clear();
+    }
+}
+
+void MenuBar::handleButtonPress(const std::shared_ptr<IButton>& button, const std::string& label, double x, double y, int itCount)
+{
+    button->setPressed(true);
+
+    if (label == "Add Layer" || label == "Select Layer" || label == "Brush" || 
+        label == "Undo Text" || label == "Redo Text" || label == "Undo Strokes" || label == "Redo Strokes")
+    {
+        button->setColor(gray);
+    }
+
+    onButton(button, label, x, y, itCount);
+}
+
+void MenuBar::handleButtonRelease(const std::shared_ptr<IButton>& button, const std::string& label)
+{
+    button->setPressed(false);
+
+    if (label == "Add Layer" || label == "Select Layer" || label == "Undo Text" || label == "Redo Text" 
+        || label == "Undo Strokes" || label == "Redo Strokes")
+    {
+        button->setColor(white);
+    }
+
+    if (label == "Brush")
+    {
+        Color brushColor = tool->getActiveTool()->getColor();
+        button->setColor(brushColor);
+    }
+}
+
+bool MenuBar::isDropdownButton(const std::string& label)
+{
+    return (label == "Select Layer" || label == "Add Layer" || label == "Rename Layer");
 }
 
 void MenuBar::handleDropdownButtons(KeyAction action, double x, double y, bool& clickedInsideDropdown)

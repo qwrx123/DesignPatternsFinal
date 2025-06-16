@@ -51,12 +51,18 @@ void EraserTool::beginStroke(const Point& start)
 
 void EraserTool::addPoint(const Point& point)
 {
-	if (!erase_path) return;
+	if (!erase_path)
+	{
+		return;
+	}
 
 	erase_path->addPoint(point);
 
 	const auto& points = erase_path->getPoints();
-	if (points.size() < 2) return;
+	if (points.size() < 2)
+	{
+		return;
+	}
 
 	const Point& a = points[points.size() - 2];
 	const Point& b = points[points.size() - 1];
@@ -84,7 +90,10 @@ void EraserTool::addPoint(const Point& point)
 			}
 		}
 
-		if (intersects) break;
+		if (intersects)
+		{
+			break;
+		}
 	}
 
 	if (intersects)
@@ -145,7 +154,10 @@ bool EraserTool::isDrawing() const
 void EraserTool::setThickness(float thickness)
 {
 	eraser_thickness = thickness;
-	if (erase_path) erase_path->setThickness(thickness);
+	if (erase_path)
+	{
+		erase_path->setThickness(thickness);
+	}
 }
 
 float EraserTool::getThickness() const
