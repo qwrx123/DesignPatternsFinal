@@ -1,75 +1,112 @@
 #include <gtest/gtest.h>
-#include "Tools/ToolManager.h"
-#include "drawing/IDrawingTool.h"
+#include "ToolManager.h"
 #include "BrushTool.h"
-#include "Stroke.h"
 #include "EraserTool.h"
-#include "Text.h"
+#include "LayerManager.h"
 #include "StrokeManager.h"
 
-TEST(ToolManagerTest, CanRegisterAndSelectTool) {
-    ToolManager tm;
-    auto brush = std::make_shared<BrushTool>(Color{1.0f, 0.0f, 0.0f, 1.0f}, 5.0f);
+class ToolManagerTest : public ::testing::Test {
+protected:
+    void SetUp() override {
+        layerManager = std::make_shared<LayerManager>();
+        strokeManager = std::make_shared<StrokeManager>(layerManager);
+        layerManager->addLayer();
+        layerManager->setActiveLayer(0);
 
-    tm.registerTool("Brush", brush);
-    EXPECT_EQ(tm.getActiveToolName(), "Brush");
-    EXPECT_EQ(tm.getActiveTool(), brush);
+        toolManager = std::make_shared<ToolManager>();
 
-    EXPECT_TRUE(tm.selectTool("Brush"));
-    EXPECT_FALSE(tm.selectTool("Eraser"));  // Not registered
+        brush = std::make_shared<BrushTool>(layerManager, strokeManager, Color{1.0F, 0.0F, 0.0F, 1.0F}, 3.0F);
+        eraser = std::make_shared<EraserTool>(layerManager, strokeManager, 5.0F);
+
+        toolManager->registerTool("Brush", brush);
+        toolManager->registerTool("Eraser", eraser);
+    }
+
+    std::shared_ptr<LayerManager> layerManager;
+    std::shared_ptr<StrokeManager> strokeManager;
+    std::shared_ptr<ToolManager> toolManager;
+    std::shared_ptr<BrushTool> brush;
+    std::shared_ptr<EraserTool> eraser;
+};
+
+TEST_F(ToolManagerTest, SelectToolUpdatesActiveTool) {
+    toolManager->selectTool("Brush");
+    EXPECT_EQ(toolManager->getActiveTool(), brush);
+
+    toolManager->selectTool("Eraser");
+    EXPECT_EQ(toolManager->getActiveTool(), eraser);
 }
 
-TEST(ToolManagerTest, DelegatesToBrushTool) {
-    auto strokeManager = std::make_shared<StrokeManager>();
-    auto brush = std::make_shared<BrushTool>(strokeManager, Color{0.0f, 1.0f, 0.0f, 1.0f}, 3.0f);
+TEST_F(ToolManagerTest, UndoDelegatesToActiveTool) {
+    // Generate a stroke for undo test
+    toolManager->selectTool("Brush");
+    Point p{10, 10};
+    brush->beginStroke(p);
+    brush->addPoint(Point{20, 20});
+    brush->endStroke(Point{30, 30});
+    EXPECT_EQ(strokeManager->getStrokes().size(), 1);
 
-    ToolManager tm;
-    tm.registerTool("Brush", brush);
-    tm.selectTool("Brush");
-
-    Point p1{10, 10};
-    Point p2{20, 20};
-    Point p3{30, 30};
-
-    tm.beginStroke(p1);
-    tm.addPoint(p2);
-    tm.endStroke(p3);
-
-    const auto& strokes = strokeManager->getStrokes();
-    ASSERT_EQ(strokes.size(), 1);
-    auto stroke = std::dynamic_pointer_cast<Stroke>(strokes[0]);
-    ASSERT_NE(stroke, nullptr);
-
-    const auto& pts = stroke->getPoints();
-    ASSERT_EQ(pts.size(), 3);
-    EXPECT_EQ(pts[0].x, 10);
-    EXPECT_EQ(pts[1].y, 20);
-    EXPECT_EQ(pts[2].x, 30);
+    toolManager->undoStroke();
+    EXPECT_EQ(strokeManager->getStrokes().size(), 0);
 }
 
-// TEST(ToolManagerTest, SwitchesBetweenBrushAndEraser) {
-//     ToolManager tm;
+TEST_F(ToolManagerTest, RedoDelegatesToActiveTool) {
+    toolManager->selectTool("Brush");
+    Point p{10, 10};
+    brush->beginStroke(p);
+    brush->endStroke(Point{20, 20});
+    toolManager->undoStroke();
+    EXPECT_EQ(strokeManager->getStrokes().size(), 0);
 
-//     auto brush = std::make_shared<BrushTool>(Color{1, 0, 0, 1}, 2.0f);
-//     auto eraser = std::make_shared<EraserTool>(10.0f);
+    toolManager->redoStroke();
+    EXPECT_EQ(strokeManager->getStrokes().size(), 1);
+}
 
-//     tm.registerTool("Brush", brush);
-//     tm.registerTool("Eraser", eraser);
+TEST_F(ToolManagerTest, EraserDelegatesUndoRedoCorrectly) {
+    // Create one brush stroke first
+    toolManager->selectTool("Brush");
+    brush->beginStroke(Point{10, 10});
+    brush->endStroke(Point{20, 20});
+    EXPECT_EQ(strokeManager->getStrokes().size(), 1);
 
-//     // ToolManager should default to the first registered tool
-//     EXPECT_EQ(tm.getActiveToolName(), "Brush");
-//     EXPECT_EQ(tm.getActiveTool(), brush);
+    // Use eraser to erase
+    toolManager->selectTool("Eraser");
+    eraser->beginStroke(Point{10, 10});
+    eraser->endStroke(Point{10, 10});
+    EXPECT_EQ(strokeManager->getStrokes().size(), 1);
 
-//     // Switch to Eraser
-//     EXPECT_TRUE(tm.selectTool("Eraser"));
-//     EXPECT_EQ(tm.getActiveToolName(), "Eraser");
-//     EXPECT_EQ(tm.getActiveTool(), eraser);
+    // Undo eraser
+    toolManager->undoStroke();
+    EXPECT_EQ(strokeManager->getStrokes().size(), 1);
+}
 
-//     // Switch back to Brush
-//     EXPECT_TRUE(tm.selectTool("Brush"));
-//     EXPECT_EQ(tm.getActiveToolName(), "Brush");
-//     EXPECT_EQ(tm.getActiveTool(), brush);
+TEST_F(ToolManagerTest, SwitchingToolsDoesNotAffectHistories) {
+    toolManager->selectTool("Brush");
+    brush->beginStroke(Point{10, 10});
+    brush->endStroke(Point{20, 20});
+    toolManager->undoStroke();
+    EXPECT_EQ(strokeManager->getStrokes().size(), 0);
 
-//     // Should not switch to unregistered tool
-//     EXPECT_FALSE(tm.selectTool("MagicWand"));
-// }
+    toolManager->selectTool("Eraser");
+    toolManager->undoStroke(); // Eraser undo should not affect brush strokes
+    EXPECT_EQ(strokeManager->getStrokes().size(), 0);
+}
+
+TEST_F(ToolManagerTest, InvalidToolSelectionDoesNotCrash) {
+    EXPECT_NO_THROW(toolManager->selectTool("NonExistentTool"));
+}
+
+TEST_F(ToolManagerTest, ActiveToolIsNullIfNoToolSelectedInitially) {
+    auto emptyManager = std::make_shared<ToolManager>();
+    EXPECT_EQ(emptyManager->getActiveTool(), nullptr);
+}
+
+TEST_F(ToolManagerTest, CanClearStrokesViaActiveTool) {
+    toolManager->selectTool("Brush");
+    brush->beginStroke(Point{10, 10});
+    brush->endStroke(Point{20, 20});
+    EXPECT_EQ(strokeManager->getStrokes().size(), 1);
+
+    toolManager->clearStrokes();
+    EXPECT_EQ(strokeManager->getStrokes().size(), 0);
+}

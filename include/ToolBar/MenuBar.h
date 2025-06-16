@@ -11,6 +11,7 @@
 #include "IInputReceiver.h"
 #include "IToolManager.h"
 #include "ITextManager.h"
+#include "LayerManager.h"
 
 class MenuBar : public IMenu, public IInputReceiver
 {
@@ -54,6 +55,24 @@ class MenuBar : public IMenu, public IInputReceiver
 
 	void setToolPointer(const std::shared_ptr<IToolManager>& ptr);
 	void setTextPointer(const std::shared_ptr<ITextManager>& ptr);
+	void setLayerPointer(std::shared_ptr<LayerManager> ptr);
+
+	[[nodiscard]] const std::vector<std::shared_ptr<IButton>>& getLayerDropdownButtons() const;
+	[[nodiscard]] const std::vector<std::shared_ptr<IButton>>& getLayerDeleteButtons() const;
+	void													   rebuildLayerDropdownButtons();
+	void handleDropdownButtons(KeyAction action, double x, double y, bool& clickedInsideDropdown);
+	void update();
+	void updateBrushButtonColor(Color newColor);
+
+	void					  beginRenameLayer(int layerIndex);
+	[[nodiscard]] bool		  isRenaming() const;
+	[[nodiscard]] std::string getRenameBuffer() const;
+	[[nodiscard]] int		  getLayerBeingRenamed() const;
+
+	void handleButtonPress(const std::shared_ptr<IButton>& button, const std::string& label,
+						   double x, double y, int itCount);
+	void handleButtonRelease(const std::shared_ptr<IButton>& button, const std::string& label);
+	[[nodiscard]] static bool isDropdownButton(const std::string& label);
 
    private:
 	std::string							  label;
@@ -62,6 +81,15 @@ class MenuBar : public IMenu, public IInputReceiver
 	std::shared_ptr<IToolManager>		  tool;
 	std::shared_ptr<ITextManager>		  text;
 	int									  selectedIndex = 0;
+
+	std::shared_ptr<LayerManager>		  layerManager;
+	bool								  dropdownOpen = false;
+	std::vector<std::shared_ptr<IButton>> layerDropdownButtons;
+	std::vector<std::shared_ptr<IButton>> layerDeleteButtons;
+	std::vector<std::shared_ptr<IButton>> layerRenameButtons;
+	bool								  renamingLayer		= false;
+	int									  layerBeingRenamed = -1;
+	std::string							  renameBuffer;
 
 	float halfHeight	= 0;
 	float quarterHeight = 0;

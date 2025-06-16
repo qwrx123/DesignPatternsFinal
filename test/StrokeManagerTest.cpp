@@ -1,11 +1,13 @@
 #include <gtest/gtest.h>
 #include "StrokeManager.h"
 #include "Stroke.h"
+#include "LayerManager.h"
 
 TEST(StrokeManagerTest, CanAddStroke) {
-    StrokeManager manager;
-    auto stroke = std::make_shared<Stroke>();
+    auto layerManager = std::make_shared<LayerManager>();
+    StrokeManager manager(layerManager);
 
+    auto stroke = std::make_shared<Stroke>();
     manager.addStroke(stroke);
 
     const auto& strokes = manager.getStrokes();
@@ -14,7 +16,9 @@ TEST(StrokeManagerTest, CanAddStroke) {
 }
 
 TEST(StrokeManagerTest, CanAddMultipleStrokes) {
-    StrokeManager manager;
+    auto layerManager = std::make_shared<LayerManager>();
+    StrokeManager manager(layerManager);
+
     auto s1 = std::make_shared<Stroke>();
     auto s2 = std::make_shared<Stroke>();
 
@@ -28,7 +32,9 @@ TEST(StrokeManagerTest, CanAddMultipleStrokes) {
 }
 
 TEST(StrokeManagerTest, CanClearStrokes) {
-    StrokeManager manager;
+    auto layerManager = std::make_shared<LayerManager>();
+    StrokeManager manager(layerManager);
+
     manager.addStroke(std::make_shared<Stroke>());
     manager.addStroke(std::make_shared<Stroke>());
 

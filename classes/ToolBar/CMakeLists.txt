@@ -19,6 +19,7 @@ target_link_libraries(
     ToolBar
     glfw
     OpenGL::GL
+    Rendering
 )
 
 if(WIN32)
