@@ -60,7 +60,17 @@ bool Image::importImage(const bufferStruct& buffer, const imageInfo& image)
 
 	// NOLINTNEXTLINE(cppcoreguidelines-avoid-c-arrays,modernize-avoid-c-arrays)
 	pixelData = std::make_unique<char[]>(buffer.bufferSize);
-	std::memcpy(pixelData.get(), buffer.bufferLocation.get(), buffer.bufferSize);
+
+	size_t scanLineSize = image.width * 4;
+	size_t iteration	= 0;
+
+	for (char* scanLine = pixelData.get() + ((image.height - 1) * scanLineSize);
+		 scanLine >= pixelData.get();
+		 scanLine -= scanLineSize)	// NOLINT(cppcoreguidelines-pro-bounds-pointer-arithmetic)
+	{
+		std::memcpy(scanLine, buffer.bufferLocation.get() + (scanLineSize * iteration++),
+					scanLineSize);
+	}
 
 	width		= image.width;
 	height		= image.height;
