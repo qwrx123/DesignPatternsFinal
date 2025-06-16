@@ -1,5 +1,7 @@
 set(FILE_LIST
     CanvasRenderer.h
+    Layer.h
+    LayerManager.h
 )
 
 registerFilesToFormat(FILES ${FILE_LIST})

@@ -11,8 +11,8 @@ class Stroke : public IStroke
 	Stroke();
 	~Stroke() override;
 
-	Stroke(const Stroke& other)				   = default;
-	Stroke& operator=(const Stroke& other)	   = default;
+	Stroke(const Stroke& other);
+	Stroke& operator=(const Stroke& other);
 	Stroke(Stroke&& other) noexcept			   = default;
 	Stroke& operator=(Stroke&& other) noexcept = default;
 

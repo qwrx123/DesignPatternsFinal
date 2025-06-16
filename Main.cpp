@@ -1,35 +1,30 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
-#include <iostream>
-#include <memory>
-#include <optional>
-
 #include "CanvasRenderer.h"
 #include "InputManager.h"
-#include "StrokeManager.h"
 #include "ToolManager.h"
 #include "BrushTool.h"
 #include "EraserTool.h"
 #include "MenuBar.h"
 #include "ButtonClass.h"
 #include "TextManager.h"
+#include "LayerManager.h"
 #include "FileLocation.h"
 
 const int		  defaultWindowWidth  = 800;
 const int		  defaultWindowHeight = 600;
 const char* const defaultWindowTitle  = "Drawing App";
 
-const float defaultEraserSize = 10;
-
+const float defaultEraserSize	 = 10.0F;
 const float defaultThickness	 = 2.0F;
 const int	defaultMenuBarHeight = 100;
 const int	defaultFontSize		 = 48;
 
-int main()
+GLFWwindow* initializeWindow()
 {
 	if (glfwInit() == GLFW_FALSE)
 	{
-		return -1;
+		return nullptr;
 	}
 
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -38,10 +33,10 @@ int main()
 
 	GLFWwindow* window = glfwCreateWindow(defaultWindowWidth, defaultWindowHeight,
 										  defaultWindowTitle, nullptr, nullptr);
-	if (window == nullptr)
+	if (!(bool) window)
 	{
 		glfwTerminate();
-		return -1;
+		return nullptr;
 	}
 
 	glfwMakeContextCurrent(window);
@@ -50,15 +45,25 @@ int main()
 	{
 		glfwDestroyWindow(window);
 		glfwTerminate();
-		return -1;
+		return nullptr;
 	}
+	return window;
+}
 
-	auto renderer	   = std::make_unique<CanvasRenderer>(window);
-	auto strokeManager = std::make_shared<StrokeManager>();
-	auto toolManager   = std::make_shared<ToolManager>();
-	auto inputManager  = std::make_shared<InputManager>();
-	auto menuBar	   = std::make_shared<MenuBar>();
-	auto textManager   = std::make_shared<TextManager>();
+void initializeObjects(GLFWwindow* window, std::unique_ptr<CanvasRenderer>& renderer,
+					   std::shared_ptr<LayerManager>&  layerManager,
+					   std::shared_ptr<StrokeManager>& strokeManager,
+					   std::shared_ptr<ToolManager>&   toolManager,
+					   std::shared_ptr<InputManager>&  inputManager,
+					   std::shared_ptr<MenuBar>& menuBar, std::shared_ptr<TextManager>& textManager)
+{
+	renderer	  = std::make_unique<CanvasRenderer>(window);
+	layerManager  = std::make_shared<LayerManager>();
+	strokeManager = std::make_shared<StrokeManager>(layerManager);
+	toolManager	  = std::make_shared<ToolManager>();
+	inputManager  = std::make_shared<InputManager>();
+	menuBar		  = std::make_shared<MenuBar>();
+	textManager	  = std::make_shared<TextManager>();
 
 	inputManager->bindToWindow(window);
 	inputManager->registerReceiver(toolManager);
@@ -66,16 +71,16 @@ int main()
 	inputManager->registerReceiver(textManager);
 	inputManager->setResizeCallback([&](int w, int h) { CanvasRenderer::resize(w, h); });
 
-	toolManager->setBounds(Bounds{.top	  = defaultMenuBarHeight,
-								  .bottom = defaultWindowHeight,
-								  .left	  = 0,
-								  .right  = defaultWindowWidth});
+	toolManager->setBounds({.top	= defaultMenuBarHeight,
+							.bottom = defaultWindowHeight,
+							.left	= 0,
+							.right	= defaultWindowWidth});
 	toolManager->registerTool(
-		"brush",
-		std::make_shared<BrushTool>(
-			strokeManager, Color{.r = 0.0F, .g = 0.0F, .b = 0.0F, .a = 1.0F}, defaultThickness));
-	toolManager->registerTool("eraser",
-							  std::make_shared<EraserTool>(strokeManager, defaultEraserSize));
+		"Brush", std::make_shared<BrushTool>(layerManager, strokeManager,
+											 Color{.r = 0.0F, .g = 0.0F, .b = 0.0F, .a = 1.0F},
+											 defaultThickness));
+	toolManager->registerTool(
+		"Eraser", std::make_shared<EraserTool>(layerManager, strokeManager, defaultEraserSize));
 
 	textManager->registerTextTool(std::make_shared<Text>(
 		"",
@@ -83,79 +88,129 @@ int main()
 		"Delius", defaultFontSize, Color{.r = 0.0F, .g = 0.0F, .b = 0.0F, .a = 1.0F}, true));
 
 	menuBar->setBounds(
-		Bounds{.top = 0, .bottom = defaultMenuBarHeight, .left = 0, .right = defaultWindowWidth});
+		{.top = 0, .bottom = defaultMenuBarHeight, .left = 0, .right = defaultWindowWidth});
 	menuBar->setToolPointer(toolManager);
 	menuBar->setTextPointer(textManager);
+	menuBar->setLayerPointer(layerManager);
 	menuBar->setDefaultButtons();
+}
 
-	while (glfwWindowShouldClose(window) == 0)
+void renderFrame(CanvasRenderer& renderer, LayerManager& layerManager, ToolManager& toolManager,
+				 TextManager& textManager, MenuBar& menuBar)
+{
+	renderer.beginFrame();
+
+	for (const auto& layer : layerManager.getAllLayers())
 	{
-		inputManager->beginFrame();
-		glfwPollEvents();
-
-		// begin rendering
-		renderer->beginFrame();
-
-		for (const auto& stroke : strokeManager->getStrokes())
+		for (const auto& stroke : layer->getStrokes())
 		{
-			renderer->drawStroke(*stroke);
+			renderer.drawStroke(*stroke);
 		}
+	}
 
-		for (const auto& text : textManager->getTexts())
-		{
-			CanvasRenderer::renderText(*text);
-		}
+	for (const auto& text : textManager.getTexts())
+	{
+		CanvasRenderer::renderText(*text);
+	}
 
-		auto current_tool = toolManager->getActiveTool();
-		if (current_tool)
+	if (toolManager.getActiveToolName() == "Brush")
+	{
+		auto brush		 = std::dynamic_pointer_cast<BrushTool>(toolManager.getActiveTool());
+		auto live_stroke = brush->getCurrentStroke();
+		if (live_stroke && live_stroke->getPoints().size() >= 2)
 		{
-			auto brush = std::dynamic_pointer_cast<BrushTool>(current_tool);
-			if (brush)
-			{
-				auto live_stroke = brush->getCurrentStroke();
-				if (live_stroke && live_stroke->getPoints().size() >= 2)
-				{
-					renderer->drawStroke(*live_stroke);
-				}
-			}
+			renderer.drawStroke(*live_stroke);
 		}
+	}
 		bool exportCanvas = false;
-		renderer->drawMenu(*menuBar);
-		for (const auto& button : menuBar->getButtons())
-		{
+	renderer.drawMenu(menuBar);
+
+	for (const auto& button : menuBar.getButtons())
+	{
 			if (button->getLabel() == "export" && button->isPressed())
 			{
 				exportCanvas = true;
 				button->setPressed(false);
 			}
-			if (button->getLabel() == "size" || button->getLabel() == "red" ||
-				button->getLabel() == "green" || button->getLabel() == "blue" ||
-				button->getLabel() == "opacity")
-			{
-				CanvasRenderer::drawSliderButton(*button, button->getValue());
-			}
-			else
-			{
-				renderer->drawButton(*button);
-			}
-		}
-
-		renderer->endFrame();
-		inputManager->endFrame();
-
-		if (exportCanvas)
+		if (button->getLabel() == "size" || button->getLabel() == "red" ||
+			button->getLabel() == "green" || button->getLabel() == "blue" ||
+			button->getLabel() == "opacity")
 		{
-			glFlush();
-			glFinish();
-			std::string fileLocation = FileLocation::getDownloadLocation();
-			std::string fileName	 = "DaisyExport";
-
-			renderer->exportBitmap(
-				fileName, fileLocation,
-				{.top = menuBar->getBounds().bottom, .bottom = 0, .left = 0, .right = 0});
-			std::cout << "Canvas exported to: " << fileLocation << fileName << ".bmp\n";
+			CanvasRenderer::drawSliderButton(*button, button->getValue());
+		}
+		else
+		{
+			renderer.drawButton(*button);
 		}
 	}
+
+	menuBar.update();
+
+	for (size_t i = 0; i < menuBar.getLayerDropdownButtons().size(); ++i)
+	{
+		const auto& dropdown = menuBar.getLayerDropdownButtons()[i];
+		bool isBeingRenamed	 = menuBar.isRenaming() && ((int) i == menuBar.getLayerBeingRenamed());
+		std::string renameBuffer = isBeingRenamed ? menuBar.getRenameBuffer() : "";
+
+		renderer.drawButton(*dropdown, isBeingRenamed, 0, renameBuffer);
+	}
+
+	for (const auto& del : menuBar.getLayerDeleteButtons())
+	{
+		renderer.drawButton(*del);
+	}
+
+	if (exportCanvas)
+	{
+		glFlush();
+		glFinish();
+		std::string fileLocation = FileLocation::getDownloadLocation();
+		std::string fileName	 = "DaisyExport";
+
+		renderer->exportBitmap(
+			fileName, fileLocation,
+			{.top = menuBar->getBounds().bottom, .bottom = 0, .left = 0, .right = 0});
+		std::cout << "Canvas exported to: " << fileLocation << fileName << ".bmp\n";
+	}
+
+	renderer.endFrame();
+}
+
+void mainLoop(GLFWwindow* window, CanvasRenderer& renderer, LayerManager& layerManager,
+			  ToolManager& toolManager, TextManager& textManager, MenuBar& menuBar,
+			  InputManager& inputManager)
+{
+	while (!(bool) glfwWindowShouldClose(window))
+	{
+		inputManager.beginFrame();
+		glfwPollEvents();
+
+		renderFrame(renderer, layerManager, toolManager, textManager, menuBar);
+
+		inputManager.endFrame();
+
+	}
+}
+
+int main()
+{
+	GLFWwindow* window = initializeWindow();
+	if (!(bool) window)
+	{
+		return -1;
+	}
+
+	std::unique_ptr<CanvasRenderer> renderer;
+	std::shared_ptr<LayerManager>	layerManager;
+	std::shared_ptr<StrokeManager>	strokeManager;
+	std::shared_ptr<ToolManager>	toolManager;
+	std::shared_ptr<InputManager>	inputManager;
+	std::shared_ptr<MenuBar>		menuBar;
+	std::shared_ptr<TextManager>	textManager;
+
+	initializeObjects(window, renderer, layerManager, strokeManager, toolManager, inputManager,
+					  menuBar, textManager);
+	mainLoop(window, *renderer, *layerManager, *toolManager, *textManager, *menuBar, *inputManager);
 
 	glfwDestroyWindow(window);
 	glfwTerminate();

@@ -28,6 +28,9 @@ class ITextManager
 	[[nodiscard]] virtual std::shared_ptr<IText> getTextAt(double x, double y) const = 0;
 	virtual void								 clearAll()							 = 0;
 	virtual void								 setFontSize(int size)				 = 0;
+
+	virtual void undoText() = 0;
+	virtual void redoText() = 0;
 };
 
 #endif	// ITEXTMANAGER_H

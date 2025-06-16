@@ -5,6 +5,8 @@
 #include <iostream>
 #include <cmath>
 #include <cassert>
+#include <string>
+#include <GLFW/glfw3.h>
 
 const int defaultButtonWidth = 50;
 const int defaultSliderWidth = 100;
@@ -128,14 +130,14 @@ void MenuBar::setDefaultButtons()
 
 	//Half size tool buttons
 	addButton(std::make_shared<ButtonClass>(
-		"brush",
+		"Brush",
 		Bounds{.top	   = bounds.top,
 			   .bottom = midDiv,
 			   .left   = buttons.at(buttons.size() - 1)->getBounds().right + 1,
 			   .right  = buttons.at(buttons.size() - 1)->getBounds().right + defaultButtonWidth},
-		black));
+		white));
 	addButton(std::make_shared<ButtonClass>(
-		"eraser",
+		"Eraser",
 		Bounds{.top	   = midDiv,
 			   .bottom = bounds.bottom,
 			   .left   = buttons.at(buttons.size() - 1)->getBounds().left,
@@ -143,12 +145,12 @@ void MenuBar::setDefaultButtons()
 		white));
 
 	addButton(std::make_shared<ButtonClass>(
-		"text",
+		"Text",
 		Bounds{.top	   = bounds.top,
 			   .bottom = midDiv,
 			   .left   = buttons.at(buttons.size() - 1)->getBounds().right + 1,
 			   .right  = buttons.at(buttons.size() - 1)->getBounds().right + defaultButtonWidth},
-		black));
+		white));
 
 	// Size slider
 	addButton(std::make_shared<SliderButton>(
@@ -286,6 +288,79 @@ void MenuBar::setDefaultButtons()
 			   .left   = buttons.at(buttons.size() - 1)->getBounds().right + 1,
 			   .right  = buttons.at(buttons.size() - 1)->getBounds().right + defaultButtonWidth},
 		gray));
+	// Undo and Redo
+	addButton(std::make_shared<ButtonClass>(
+		"Undo Text",
+		Bounds{.top	   = bounds.top,
+			   .bottom = firstDiv,
+			   .left   = buttons.at(buttons.size() - 1)->getBounds().right + 1,
+			   .right  = buttons.at(buttons.size() - 1)->getBounds().right + defaultSliderWidth},
+		white));
+	addButton(std::make_shared<ButtonClass>(
+		"Redo Text",
+		Bounds{.top	   = firstDiv,
+			   .bottom = midDiv,
+			   .left   = buttons.at(buttons.size() - 1)->getBounds().left,
+			   .right  = buttons.at(buttons.size() - 1)->getBounds().right},
+		white));
+	addButton(std::make_shared<ButtonClass>(
+		"Undo Strokes",
+		Bounds{.top	   = midDiv,
+			   .bottom = thirdDiv,
+			   .left   = buttons.at(buttons.size() - 1)->getBounds().left,
+			   .right  = buttons.at(buttons.size() - 1)->getBounds().right},
+		white));
+	addButton(std::make_shared<ButtonClass>(
+		"Redo Strokes",
+		Bounds{.top	   = thirdDiv,
+			   .bottom = bounds.bottom,
+			   .left   = buttons.at(buttons.size() - 1)->getBounds().left,
+			   .right  = buttons.at(buttons.size() - 1)->getBounds().right},
+		white));
+	addButton(std::make_shared<ButtonClass>(
+		"Clear Text",
+		Bounds{.top	   = bounds.top,
+			   .bottom = midDiv,
+			   .left   = buttons.at(buttons.size() - 1)->getBounds().right + 1,
+			   .right  = buttons.at(buttons.size() - 1)->getBounds().right + defaultSliderWidth},
+		red));
+	addButton(std::make_shared<ButtonClass>(
+		"Clear Strokes",
+		Bounds{.top	   = midDiv,
+			   .bottom = bounds.bottom,
+			   .left   = buttons.at(buttons.size() - 1)->getBounds().left,
+			   .right  = buttons.at(buttons.size() - 1)->getBounds().right},
+		red));
+
+	// Add Layer button
+	addButton(std::make_shared<ButtonClass>(
+    	"Add Layer",
+    	Bounds{
+     		.top = bounds.top,
+        	.bottom = midDiv,
+        	.left = buttons.at(buttons.size() - 1)->getBounds().right + 1,
+        	.right = buttons.at(buttons.size() - 1)->getBounds().right + defaultSliderWidth},
+    	white));
+
+	// Rename Layer button
+	addButton(std::make_shared<ButtonClass>(
+    	"Rename Layer",
+    	Bounds{
+        	.top = midDiv,
+        	.bottom = bounds.bottom,
+        	.left = buttons.at(buttons.size() - 1)->getBounds().left,
+			.right  = buttons.at(buttons.size() - 1)->getBounds().right},
+    	white));
+
+	// Layer dropdown menu
+	addButton(std::make_shared<ButtonClass>(
+    	"Select Layer",
+    	Bounds{
+        	.top = bounds.top,
+        	.bottom = midDiv,
+        	.left = buttons.at(buttons.size() - 1)->getBounds().right + 1,
+        	.right = buttons.at(buttons.size() - 1)->getBounds().right + defaultSliderWidth},
+    	white));
 }
 
 void MenuBar::addButton(std::shared_ptr<IButton> button)
@@ -339,34 +414,153 @@ void MenuBar::onMouseMove(double x, double y)
 
 void MenuBar::onMouseButton(MouseButton click, KeyAction action, double x, double y)
 {
-	int itCount = 0;
-	for (auto& button : buttons)
-	{
-		if (button->getBounds().contains(x, y) && action == KeyAction::Press)
-		{
-			std::string label = button->getLabel();
-			button->setPressed(true);
-			onButton(button, label, x, y, itCount);
-		}
+    int itCount = 0;
+    bool clickedInsideDropdown = false;
 
-		//change tool button color as long as it is not the eraser
-		if (button->isPressed() && button->getLabel() == "color" && buttons.at(selectedIndex)->getLabel() != "eraser" && action == KeyAction::Release)
-		{
-			buttons.at(selectedIndex)->setColor(button->getColor());
-			setSliderButtonValues();
-		}
+    for (auto& button : buttons)
+    {
+        if (button->getBounds().contains(x, y))
+        {
+            std::string label = button->getLabel();
 
-		if (action == KeyAction::Release) {
-			button->setPressed(false);
-		}
+            if (action == KeyAction::Press)
+            {
+                handleButtonPress(button, label, x, y, itCount);
+            }
 
-		itCount++;
-	}
+            if (button->isPressed() && label == "color" && buttons.at(selectedIndex)->getLabel() != "Eraser" &&
+                action == KeyAction::Release)
+            {
+                buttons.at(selectedIndex)->setColor(button->getColor());
+                setSliderButtonValues();
+            }
+
+            if (action == KeyAction::Release)
+            {
+                handleButtonRelease(button, label);
+            }
+
+            if (isDropdownButton(label))
+            {
+                clickedInsideDropdown = true;
+            }
+        }
+        itCount++;
+    }
+
+    handleDropdownButtons(action, x, y, clickedInsideDropdown);
+
+    if (dropdownOpen && !clickedInsideDropdown && action == KeyAction::Press)
+    {
+        dropdownOpen = false;
+        layerDropdownButtons.clear();
+        layerDeleteButtons.clear();
+    }
 }
 
-void MenuBar::onKey(int key, KeyAction action) {}
+void MenuBar::handleButtonPress(const std::shared_ptr<IButton>& button, const std::string& label, double x, double y, int itCount)
+{
+    button->setPressed(true);
 
-void MenuBar::onChar(unsigned int codepoint) {}
+    if (label == "Add Layer" || label == "Select Layer" || label == "Brush" || 
+        label == "Undo Text" || label == "Redo Text" || label == "Undo Strokes" || label == "Redo Strokes")
+    {
+        button->setColor(gray);
+    }
+
+    onButton(button, label, x, y, itCount);
+}
+
+void MenuBar::handleButtonRelease(const std::shared_ptr<IButton>& button, const std::string& label)
+{
+    button->setPressed(false);
+
+    if (label == "Add Layer" || label == "Select Layer" || label == "Undo Text" || label == "Redo Text" 
+        || label == "Undo Strokes" || label == "Redo Strokes")
+    {
+        button->setColor(white);
+    }
+
+    if (label == "Brush")
+    {
+        Color brushColor = tool->getActiveTool()->getColor();
+        button->setColor(brushColor);
+    }
+}
+
+bool MenuBar::isDropdownButton(const std::string& label)
+{
+    return (label == "Select Layer" || label == "Add Layer" || label == "Rename Layer");
+}
+
+void MenuBar::handleDropdownButtons(KeyAction action, double x, double y, bool& clickedInsideDropdown)
+{
+	if (!dropdownOpen) 
+	{
+		return;
+	}
+
+    // Handle layer delete clicks
+    for (size_t i = 0; i < layerDeleteButtons.size(); ++i)
+    {
+        auto& delBtn = layerDeleteButtons[i];
+        if (delBtn->getBounds().contains(x, y) && action == KeyAction::Press && layerDeleteButtons.size() > 1)
+        {
+            layerManager->removeLayer((int)i);
+            clickedInsideDropdown = true;
+            return;
+        }
+    }
+
+    // Handle layer selection clicks
+    for (size_t i = 0; i < layerDropdownButtons.size(); ++i)
+    {
+        auto& btn = layerDropdownButtons[i];
+        if (btn->getBounds().contains(x, y) && action == KeyAction::Press)
+        {
+            layerManager->setActiveLayer(static_cast<int>(i));
+            clickedInsideDropdown = true;
+        }
+    }
+}
+
+void MenuBar::onKey(int key, KeyAction action)
+{
+    if (!renamingLayer) 
+	{
+		return;
+	}
+
+    if (key == GLFW_KEY_BACKSPACE && action == KeyAction::Press)
+    {
+        if (!renameBuffer.empty())
+		{
+            renameBuffer.pop_back();
+		}
+    }
+    else if (key == GLFW_KEY_ENTER && action == KeyAction::Press)
+    {
+        // Apply the name change
+        layerManager->getAllLayers()[layerBeingRenamed]->setName(renameBuffer);
+        renamingLayer = false;
+        layerBeingRenamed = -1;
+
+		for (auto& btn : buttons)
+    	{
+        	if (btn->getLabel() == "Rename Layer")
+        	{
+            	btn->setColor(white);
+        	}
+    	}
+    }
+}
+
+void MenuBar::onChar(unsigned int codepoint) {
+	if (renamingLayer)
+    {
+        renameBuffer += static_cast<char>(codepoint);
+    }
+}
 
 void MenuBar::onResize(int width, int height)
 {
@@ -381,6 +575,10 @@ void MenuBar::setToolPointer(const std::shared_ptr<IToolManager>& ptr)
 void MenuBar::setTextPointer(const std::shared_ptr<ITextManager>& ptr)
 {
 	text = ptr;
+}
+
+void MenuBar::setLayerPointer(std::shared_ptr<LayerManager> ptr) {
+	layerManager = std::move(ptr);
 }
 
 std::vector<std::shared_ptr<IButton>> MenuBar::cloneButtons() const
@@ -451,40 +649,58 @@ float MenuBar::sliderValueCalc(const std::shared_ptr<SliderButton>& slider, doub
 }
 
 void MenuBar::onButton(const std::shared_ptr<IButton>& button, const std::string& label, double x,
-					 double y, int itCount){
-	if (label == "color")
+					 double y, int itCount)
+{
+	onToolButton(button, label, x, y, itCount);
+	onColorButton(button, label, x, y, itCount);
+	onHistoryButton(button, label, x, y, itCount);
+
+	if (label == "Add Layer")
 	{
-		tool->getActiveTool()->setColor(button->getColor());
-		if (text->isTextToolActive())
-		{
-			text->getTexts().at(text->getTexts().size() - 1)->setColor(button->getColor());
-		}
+    	if (layerManager && layerManager->getAllLayers().size() < layerManager->maxLayers()) {
+        	layerManager->addLayer();
+    	}
 	}
-	else if (label == "text")
+	else if (label == "Select Layer")
 	{
-		if (text->isTextToolActive())
-		{
-			text->setTextToolInactive();
-			button->setColor(black);
-		}
-		else
-		{
-			text->setTextToolActive();
-			button->setColor(green);
-		}
+		dropdownOpen = !dropdownOpen;
+
+    	if (!dropdownOpen)
+    	{
+        	layerDropdownButtons.clear();
+        	layerDeleteButtons.clear();
+    	}
 	}
-	else if (label == "size" || label == "red" || label == "green" || label == "blue" || label == "opacity")
+	else if (label == "Rename Layer")
 	{
-		auto sliderButton = std::dynamic_pointer_cast<SliderButton>(button);
-		if (sliderButton)
-		{
-			sliderLogic(sliderButton, label, x, y);
-		}
+    	if (layerManager && !layerManager->getAllLayers().empty())
+    	{
+        	renamingLayer = true;
+        	layerBeingRenamed = (int)layerManager->getActiveLayerIndex();
+			renameBuffer.clear();
+    	}
+		button->setColor(gray);
 	}
 	else
 	{
 		tool->selectTool(label);
-		selectedIndex = itCount;
+		selectedIndex = itCount; // These lines may or may not need to be removed
+
+		// Visual feedback for Eraser button state
+    	for (auto& btn : buttons)
+    	{
+        	if (btn->getLabel() == "Eraser")
+        	{
+            	if (label == "Eraser")
+            	{
+                	btn->setColor(gray);
+            	}
+            	else if (label == "Brush")
+            	{
+                	btn->setColor(white);
+            	}
+        	}
+    	}
 	}
 }
 
@@ -515,8 +731,9 @@ void MenuBar::sliderLogic(const std::shared_ptr<SliderButton>& slider, const std
 						   .b = tool->getActiveTool()->getColor().b,
 						   .a = tool->getActiveTool()->getColor().a};
 		tool->getActiveTool()->setColor(newToolColor);
+		updateBrushButtonColor(newToolColor);
 
-		if (buttons.at(selectedIndex)->getLabel() != "eraser") {
+		if (buttons.at(selectedIndex)->getLabel() != "Eraser") {
 			buttons.at(selectedIndex)->setColor(newToolColor);
 		}
 
@@ -535,8 +752,9 @@ void MenuBar::sliderLogic(const std::shared_ptr<SliderButton>& slider, const std
 						   .b = tool->getActiveTool()->getColor().b,
 						   .a = tool->getActiveTool()->getColor().a};
 		tool->getActiveTool()->setColor(newToolColor);
+		updateBrushButtonColor(newToolColor);
 
-		if (buttons.at(selectedIndex)->getLabel() != "eraser") {
+		if (buttons.at(selectedIndex)->getLabel() != "Eraser") {
 			buttons.at(selectedIndex)->setColor(newToolColor);
 		}
 
@@ -555,8 +773,9 @@ void MenuBar::sliderLogic(const std::shared_ptr<SliderButton>& slider, const std
 						   .b = value,
 						   .a = tool->getActiveTool()->getColor().a};
 		tool->getActiveTool()->setColor(newToolColor);
+		updateBrushButtonColor(newToolColor);
 
-		if (buttons.at(selectedIndex)->getLabel() != "eraser") {
+		if (buttons.at(selectedIndex)->getLabel() != "Eraser") {
 			buttons.at(selectedIndex)->setColor(newToolColor);
 		}
 		
@@ -575,8 +794,9 @@ void MenuBar::sliderLogic(const std::shared_ptr<SliderButton>& slider, const std
 						   .b = tool->getActiveTool()->getColor().b,
 						   .a = value};
 		tool->getActiveTool()->setColor(newToolColor);
+		updateBrushButtonColor(newToolColor);
 
-		if (buttons.at(selectedIndex)->getLabel() != "eraser") {
+		if (buttons.at(selectedIndex)->getLabel() != "Eraser") {
 			buttons.at(selectedIndex)->setColor(newToolColor);
 		}
 		
@@ -591,4 +811,208 @@ void MenuBar::sliderLogic(const std::shared_ptr<SliderButton>& slider, const std
 	}
 
 	setSliderButtonValues();
+}
+
+void MenuBar::onToolButton(const std::shared_ptr<IButton>& button, const std::string& label, double x,
+				  double y, int itCount)
+{
+	if (label == "Text")
+	{
+		if (text->isTextToolActive())
+		{
+			text->setTextToolInactive();
+			button->setColor(white);
+		}
+		else
+		{
+			text->setTextToolActive();
+			button->setColor(green);
+		}
+	}
+	else if (label == "Eraser" || label == "Brush")
+	{
+		tool->selectTool(label);
+		selectedIndex = itCount;
+	}
+}
+
+void MenuBar::onColorButton(const std::shared_ptr<IButton>& button, const std::string& label, double x,
+				  double y, int itCount)
+{
+	if (label == "color")
+	{
+		tool->getActiveTool()->setColor(button->getColor());
+		if (text->isTextToolActive())
+		{
+			text->getTexts().at(text->getTexts().size() - 1)->setColor(button->getColor());
+		}
+		else
+		{
+			updateBrushButtonColor(button->getColor());
+		}
+	}
+	else if (label == "size" || label == "red" || label == "green" || label == "blue" || label == "opacity")
+	{
+		auto sliderButton = std::dynamic_pointer_cast<SliderButton>(button);
+		if (sliderButton)
+		{
+			sliderLogic(sliderButton, label, x, y);
+		}
+	}
+}
+
+void MenuBar::onHistoryButton(const std::shared_ptr<IButton>& button, const std::string& label, double x,
+				  double y, int itCount)
+{
+	if (label == "Undo Text")
+	{
+		if (text->isTextToolActive())
+		{
+			text->undoText();
+		}
+	}
+	else if (label == "Redo Text")
+	{
+		if (text->isTextToolActive())
+		{
+			text->redoText();
+		}
+	}
+	else if (label == "Undo Strokes")
+	{
+		if (tool->getActiveTool())
+		{
+			tool->undoStroke();
+		}
+	}
+	else if (label == "Redo Strokes")
+	{
+		if (tool->getActiveTool())
+		{
+			tool->redoStroke();
+		}
+	}
+	else if (label == "Clear Text")
+	{
+		if (text->isTextToolActive())
+		{
+			text->clearAll();
+		}
+	}
+	else if (label == "Clear Strokes")
+	{
+		if (tool->getActiveTool())
+		{
+			tool->clearStrokes();
+		}
+	}
+}
+
+void MenuBar::rebuildLayerDropdownButtons()
+{
+    if (!dropdownOpen || !layerManager) 
+	{
+		return;
+	}
+
+    layerDropdownButtons.clear();
+    layerDeleteButtons.clear();
+
+    const auto& layers = layerManager->getAllLayers();
+    const float buttonHeight = 25.0F;
+	const float top			 = bounds.bottom - 50.0F;
+
+    // Locate dropdown button to position this list
+    auto dropdownBtn = std::ranges::find_if(buttons.begin(), buttons.end(), [](const auto& b) {
+        return b->getLabel() == "Select Layer";
+    });
+
+    if (dropdownBtn == buttons.end()) 
+	{
+		return;
+	}
+
+    float left = (*dropdownBtn)->getBounds().left;
+    float right = (*dropdownBtn)->getBounds().right;
+
+    for (size_t i = 0; i < layers.size(); ++i)
+    {
+        std::string layerName = layers[i]->getName();
+        
+        // Main selection button (full width minus delete button space)
+		Color layerColor = (layers[i] == layerManager->getActiveLayer()) ? gray : white;
+		auto layerBtn = std::make_shared<ButtonClass>(
+			layerName,
+			Bounds {
+				.top	= top + ((float) i * buttonHeight),
+				.bottom = top + (((float) i + 1) * buttonHeight), 
+				.left = left,
+				.right = right - buttonHeight,
+			},
+			layerColor);
+		layerDropdownButtons.push_back(layerBtn);
+
+        // Delete button ("X") aligned right
+		Color deleteColor = (layers.size() > 1) ? red : gray;
+        auto deleteBtn = std::make_shared<ButtonClass>(
+            "X",
+            Bounds{
+                .top = top + ((float)i * buttonHeight),
+                .bottom = top + (((float)i + 1) * buttonHeight),
+                .left = right - buttonHeight,
+                .right = right
+            },
+            deleteColor);
+        layerDeleteButtons.push_back(deleteBtn);
+    }
+}
+
+const std::vector<std::shared_ptr<IButton>>& MenuBar::getLayerDropdownButtons() const {
+	return layerDropdownButtons;
+}
+
+const std::vector<std::shared_ptr<IButton>>& MenuBar::getLayerDeleteButtons() const {
+	return layerDeleteButtons;
+}
+
+void MenuBar::update()
+{
+    if (dropdownOpen)
+    {
+        rebuildLayerDropdownButtons();
+    }
+}
+
+void MenuBar::beginRenameLayer(int layerIndex)
+{
+    renamingLayer = true;
+    layerBeingRenamed = layerIndex;
+    renameBuffer = layerManager->getAllLayers()[layerIndex]->getName();
+}
+
+bool MenuBar::isRenaming() const 
+{ 
+	return renamingLayer; 
+
+}
+std::string MenuBar::getRenameBuffer() const 
+{ 
+	return renameBuffer; 
+}
+
+int MenuBar::getLayerBeingRenamed() const 
+{ 
+	return layerBeingRenamed; 
+}
+
+void MenuBar::updateBrushButtonColor(Color newColor)
+{
+    for (auto& button : buttons)
+    {
+        if (button->getLabel() == "Brush")
+        {
+            button->setColor(newColor);
+            break;
+        }
+    }
 }

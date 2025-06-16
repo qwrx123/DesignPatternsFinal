@@ -2,6 +2,8 @@ add_library(
     Rendering
     SHARED
     CanvasRenderer.cpp
+    Layer.cpp
+    LayerManager.cpp
 )
 
 find_package(glfw3 3.3 REQUIRED)
