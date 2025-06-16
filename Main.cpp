@@ -117,7 +117,7 @@ void drawBitmap(CanvasRenderer& renderer, MenuBar& menuBar, bool shouldImport)
 			auto [buffer, info] = import.getImportedData();
 			image				= std::make_unique<Image>();
 			image->importImage(buffer, info);
-			image->setCoordinates(0, menuBar.getBounds().bottom);
+			image->setCoordinates(0, static_cast<size_t>(menuBar.getBounds().bottom));
 		}
 		else
 		{
