@@ -219,3 +219,30 @@ TEST_F(MenuBarIntegrationTest, RenameBufferAppliesNameOnEnter) {
 
     EXPECT_EQ(layerManager->getAllLayers()[0]->getName(), "New");
 }
+
+TEST_F(MenuBarIntegrationTest, TextButtonTogglesGreenWhenActivated) {
+    auto textButton = getButton(*menuBar, "Text");
+
+    // Initial color should be white
+    EXPECT_EQ(textButton->getColor().r, 1.0f);
+    EXPECT_EQ(textButton->getColor().g, 1.0f);
+    EXPECT_EQ(textButton->getColor().b, 1.0f);
+
+    // Simulate click to activate
+    menuBar->onMouseButton(MouseButton::Left, KeyAction::Press, textButton->getBounds().left + 1, textButton->getBounds().top + 1);
+    menuBar->onMouseButton(MouseButton::Left, KeyAction::Release, textButton->getBounds().left + 1, textButton->getBounds().top + 1);
+
+    // Should turn green when activated
+    EXPECT_EQ(textButton->getColor().r, 0.0f);
+    EXPECT_EQ(textButton->getColor().g, 0.7f);
+    EXPECT_EQ(textButton->getColor().b, 0.1f);
+
+    // Simulate click to deactivate
+    menuBar->onMouseButton(MouseButton::Left, KeyAction::Press, textButton->getBounds().left + 1, textButton->getBounds().top + 1);
+    menuBar->onMouseButton(MouseButton::Left, KeyAction::Release, textButton->getBounds().left + 1, textButton->getBounds().top + 1);
+
+    // Should turn back to white
+    EXPECT_EQ(textButton->getColor().r, 1.0f);
+    EXPECT_EQ(textButton->getColor().g, 1.0f);
+    EXPECT_EQ(textButton->getColor().b, 1.0f);
+}
