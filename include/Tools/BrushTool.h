@@ -2,6 +2,7 @@
 #define BRUSHTOOL_H
 
 #include "IDrawingTool.h"
+#include "History.h"
 #include "Stroke.h"
 #include "LayerManager.h"
 
@@ -43,6 +44,11 @@ class BrushTool : public IDrawingTool
 
 	void				setThickness(float thickness) override;
 	[[nodiscard]] float getThickness() const override;
+
+	void											undoStroke() override;
+	void											redoStroke() override;
+	[[nodiscard]] History<std::shared_ptr<IStroke>> getHistory() const;
+	void											clearStrokes() override;
 };
 
 #endif	// BRUSHTOOL_H

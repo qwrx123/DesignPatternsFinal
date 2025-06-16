@@ -132,3 +132,23 @@ float BrushTool::getThickness() const
 {
 	return brush_thickness;
 }
+
+void BrushTool::undoStroke()
+{
+	stroke_manager->undoStroke();
+}
+
+void BrushTool::redoStroke()
+{
+	stroke_manager->redoStroke();
+}
+
+History<std::shared_ptr<IStroke>> BrushTool::getHistory() const
+{
+	return stroke_manager->getBrushHistory();
+}
+
+void BrushTool::clearStrokes()
+{
+	stroke_manager->clear();
+}

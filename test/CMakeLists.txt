@@ -23,6 +23,8 @@ add_executable(projectTests
     StrokeManagerTest.cpp
     TextManagerTest.cpp
     TextTest.cpp
+    TextHistoryTest.cpp
+    ToolHistoryTest.cpp
     FileTests.cpp
     LayerManagerTest.cpp
     MenuBarTest.cpp

@@ -72,6 +72,7 @@ void TextManager::removeText(std::shared_ptr<IText> text)
 	{
 		texts.erase(it, texts.end());
 	}
+	textHistory.undo();
 }
 
 const std::vector<std::shared_ptr<IText>>& TextManager::getTexts() const
@@ -94,7 +95,22 @@ std::shared_ptr<IText> TextManager::getTextAt(double x, double y) const
 
 void TextManager::clearAll()
 {
-	texts.clear();
+	for (size_t i = texts.size(); i-- > 0;)
+	{
+		auto& text = texts.at(i);
+		if (text->isEditable())
+		{
+			if (texts.size() > 1)
+			{
+				removeText(text);
+			}
+			else
+			{
+				text->setContent("");
+			}
+		}
+	}
+	textHistory.clear();
 }
 
 std::vector<std::shared_ptr<IText>> TextManager::copyTexts() const
@@ -152,9 +168,13 @@ void TextManager::onChar(unsigned int codepoint)
 		{
 			if (text->isEditable())
 			{
+				textHistory.clearUndone();
 				std::string content = text->getContent();
 				content += static_cast<char>(codepoint);
 				text->setContent(content);
+				textHistory.push(std::make_shared<Text>(text->getContent(), text->getBounds(),
+														text->getFontName(), text->getFontSize(),
+														text->getColor(), text->isEditable()));
 				break;
 			}
 		}
@@ -172,6 +192,9 @@ void TextManager::insertTab()
 			std::string content = text->getContent();
 			content += '\t';
 			text->setContent(content);
+			textHistory.push(std::make_shared<Text>(text->getContent(), text->getBounds(),
+													text->getFontName(), text->getFontSize(),
+													text->getColor(), text->isEditable()));
 		}
 		break;
 	}
@@ -188,6 +211,9 @@ void TextManager::handleBackspace()
 			{
 				content.pop_back();
 				text->setContent(content);
+				textHistory.push(std::make_shared<Text>(text->getContent(), text->getBounds(),
+														text->getFontName(), text->getFontSize(),
+														text->getColor(), text->isEditable()));
 			}
 			else if (texts.size() > 1)
 			{
@@ -217,6 +243,9 @@ void TextManager::handleEnter()
 								   Bounds((static_cast<float>(prevFontSize) + prevBounds.top),
 										  bounds.bottom, bounds.left, bounds.right),
 								   fontName, prevFontSize, prevColor, true));
+	textHistory.push(std::make_shared<Text>(
+		texts.back()->getContent(), texts.back()->getBounds(), texts.back()->getFontName(),
+		texts.back()->getFontSize(), texts.back()->getColor(), texts.back()->isEditable()));
 }
 
 void TextManager::setFontSize(int size)
@@ -226,4 +255,40 @@ void TextManager::setFontSize(int size)
 	{
 		text->setFontSize(size);
 	}
+}
+
+void TextManager::undoText()
+{
+	if (!textHistory.isEmpty() && !texts.empty() && active)
+	{
+		if (texts.back()->getContent().empty() && texts.size() != 1)
+		{
+			removeText(texts.back());
+			textHistory.undo();
+		}
+		else if (texts.back()->getContent().length() == 1)
+		{
+			textHistory.undo();
+			texts.back()->setContent("");
+		}
+		else
+		{
+			textHistory.undo();
+			texts.back() = textHistory.peek();
+		}
+	}
+}
+
+void TextManager::redoText()
+{
+	if (!textHistory.isLastUndoneEmpty() && !texts.empty() && active)
+	{
+		textHistory.redo();
+		texts.back() = textHistory.peek();
+	}
+}
+
+History<std::shared_ptr<IText>> TextManager::getHistory()
+{
+	return textHistory;
 }
