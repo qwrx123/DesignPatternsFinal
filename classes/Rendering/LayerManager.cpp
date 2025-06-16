@@ -58,3 +58,8 @@ void LayerManager::removeLayer(int index)
         }
     }
 }
+
+// add an update strokes per layer method
+// for(std::shared_ptr<Layer> layer : layer_manager->getAllLayers()){
+// 		layer->setStrokes(strokes_);
+// 	}

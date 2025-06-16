@@ -27,7 +27,10 @@ static float pointToSegmentDistance(const Point& p, const Point& a, const Point&
 	return std::sqrt((dx * dx) + (dy * dy));
 }
 
-StrokeManager::StrokeManager() = default;
+StrokeManager::StrokeManager(std::shared_ptr<LayerManager> layer_manager)
+	: layer_manager(std::move(layer_manager))
+{
+}
 
 StrokeManager::~StrokeManager() = default;
 
@@ -42,6 +45,7 @@ StrokeManager& StrokeManager::operator=(const StrokeManager& other)
 		return *this;
 	}
 	strokes_ = std::move(other.cloneStrokes());
+	layer_manager->getActiveLayer()->setStrokes(strokes_);
 	return *this;
 }
 
@@ -56,12 +60,14 @@ StrokeManager& StrokeManager::operator=(StrokeManager&& other) noexcept
 		return *this;
 	}
 	strokes_ = std::move(other.strokes_);
+	layer_manager->getActiveLayer()->setStrokes(strokes_);
 	return *this;
 }
 
 void StrokeManager::addStroke(std::shared_ptr<IStroke> stroke)
 {
 	strokes_.push_back(std::move(stroke));
+	layer_manager->getActiveLayer()->setStrokes(strokes_);
 	if (!strokes_.empty())
 	{
 		auto cloned = std::make_shared<Stroke>(*std::dynamic_pointer_cast<Stroke>(strokes_.back()));
@@ -78,11 +84,13 @@ const std::vector<std::shared_ptr<IStroke>>& StrokeManager::getStrokes() const
 void StrokeManager::clear()
 {
 	strokes_.clear();
+	layer_manager->getActiveLayer()->setStrokes(strokes_);
 }
 
 void StrokeManager::replaceStrokes(std::vector<std::shared_ptr<IStroke>> new_strokes)
 {
 	strokes_ = std::move(new_strokes);
+	layer_manager->getActiveLayer()->setStrokes(strokes_);
 }
 
 void StrokeManager::splitEraseWithPath(const std::shared_ptr<IStroke>& eraser_path,
@@ -202,6 +210,7 @@ void StrokeManager::removeLastStroke()
 	if (!strokes_.empty())
 	{
 		strokes_.pop_back();
+		layer_manager->getActiveLayer()->setStrokes(strokes_);
 	}
 }
 
@@ -215,8 +224,10 @@ void StrokeManager::undoStroke()
 	else if (!brushHistory.isEmpty())
 	{
 		brushHistory.undo();
+		layer_manager->getActiveLayer()->setStrokes(strokes_);
 	}
 }
+
 void StrokeManager::redoStroke()
 {
 	if (!brushHistory.isLastUndoneEmpty())
@@ -229,6 +240,7 @@ void StrokeManager::redoStroke()
 void StrokeManager::reAddStroke(std::shared_ptr<IStroke> stroke)
 {
 	strokes_.push_back(std::move(stroke));
+	layer_manager->getActiveLayer()->setStrokes(strokes_);
 }
 
 void StrokeManager::undoErase()
@@ -274,4 +286,5 @@ void StrokeManager::undoAll()
 	eraserHistory.clear();
 	brushHistory.clear();
 	strokes_.clear();
+	layer_manager->getActiveLayer()->setStrokes(strokes_);
 }

@@ -4,11 +4,12 @@
 #include "IStrokeManager.h"
 #include "Stroke.h"
 #include "History.h"
+#include "LayerManager.h"
 
 class StrokeManager : public IStrokeManager
 {
    public:
-	StrokeManager();
+	StrokeManager(std::shared_ptr<LayerManager> layer_manager);
 	~StrokeManager() override;
 
 	StrokeManager(const StrokeManager& other);
@@ -36,6 +37,7 @@ class StrokeManager : public IStrokeManager
 	[[nodiscard]] std::vector<std::shared_ptr<IStroke>> cloneStrokes() const;
 
 	std::vector<std::shared_ptr<IStroke>> strokes_;
+	std::shared_ptr<LayerManager>		  layer_manager;
 
 	void							  isErased(const auto& stroke_pts, size_t i, bool& is_erased,
 											   std::vector<std::shared_ptr<IStroke>>& updated_strokes,

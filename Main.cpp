@@ -55,7 +55,7 @@ int main()
 
 	auto renderer	   = std::make_unique<CanvasRenderer>(window);
 	auto layerManager  = std::make_shared<LayerManager>();
-	auto strokeManager = std::make_shared<StrokeManager>();
+	auto strokeManager = std::make_shared<StrokeManager>(layerManager);
 	auto toolManager   = std::make_shared<ToolManager>();
 	auto inputManager  = std::make_shared<InputManager>();
 	auto menuBar	   = std::make_shared<MenuBar>();
