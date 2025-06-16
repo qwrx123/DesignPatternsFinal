@@ -27,6 +27,7 @@ target_include_directories(Tools
 
 target_link_libraries(
     Tools
+    Rendering
     glfw
 )
 
