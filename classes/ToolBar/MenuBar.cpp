@@ -378,6 +378,10 @@ void MenuBar::onMouseButton(MouseButton click, KeyAction action, double x, doubl
 				{
    					button->setColor(gray);
 				}
+				if (button->getLabel() == "Brush")
+				{
+    				button->setColor(gray);
+				}
 				onButton(button, label, x, y, itCount);
 			}
 
@@ -635,6 +639,22 @@ void MenuBar::onButton(const std::shared_ptr<IButton>& button, const std::string
 	{
 		tool->selectTool(label);
 		selectedIndex = itCount;
+
+		// Visual feedback for Eraser button state
+    	for (auto& btn : buttons)
+    	{
+        	if (btn->getLabel() == "Eraser")
+        	{
+            	if (label == "Eraser")
+            	{
+                	btn->setColor(gray);
+            	}
+            	else if (label == "Brush")
+            	{
+                	btn->setColor(white);
+            	}
+        	}
+    	}
 	}
 }
 
