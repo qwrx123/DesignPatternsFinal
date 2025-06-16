@@ -24,6 +24,8 @@ add_executable(projectTests
     TextManagerTest.cpp
     TextTest.cpp
     FileTests.cpp
+    LayerManagerTest.cpp
+    MenuBarTest.cpp
 )
 
 target_include_directories(projectTests PRIVATE ${PROJECT_COMMON_INCLUDE_DIRS} ${FREETYPE_INCLUDE_DIRS})
