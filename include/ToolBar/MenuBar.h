@@ -62,6 +62,7 @@ class MenuBar : public IMenu, public IInputReceiver
 	void													   rebuildLayerDropdownButtons();
 	void handleDropdownButtons(KeyAction action, double x, double y, bool& clickedInsideDropdown);
 	void update();
+	void updateBrushButtonColor(Color newColor);
 
 	void					  beginRenameLayer(int layerIndex);
 	[[nodiscard]] bool		  isRenaming() const;
