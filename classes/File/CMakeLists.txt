@@ -4,9 +4,10 @@ add_library(
     Export.cpp
     FileLocation.cpp
     Import.cpp
+    Image.cpp
 )
 
-registerFilesToFormat(FILES Export.cpp FileLocation.cpp Import.cpp)
+registerFilesToFormat(FILES Export.cpp FileLocation.cpp Import.cpp Image.cpp)
 
 target_include_directories(File
     PUBLIC

@@ -7,6 +7,7 @@
 #include "IButton.h"
 #include "IMenu.h"
 #include "IFiles.h"
+#include "IImage.h"
 
 class ICanvasRenderer
 {
@@ -27,6 +28,7 @@ class ICanvasRenderer
 	virtual void drawStroke(const IStroke& stroke)			 = 0;
 	virtual void drawButton(const IButton& button, bool renamingLayer, int layerBeingRenamed,
 							const std::string& renameBuffer) = 0;
+	virtual void renderImage(const IImage& image)			 = 0;
 	virtual void drawMenu(const IMenu& menu)				 = 0;
 	virtual void endFrame()									 = 0;
 };

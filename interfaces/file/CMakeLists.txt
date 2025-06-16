@@ -1,4 +1,4 @@
-set(FILE_LIST IExport.h IFiles.h IImport.h ILoad.h ISave.h)
+set(FILE_LIST IExport.h IFiles.h IImport.h ILoad.h ISave.h IImage.h)
 
 registerFilesToFormat(FILES ${FILE_LIST})
 

@@ -7,6 +7,7 @@
 #include "Export.h"
 #include "Text.h"
 #include "SliderButton.h"
+#include <utility>
 #ifdef _WIN32
 #include <GL/glext.h>
 #endif
@@ -396,4 +397,41 @@ std::pair<float, float> CanvasRenderer::getWindowDPI()
 	float dpiY = (static_cast<float>(mode->height) * mmToInch) / static_cast<float>(heightMM);
 
 	return {dpiX, dpiY};
+}
+
+void CanvasRenderer::renderImage(const IImage& image)
+{
+	auto [dimWidth, wimHeight] = image.getDimensions();
+	auto		imageWidth	   = static_cast<GLsizei>(dimWidth);
+	auto		imageHeight	   = static_cast<GLsizei>(wimHeight);
+	GLenum		format		   = GL_RGBA;
+	GLenum		type		   = GL_UNSIGNED_BYTE;
+	const void* pixelData	   = image.getPixelData();
+
+	GLint posX = static_cast<GLint>(image.getCoordinates().first);
+	GLint posY = static_cast<GLint>(image.getCoordinates().second + imageHeight);
+
+	int width  = 0;
+	int height = 0;
+	glfwGetFramebufferSize(window_, &width, &height);
+
+	if (std::cmp_less(height, image.getCoordinates().second) ||
+		std::cmp_less(width, image.getCoordinates().first))
+	{
+		return;
+	}
+
+	if (posY > height)
+	{
+		int	   remRow	= posY - height;
+		size_t scanLine = imageWidth * sizeof(int);
+		// NOLINTNEXTLINE(cppcoreguidelines-pro-bounds-pointer-arithmetic)
+		pixelData = static_cast<const char*>(pixelData) + (remRow * scanLine);
+		imageHeight -= remRow;
+		posY -= remRow;
+	}
+
+	glRasterPos2i(posX, posY);
+
+	glDrawPixels(imageWidth, imageHeight, format, type, pixelData);
 }

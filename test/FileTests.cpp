@@ -1,7 +1,9 @@
 #include <gtest/gtest.h>
 #include <filesystem>
+#include <cstring>
 #include "Export.h"
 #include "Import.h"
+#include "Image.h"
 
 TEST(FileTestsExport, FolderExists) 
 {
@@ -230,3 +232,196 @@ TEST(FileTestsImport, ReadBmpFile)
 
     std::filesystem::remove(location + fileName + ".bmp");
 }
+
+class FileTestsImage : public ::testing::Test
+{
+protected:
+    Image image;
+    bufferStruct fileStruct;
+    bufferStruct originalData;
+    imageInfo imageInfo;
+    void SetUp() override
+    {
+        image = Image();
+        fileStruct = {std::make_unique<char[]>(4 * 6), 4 * 6};
+        imageInfo = {.width = 3, .height = 2, .horizontalResolution = 3780, .verticalResolution = 3780, .pixelType = pixelType::PIXEL_TYPE_RGBA};
+    
+        int* buffer = reinterpret_cast<int*>(fileStruct.bufferLocation.get());
+        buffer[0] = 0xFF0000FF;
+        buffer[1] = 0x00FF00FF; 
+        buffer[2] = 0x0000FFFF; 
+        buffer[3] = 0xFFFFFFFF; 
+        buffer[4] = 0x000000FF; 
+        buffer[5] = 0x808080FF;
+
+        originalData = {std::make_unique<char[]>(4 * 6), 4 * 6};
+        std::memcpy(originalData.bufferLocation.get(), buffer, fileStruct.bufferSize);
+    }
+};
+
+TEST_F(FileTestsImage, getPixelData)
+{
+    ASSERT_TRUE(image.importImage(fileStruct, imageInfo));
+    
+    const char* pixelData = image.getPixelData();
+    
+    for (size_t i = 0; i < fileStruct.bufferSize; i++)
+    {
+        EXPECT_EQ(pixelData[i], originalData.bufferLocation.get()[i]);
+    }
+}
+
+TEST_F(FileTestsImage, getDimensions)
+{
+    ASSERT_TRUE(image.importImage(fileStruct, imageInfo));
+    
+    auto dimensions = image.getDimensions();
+    
+    EXPECT_EQ(dimensions.first, imageInfo.width);
+    EXPECT_EQ(dimensions.second, imageInfo.height);
+}
+
+TEST_F(FileTestsImage, getCoordinates)
+{
+    ASSERT_TRUE(image.importImage(fileStruct, imageInfo));
+    
+    auto coordinates = image.getCoordinates();
+    
+    EXPECT_EQ(coordinates.first, 0);
+    EXPECT_EQ(coordinates.second, 0);
+}
+
+TEST_F(FileTestsImage, setCoordinates)
+{
+    ASSERT_TRUE(image.importImage(fileStruct, imageInfo));
+    
+    size_t newX = 10;
+    size_t newY = 20;
+    
+    ASSERT_TRUE(image.setCoordinates(newX, newY));
+    
+    auto coordinates = image.getCoordinates();
+    
+    EXPECT_EQ(coordinates.first, newX);
+    EXPECT_EQ(coordinates.second, newY);
+}
+
+TEST_F(FileTestsImage, setResolution)
+{
+    ASSERT_TRUE(image.importImage(fileStruct, imageInfo));
+
+    size_t Horizontal = 2000;
+    size_t Vertical = 2000;
+    std::pair<size_t, size_t> dimensions = image.getDimensions();
+    ASSERT_TRUE(image.setResolution(Horizontal, Vertical));
+
+    size_t newHorizontal = 4000;
+    size_t newVertical = 4000;
+    ASSERT_TRUE(image.setResolution(newHorizontal, newVertical));
+    std::pair<size_t, size_t> newDimensions = image.getDimensions();
+    
+    EXPECT_EQ(dimensions.first, newDimensions.first/2);
+    EXPECT_EQ(dimensions.second, newDimensions.second/2);
+}
+
+TEST_F(FileTestsImage, importImage)
+{
+    EXPECT_TRUE(image.importImage(fileStruct, imageInfo));
+    
+    auto dimensions = image.getDimensions();
+    EXPECT_EQ(dimensions.first, imageInfo.width);
+    EXPECT_EQ(dimensions.second, imageInfo.height);
+    
+    bufferStruct emptyBuffer = {nullptr, 0};
+    struct imageInfo emptyImageInfo = {};
+    EXPECT_FALSE(image.importImage(emptyBuffer, emptyImageInfo));
+}
+
+TEST_F(FileTestsImage, copyConstructor)
+{
+    ASSERT_TRUE(image.importImage(fileStruct, imageInfo));
+    
+    Image imageCopy(image);
+
+    auto originalDimensions = image.getDimensions();
+    auto copyDimensions = imageCopy.getDimensions();
+    EXPECT_EQ(originalDimensions.first, copyDimensions.first);
+    EXPECT_EQ(originalDimensions.second, copyDimensions.second);
+    
+    auto originalCoordinates = image.getCoordinates();
+    auto copyCoordinates = imageCopy.getCoordinates();
+    EXPECT_EQ(originalCoordinates.first, copyCoordinates.first);
+    EXPECT_EQ(originalCoordinates.second, copyCoordinates.second);
+    
+    const char* originalPixelData = image.getPixelData();
+    const char* copyPixelData = imageCopy.getPixelData();
+    
+    for (size_t i = 0; i < fileStruct.bufferSize; i++)
+    {
+        EXPECT_EQ(originalPixelData[i], copyPixelData[i]);
+    }
+}
+
+TEST_F(FileTestsImage, assignmentOperator)
+{
+    ASSERT_TRUE(image.importImage(fileStruct, imageInfo));
+    
+    Image imageAssigned;
+    imageAssigned = image;
+    
+    auto originalDimensions = image.getDimensions();
+    auto assignedDimensions = imageAssigned.getDimensions();
+    EXPECT_EQ(originalDimensions.first, assignedDimensions.first);
+    EXPECT_EQ(originalDimensions.second, assignedDimensions.second);
+    
+    auto originalCoordinates = image.getCoordinates();
+    auto assignedCoordinates = imageAssigned.getCoordinates();
+    EXPECT_EQ(originalCoordinates.first, assignedCoordinates.first);
+    EXPECT_EQ(originalCoordinates.second, assignedCoordinates.second);
+    
+    const char* originalPixelData = image.getPixelData();
+    const char* assignedPixelData = imageAssigned.getPixelData();
+    
+    for (size_t i = 0; i < fileStruct.bufferSize; i++)
+    {
+        EXPECT_EQ(originalPixelData[i], assignedPixelData[i]);
+    }
+    
+    imageAssigned = imageAssigned;
+    auto selfAssignedDimensions = imageAssigned.getDimensions();
+    EXPECT_EQ(originalDimensions.first, selfAssignedDimensions.first);
+    EXPECT_EQ(originalDimensions.second, selfAssignedDimensions.second);
+}
+
+TEST_F(FileTestsImage, setResolutionEdgeCases)
+{
+    ASSERT_TRUE(image.importImage(fileStruct, imageInfo));
+    
+    EXPECT_FALSE(image.setResolution(0, 100));
+    EXPECT_FALSE(image.setResolution(100, 0));
+    EXPECT_FALSE(image.setResolution(0, 0));
+    
+    EXPECT_TRUE(image.setResolution(imageInfo.horizontalResolution, imageInfo.verticalResolution));
+    auto originalDimensions = image.getDimensions();
+    
+    auto unchangedDimensions = image.getDimensions();
+    EXPECT_EQ(originalDimensions.first, unchangedDimensions.first);
+    EXPECT_EQ(originalDimensions.second, unchangedDimensions.second);
+}
+
+TEST_F(FileTestsImage, setResolutionScaling)
+{
+    ASSERT_TRUE(image.importImage(fileStruct, imageInfo));
+    
+    auto originalDimensions = image.getDimensions();
+    
+    size_t doubledHorizontal = imageInfo.horizontalResolution * 2;
+    size_t doubledVertical = imageInfo.verticalResolution * 2;
+    
+    ASSERT_TRUE(image.setResolution(doubledHorizontal, doubledVertical));
+    
+    auto doubledDimensions = image.getDimensions();
+    EXPECT_EQ(originalDimensions.first * 2, doubledDimensions.first);
+    EXPECT_EQ(originalDimensions.second * 2, doubledDimensions.second);
+}
+
