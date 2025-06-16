@@ -138,6 +138,10 @@ void renderFrame(CanvasRenderer& renderer, LayerManager& layerManager, ToolManag
 {
 	renderer.beginFrame();
 
+	static bool importCanvas = false;
+	drawBitmap(renderer, menuBar, importCanvas);
+	importCanvas = false;
+
 	for (const auto& layer : layerManager.getAllLayers())
 	{
 		for (const auto& stroke : layer->getStrokes())
@@ -161,7 +165,7 @@ void renderFrame(CanvasRenderer& renderer, LayerManager& layerManager, ToolManag
 		}
 	}
 	bool exportCanvas = false;
-	bool importCanvas = false;
+
 	renderer.drawMenu(menuBar);
 
 	for (const auto& button : menuBar.getButtons())
@@ -216,8 +220,6 @@ void renderFrame(CanvasRenderer& renderer, LayerManager& layerManager, ToolManag
 			{.top = menuBar.getBounds().bottom, .bottom = 0, .left = 0, .right = 0});
 		std::cout << "Canvas exported to: " << fileLocation << fileName << ".bmp\n";
 	}
-
-	drawBitmap(renderer, menuBar, importCanvas);
 
 	renderer.endFrame();
 }

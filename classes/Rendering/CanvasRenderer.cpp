@@ -324,7 +324,7 @@ bufferStruct CanvasRenderer::exportCanvas(Bounds boundingBox)
 	}
 
 	// RGBA format size
-	canvasBuffer.bufferSize = static_cast<size_t>(width) * static_cast<size_t>(height) * 4;
+	canvasBuffer.bufferSize = static_cast<size_t>(boxWidth) * static_cast<size_t>(boxHeight) * 4;
 
 	// Proper way to allocate memory for the buffer safely
 	// NOLINTNEXTLINE(cppcoreguidelines-avoid-c-arrays,modernize-avoid-c-arrays)
