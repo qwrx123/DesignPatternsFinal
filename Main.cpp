@@ -13,6 +13,7 @@
 #include "ButtonClass.h"
 #include "TextManager.h"
 #include "LayerManager.h"
+#include "StrokeManager.h"
 
 const int		  defaultWindowWidth  = 800;
 const int		  defaultWindowHeight = 600;
@@ -52,12 +53,13 @@ int main()
 		return -1;
 	}
 
-	auto renderer	  = std::make_unique<CanvasRenderer>(window);
-	auto layerManager = std::make_shared<LayerManager>();
-	auto toolManager  = std::make_shared<ToolManager>();
-	auto inputManager = std::make_shared<InputManager>();
-	auto menuBar	  = std::make_shared<MenuBar>();
-	auto textManager  = std::make_shared<TextManager>();
+	auto renderer	   = std::make_unique<CanvasRenderer>(window);
+	auto layerManager  = std::make_shared<LayerManager>();
+	auto strokeManager = std::make_shared<StrokeManager>();
+	auto toolManager   = std::make_shared<ToolManager>();
+	auto inputManager  = std::make_shared<InputManager>();
+	auto menuBar	   = std::make_shared<MenuBar>();
+	auto textManager   = std::make_shared<TextManager>();
 
 	inputManager->bindToWindow(window);
 	inputManager->registerReceiver(toolManager);
@@ -70,11 +72,11 @@ int main()
 								  .left	  = 0,
 								  .right  = defaultWindowWidth});
 	toolManager->registerTool(
-		"Brush",
-		std::make_shared<BrushTool>(layerManager, Color{.r = 0.0F, .g = 0.0F, .b = 0.0F, .a = 1.0F},
-									defaultThickness));
-	toolManager->registerTool("Eraser",
-							  std::make_shared<EraserTool>(layerManager, defaultEraserSize));
+		"Brush", std::make_shared<BrushTool>(layerManager, strokeManager,
+											 Color{.r = 0.0F, .g = 0.0F, .b = 0.0F, .a = 1.0F},
+											 defaultThickness));
+	toolManager->registerTool(
+		"Eraser", std::make_shared<EraserTool>(layerManager, strokeManager, defaultEraserSize));
 
 	textManager->registerTextTool(std::make_shared<Text>(
 		"",

@@ -26,13 +26,11 @@ static float pointToSegmentDistance(const Point& p, const Point& a, const Point&
 	return std::sqrt((dx * dx) + (dy * dy));
 }
 
-EraserTool::EraserTool(std::shared_ptr<LayerManager> layer_manager, float thickness)
-	: layer_manager(std::move(layer_manager)), eraser_thickness(thickness)
-{
-}
-
-EraserTool::EraserTool(std::shared_ptr<IStrokeManager> stroke_manager, float thickness)
-	: stroke_manager(std::move(stroke_manager)), eraser_thickness(thickness)
+EraserTool::EraserTool(std::shared_ptr<LayerManager>   layer_manager,
+					   std::shared_ptr<IStrokeManager> stroke_manager, float thickness)
+	: layer_manager(std::move(layer_manager)),
+	  stroke_manager(std::move(stroke_manager)),
+	  eraser_thickness(thickness)
 {
 }
 
@@ -40,7 +38,7 @@ EraserTool::~EraserTool() = default;
 
 void EraserTool::beginStroke(const Point& start)
 {
-	stroke_manager->updateEraserHistory();
+	// stroke_manager->updateEraserHistory();
 	drawing	   = true;
 	erase_path = std::make_shared<Stroke>(Color{.r = 1.0F, .g = 1.0F, .b = 1.0F, .a = 0.0F},
 										  eraser_thickness);
@@ -223,6 +221,7 @@ void EraserTool::splitEraseWithPath(const std::shared_ptr<IStroke>& eraser_path,
 void EraserTool::replaceStrokes(std::vector<std::shared_ptr<IStroke>> new_strokes)
 {
 	layer_manager->getActiveLayer()->setStrokes(std::move(new_strokes));
+	stroke_manager->replaceStrokes(layer_manager->getActiveLayer()->getStrokes());
 }
 
 void EraserTool::isErased(const std::vector<Point>& stroke_pts, size_t i, bool& is_erased,

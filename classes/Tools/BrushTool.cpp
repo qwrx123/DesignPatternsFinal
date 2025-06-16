@@ -2,16 +2,12 @@
 #include "Stroke.h"
 #include <cmath>
 
-BrushTool::BrushTool(std::shared_ptr<LayerManager> layer_manager, Color color, float thickness)
-	: layer_manager(std::move(layer_manager)), brush_color(color), brush_thickness(thickness)
-{
-}
-
-BrushTool::BrushTool(std::shared_ptr<IStrokeManager> stroke_manager, Color color, float thickness)
-	: stroke_manager(std::move(stroke_manager)),
+BrushTool::BrushTool(std::shared_ptr<LayerManager>	 layer_manager,
+					 std::shared_ptr<IStrokeManager> stroke_manager, Color color, float thickness)
+	: layer_manager(std::move(layer_manager)),
+	  stroke_manager(std::move(stroke_manager)),
 	  brush_color(color),
-	  brush_thickness(thickness),
-	  active(false)
+	  brush_thickness(thickness)
 {
 }
 

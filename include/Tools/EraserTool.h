@@ -10,8 +10,8 @@
 class EraserTool : public IDrawingTool
 {
    public:
-	EraserTool(std::shared_ptr<LayerManager> layer_manager, float thickness);
-	EraserTool::EraserTool(std::shared_ptr<IStrokeManager> stroke_manager, float thickness);
+	EraserTool(std::shared_ptr<LayerManager>   layer_manager,
+			   std::shared_ptr<IStrokeManager> stroke_manager, float thickness);
 	~EraserTool() override;
 	EraserTool(const EraserTool&)			 = default;
 	EraserTool& operator=(const EraserTool&) = default;

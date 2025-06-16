@@ -19,8 +19,8 @@ class BrushTool : public IDrawingTool
 	bool							drawing = false;
 
    public:
-	BrushTool(std::shared_ptr<IStrokeManager> stroke_manager, Color color, float thickness);
-	BrushTool(std::shared_ptr<LayerManager> layer_manager, Color color, float thickness);
+	BrushTool(std::shared_ptr<LayerManager>	  layer_manager,
+			  std::shared_ptr<IStrokeManager> stroke_manager, Color color, float thickness);
 	~BrushTool() override;
 
 	BrushTool(const BrushTool& other);

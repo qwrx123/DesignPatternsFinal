@@ -22,6 +22,7 @@ class IStrokeManager
 	virtual void splitEraseWithPath(const std::shared_ptr<IStroke>& eraser_path,
 									float							eraser_radius)									   = 0;
 	virtual void removeLastStroke()															   = 0;
+	virtual void replaceStrokes(std::vector<std::shared_ptr<IStroke>> new_strokes)			   = 0;
 	virtual void undoStroke()																   = 0;
 	virtual void redoStroke()																   = 0;
 	virtual void undoErase()																   = 0;
