@@ -400,6 +400,11 @@ void MenuBar::onMouseButton(MouseButton click, KeyAction action, double x, doubl
 				{
     				button->setColor(white);
 				}
+				if (button->getLabel() == "Brush")
+				{
+    				Color brushColor = tool->getActiveTool()->getColor();
+    				button->setColor(brushColor);
+				}
 		    }
 
 			// Consider clicks on Select Layer or Add Layer as "inside dropdown"
