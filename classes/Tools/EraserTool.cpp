@@ -42,11 +42,7 @@ void EraserTool::beginStroke(const Point& start)
 	erase_path = std::make_shared<Stroke>(Color{.r = 1.0F, .g = 1.0F, .b = 1.0F, .a = 0.0F},
 										  eraser_thickness);
 	erase_path->addPoint(start);
-
-	if (layer_manager->getActiveLayer()->getEraserHistory().isEmpty())
-	{
-		layer_manager->getActiveLayer()->updateEraserHistory();
-	}
+	layer_manager->getActiveLayer()->updateEraserHistory();
 }
 
 void EraserTool::addPoint(const Point& point)
