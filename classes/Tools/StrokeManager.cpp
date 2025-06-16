@@ -1,5 +1,6 @@
 #include "StrokeManager.h"
 #include "Stroke.h"
+#include "History.h"
 #include <cassert>
 #include <cmath>
 
@@ -61,6 +62,12 @@ StrokeManager& StrokeManager::operator=(StrokeManager&& other) noexcept
 void StrokeManager::addStroke(std::shared_ptr<IStroke> stroke)
 {
 	strokes_.push_back(std::move(stroke));
+	if (!strokes_.empty())
+	{
+		auto cloned = std::make_shared<Stroke>(*std::dynamic_pointer_cast<Stroke>(strokes_.back()));
+		brushHistory.clearUndone();
+		brushHistory.push(cloned);
+	}
 }
 
 const std::vector<std::shared_ptr<IStroke>>& StrokeManager::getStrokes() const
@@ -106,7 +113,6 @@ void StrokeManager::splitEraseWithPath(const std::shared_ptr<IStroke>& eraser_pa
 			updated_strokes.push_back(new_stroke);
 		}
 	}
-
 	replaceStrokes(std::move(updated_strokes));
 }
 
@@ -189,4 +195,83 @@ void StrokeManager::isErased(const auto& stroke_pts, size_t i, bool& is_erased,
 	{
 		current_segment.push_back(stroke_pts[i]);
 	}
+}
+
+void StrokeManager::removeLastStroke()
+{
+	if (!strokes_.empty())
+	{
+		strokes_.pop_back();
+	}
+}
+
+void StrokeManager::undoStroke()
+{
+	if (!getStrokes().empty() && !brushHistory.isEmpty())
+	{
+		brushHistory.undo();
+		removeLastStroke();
+	}
+	else if (!brushHistory.isEmpty())
+	{
+		brushHistory.undo();
+	}
+}
+void StrokeManager::redoStroke()
+{
+	if (!brushHistory.isLastUndoneEmpty())
+	{
+		brushHistory.redo();
+		reAddStroke(brushHistory.peek());
+	}
+}
+
+void StrokeManager::reAddStroke(std::shared_ptr<IStroke> stroke)
+{
+	strokes_.push_back(std::move(stroke));
+}
+
+void StrokeManager::undoErase()
+{
+	if (!eraserHistory.isEmpty())
+	{
+		eraserHistory.undo();
+		if (!eraserHistory.isEmpty())
+		{
+			replaceStrokes(eraserHistory.peek());
+		}
+	}
+}
+
+void StrokeManager::redoErase()
+{
+	if (!eraserHistory.isLastUndoneEmpty())
+	{
+		eraserHistory.redo();
+		replaceStrokes(eraserHistory.peek());
+	}
+}
+
+History<std::shared_ptr<IStroke>> StrokeManager::getBrushHistory()
+{
+	return brushHistory;
+}
+
+History<std::vector<std::shared_ptr<IStroke>>> StrokeManager::getEraserHistory()
+{
+	return eraserHistory;
+}
+
+void StrokeManager::updateEraserHistory()
+{
+	auto clonedStrokes = cloneStrokes();
+	eraserHistory.push(clonedStrokes);
+	eraserHistory.clearUndone();
+}
+
+void StrokeManager::undoAll()
+{
+	eraserHistory.clear();
+	brushHistory.clear();
+	strokes_.clear();
 }

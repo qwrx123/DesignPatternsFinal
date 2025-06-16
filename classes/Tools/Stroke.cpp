@@ -10,6 +10,24 @@ Stroke::Stroke() : stroke_color{.r = 0.0F, .g = 0.0F, .b = 0.0F, .a = 1.0F}, str
 
 Stroke::~Stroke() = default;
 
+Stroke::Stroke(const Stroke& other)
+	: stroke_color(other.stroke_color),
+	  stroke_thickness(other.stroke_thickness),
+	  points(other.points)
+{
+}
+
+Stroke& Stroke::operator=(const Stroke& other)
+{
+	if (this != &other)
+	{
+		stroke_color	 = other.stroke_color;
+		stroke_thickness = other.stroke_thickness;
+		points			 = other.points;
+	}
+	return *this;
+}
+
 void Stroke::addPoint(const Point& point)
 {
 	points.push_back(point);

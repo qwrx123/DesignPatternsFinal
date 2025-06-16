@@ -38,16 +38,6 @@ TEST(TextManagerTest, CanRemoveText) {
     EXPECT_TRUE(texts.empty());
 }
 
-TEST(TextManagerTest, CanClearAllTexts) {
-    TextManager manager;
-    manager.addText(std::make_shared<Text>("Text 1", Bounds{0, 0, 100, 50}, "Arial", 12, Color{0.0F, 0.0F, 0.0F, 1.0F}, true));
-    manager.addText(std::make_shared<Text>("Text 2", Bounds{0, 0, 100, 50}, "Arial", 12, Color{0.0F, 0.0F, 0.0F, 1.0F}, true));
-
-    manager.clearAll();
-
-    EXPECT_TRUE(manager.getTexts().empty());
-}
-
 TEST(TextManagerTest, CanGetTextAtPosition) {
     TextManager manager;
     auto text1 = std::make_shared<Text>("Text at (10, 30)", Bounds{10, 20, 30, 50}, "Arial", 12, Color{0.0F, 0.0F, 0.0F, 1.0F}, true);

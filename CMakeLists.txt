@@ -32,6 +32,7 @@ set(PROJECT_COMMON_INCLUDE_DIRS
 	${CMAKE_SOURCE_DIR}/include/Tools
 	${CMAKE_SOURCE_DIR}/include/ToolBar
 	${CMAKE_SOURCE_DIR}/include/File
+	${CMAKE_SOURCE_DIR}/include/Canvas
 
 	${CMAKE_SOURCE_DIR}/interfaces
 	${CMAKE_SOURCE_DIR}/interfaces/canvas
