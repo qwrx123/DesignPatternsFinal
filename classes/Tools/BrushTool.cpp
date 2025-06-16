@@ -8,7 +8,10 @@ BrushTool::BrushTool(std::shared_ptr<LayerManager> layer_manager, Color color, f
 }
 
 BrushTool::BrushTool(std::shared_ptr<IStrokeManager> stroke_manager, Color color, float thickness)
-	: stroke_manager(std::move(stroke_manager)), brush_color(color), brush_thickness(thickness)
+	: stroke_manager(std::move(stroke_manager)),
+	  brush_color(color),
+	  brush_thickness(thickness),
+	  active(false)
 {
 }
 
@@ -90,6 +93,7 @@ void BrushTool::endStroke(const Point& end)
 	{
 		current_stroke->addPoint(end);
 		layer_manager->getActiveLayer()->addStroke(current_stroke);
+		stroke_manager->addStroke(current_stroke);
 		current_stroke.reset();
 	}
 }

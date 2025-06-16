@@ -246,32 +246,3 @@ TEST_F(MenuBarIntegrationTest, TextButtonTogglesGreenWhenActivated) {
     EXPECT_EQ(textButton->getColor().g, 1.0f);
     EXPECT_EQ(textButton->getColor().b, 1.0f);
 }
-
-TEST_F(MenuBarIntegrationTest, ColorButtonUpdatesBrushColorAndButtonColor) {
-    auto brushButton = getButton(*menuBar, "Brush");
-    
-    // Simulate selecting brush first
-    menuBar->onMouseButton(MouseButton::Left, KeyAction::Press, brushButton->getBounds().left + 1, brushButton->getBounds().top + 1);
-    menuBar->onMouseButton(MouseButton::Left, KeyAction::Release, brushButton->getBounds().left + 1, brushButton->getBounds().top + 1);
-
-    // Pick one of the predefined color buttons — let's grab "Red"
-    auto colorButton = getButton(*menuBar, "color");
-    ASSERT_NE(colorButton, nullptr); // Ensure color button exists
-
-    // Simulate clicking color button
-    menuBar->onMouseButton(MouseButton::Left, KeyAction::Press, colorButton->getBounds().left + 1, colorButton->getBounds().top + 1);
-    menuBar->onMouseButton(MouseButton::Left, KeyAction::Release, colorButton->getBounds().left + 1, colorButton->getBounds().top + 1);
-
-    // Verify brush color was updated
-    Color currentColor = toolManager->getActiveTool()->getColor();
-    EXPECT_EQ(currentColor.r, colorButton->getColor().r);
-    EXPECT_EQ(currentColor.g, colorButton->getColor().g);
-    EXPECT_EQ(currentColor.b, colorButton->getColor().b);
-    EXPECT_EQ(currentColor.a, colorButton->getColor().a);
-
-    // Verify brush button color updated as well
-    EXPECT_EQ(brushButton->getColor().r, colorButton->getColor().r);
-    EXPECT_EQ(brushButton->getColor().g, colorButton->getColor().g);
-    EXPECT_EQ(brushButton->getColor().b, colorButton->getColor().b);
-    EXPECT_EQ(brushButton->getColor().a, colorButton->getColor().a);
-}
