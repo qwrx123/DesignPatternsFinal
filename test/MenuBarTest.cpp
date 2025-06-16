@@ -160,3 +160,62 @@ TEST_F(MenuBarIntegrationTest, CanDeleteLayerFromDropdown) {
 
     EXPECT_EQ(layerManager->getAllLayers().size(), 2);
 }
+
+TEST_F(MenuBarIntegrationTest, RenameBufferAcceptsCharacters) {
+    layerManager->addLayer();
+
+    auto renameButton = getButton(*menuBar, "Rename Layer");
+
+    // Begin renaming mode
+    menuBar->onMouseButton(MouseButton::Left, KeyAction::Press, renameButton->getBounds().left + 1, renameButton->getBounds().top + 1);
+
+    // Type characters: "ABC"
+    menuBar->onChar('A');
+    menuBar->onChar('B');
+    menuBar->onChar('C');
+
+    EXPECT_EQ(menuBar->getRenameBuffer(), "ABC");
+}
+
+TEST_F(MenuBarIntegrationTest, RenameBufferHandlesBackspace) {
+    layerManager->addLayer();
+
+    auto renameButton = getButton(*menuBar, "Rename Layer");
+
+    menuBar->onMouseButton(MouseButton::Left, KeyAction::Press, renameButton->getBounds().left + 1, renameButton->getBounds().top + 1);
+    menuBar->onChar('A');
+    menuBar->onChar('B');
+    menuBar->onChar('C');
+
+    // Backspace once: should leave "AB"
+    menuBar->onKey(GLFW_KEY_BACKSPACE, KeyAction::Press);
+
+    EXPECT_EQ(menuBar->getRenameBuffer(), "AB");
+}
+
+TEST_F(MenuBarIntegrationTest, RenameBufferAppliesNameOnEnter) {
+    layerManager->addLayer();
+    layerManager->setActiveLayer(0);
+
+    auto renameButton = getButton(*menuBar, "Rename Layer");
+
+    menuBar->onMouseButton(MouseButton::Left, KeyAction::Press, renameButton->getBounds().left + 1, renameButton->getBounds().top + 1);
+    
+    // Simulate clearing the buffer
+    menuBar->onKey(GLFW_KEY_BACKSPACE, KeyAction::Press);
+    menuBar->onKey(GLFW_KEY_BACKSPACE, KeyAction::Press);
+    menuBar->onKey(GLFW_KEY_BACKSPACE, KeyAction::Press);
+    menuBar->onKey(GLFW_KEY_BACKSPACE, KeyAction::Press);
+    menuBar->onKey(GLFW_KEY_BACKSPACE, KeyAction::Press);
+    menuBar->onKey(GLFW_KEY_BACKSPACE, KeyAction::Press);
+    menuBar->onKey(GLFW_KEY_BACKSPACE, KeyAction::Press);
+
+    // Now type "New"
+    menuBar->onChar('N');
+    menuBar->onChar('e');
+    menuBar->onChar('w');
+
+    menuBar->onKey(GLFW_KEY_ENTER, KeyAction::Press);
+
+    EXPECT_EQ(layerManager->getAllLayers()[0]->getName(), "New");
+}
