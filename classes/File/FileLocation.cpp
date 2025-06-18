@@ -93,4 +93,22 @@ std::string FileLocation::getDownloadLocation()
 	return std::move(folderLocation);
 }
 
+std::string FileLocation::getExecutableLocation()
+{
+	std::array<char, PATH_MAX> executableBufferPath = {0};
+
+	if (GetModuleFileNameA(nullptr, executableBufferPath.data(), sizeof(executableBufferPath)) == 0)
+	{
+		return {};
+	}
+
+	std::string executablePath(executableBufferPath.data());
+	while (!executablePath.empty() && executablePath.back() != '\\')
+	{
+		executablePath.pop_back();
+	}
+
+	return executablePath;
+}
+
 #endif
