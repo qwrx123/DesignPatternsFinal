@@ -9,6 +9,7 @@ class FileLocation
    public:
 	FileLocation() = delete;
 	static std::string getDownloadLocation();
+	static std::string getExecutableLocation();
 };
 
 #endif	// FILELOCATION_H

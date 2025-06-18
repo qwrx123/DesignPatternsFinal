@@ -8,6 +8,7 @@ constexpr int DEFAULT_BUFFER_SIZE = 256;
 
 #include <memory>
 #include <cstdio>
+#include <climits>
 
 /// @brief This function retrieves the default download location
 /// @return The download path as a string
@@ -37,6 +38,26 @@ std::string FileLocation::getDownloadLocation()
 	}
 
 	return folderLocation;
+}
+
+std::string FileLocation::getExecutableLocation()
+{
+	std::array<char, PATH_MAX> executableBufferPath = {0};
+	size_t					   bytesRead =
+		readlink("/proc/self/exe", executableBufferPath.data(), sizeof(executableBufferPath) - 1);
+	if (static_cast<int>(bytesRead) == -1)
+	{
+		return {};
+	}
+
+	executableBufferPath.at(bytesRead) = '\0';
+	std::string executablePath(executableBufferPath.data());
+	while (!executablePath.empty() && executablePath.back() != '/')
+	{
+		executablePath.pop_back();
+	}
+
+	return executablePath;
 }
 
 #elif _WIN32
