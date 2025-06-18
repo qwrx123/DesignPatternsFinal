@@ -40,6 +40,10 @@ std::string FileLocation::getDownloadLocation()
 	return folderLocation;
 }
 
+
+/// @brief This function retrieves the folder path of the executable
+/// @return The executable folder path as a string
+/// @note This function uses the `readlink` api to get the executable directory.
 std::string FileLocation::getExecutableLocation()
 {
 	std::array<char, PATH_MAX> executableBufferPath = {0};
@@ -68,7 +72,7 @@ std::string FileLocation::getExecutableLocation()
 
 /// @brief This function retrieves the default download location
 /// @return The download path as a string
-/// @note This function uses the Windows API to get the download directory.
+/// @note This function uses Windows API to get the download directory.
 std::string FileLocation::getDownloadLocation()
 {
 	PWSTR pathPointer = nullptr;
@@ -93,6 +97,9 @@ std::string FileLocation::getDownloadLocation()
 	return std::move(folderLocation);
 }
 
+/// @brief This function retrieves the folder path of the executable
+/// @return The executable folder path as a string
+/// @note This function uses Windows API to get the executable directory.
 std::string FileLocation::getExecutableLocation()
 {
 	std::array<char, PATH_MAX> executableBufferPath = {0};
