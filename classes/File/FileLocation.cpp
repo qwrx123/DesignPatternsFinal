@@ -8,6 +8,7 @@ constexpr int DEFAULT_BUFFER_SIZE = 256;
 
 #include <memory>
 #include <cstdio>
+#include <climits>
 
 /// @brief This function retrieves the default download location
 /// @return The download path as a string
@@ -39,6 +40,29 @@ std::string FileLocation::getDownloadLocation()
 	return folderLocation;
 }
 
+/// @brief This function retrieves the folder path of the executable
+/// @return The executable folder path as a string
+/// @note This function uses the `readlink` api to get the executable directory.
+std::string FileLocation::getExecutableLocation()
+{
+	std::array<char, PATH_MAX> executableBufferPath = {0};
+	size_t					   bytesRead =
+		readlink("/proc/self/exe", executableBufferPath.data(), sizeof(executableBufferPath) - 1);
+	if (static_cast<int>(bytesRead) == -1)
+	{
+		return {};
+	}
+
+	executableBufferPath.at(bytesRead) = '\0';
+	std::string executablePath(executableBufferPath.data());
+	while (!executablePath.empty() && executablePath.back() != '/')
+	{
+		executablePath.pop_back();
+	}
+
+	return executablePath;
+}
+
 #elif _WIN32
 
 #include <shlobj_core.h>
@@ -47,7 +71,7 @@ std::string FileLocation::getDownloadLocation()
 
 /// @brief This function retrieves the default download location
 /// @return The download path as a string
-/// @note This function uses the Windows API to get the download directory.
+/// @note This function uses Windows API to get the download directory.
 std::string FileLocation::getDownloadLocation()
 {
 	PWSTR pathPointer = nullptr;
@@ -70,6 +94,27 @@ std::string FileLocation::getDownloadLocation()
 		folderLocation.push_back('\\');
 	}
 	return std::move(folderLocation);
+}
+
+/// @brief This function retrieves the folder path of the executable
+/// @return The executable folder path as a string
+/// @note This function uses Windows API to get the executable directory.
+std::string FileLocation::getExecutableLocation()
+{
+	std::array<char, MAX_PATH> executableBufferPath = {0};
+
+	if (GetModuleFileNameA(nullptr, executableBufferPath.data(), sizeof(executableBufferPath)) == 0)
+	{
+		return {};
+	}
+
+	std::string executablePath(executableBufferPath.data());
+	while (!executablePath.empty() && executablePath.back() != '\\')
+	{
+		executablePath.pop_back();
+	}
+
+	return executablePath;
 }
 
 #endif

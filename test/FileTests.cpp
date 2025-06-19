@@ -4,12 +4,21 @@
 #include "Export.h"
 #include "Import.h"
 #include "Image.h"
+#include "FileLocation.h"
 
 TEST(FileTestsExport, FolderExists) 
 {
     Export exportFile = Export();
     std::string location = exportFile.quarryFileLocation();
     
+    std::filesystem::path path(location);
+    EXPECT_TRUE(std::filesystem::exists(path));
+}
+
+TEST(FileTestsFileLocation, ExecutableFolderExists) 
+{
+    std::string location = FileLocation::getExecutableLocation();
+
     std::filesystem::path path(location);
     EXPECT_TRUE(std::filesystem::exists(path));
 }
