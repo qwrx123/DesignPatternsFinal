@@ -40,7 +40,6 @@ std::string FileLocation::getDownloadLocation()
 	return folderLocation;
 }
 
-
 /// @brief This function retrieves the folder path of the executable
 /// @return The executable folder path as a string
 /// @note This function uses the `readlink` api to get the executable directory.
@@ -102,7 +101,7 @@ std::string FileLocation::getDownloadLocation()
 /// @note This function uses Windows API to get the executable directory.
 std::string FileLocation::getExecutableLocation()
 {
-	std::array<char, PATH_MAX> executableBufferPath = {0};
+	std::array<char, MAX_PATH> executableBufferPath = {0};
 
 	if (GetModuleFileNameA(nullptr, executableBufferPath.data(), sizeof(executableBufferPath)) == 0)
 	{
