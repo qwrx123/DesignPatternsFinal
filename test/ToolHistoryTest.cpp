@@ -128,3 +128,20 @@ TEST_F(ToolHistoryTest, CombinedBrushAndEraserUndoRedo) {
     ASSERT_EQ(brush->getHistory().size(), 2);
     ASSERT_EQ(layerManager->getActiveLayer()->getEraserHistory().size(), 3);
 }
+
+// Clear history tests
+
+TEST_F(ToolHistoryTest, ClearStrokes) {
+    brush->clearStrokes();
+    ASSERT_TRUE(brush->getHistory().isEmpty());
+}
+
+TEST_F(ToolHistoryTest, ClearEraserHistory) {
+    eraser->beginStroke(p1);
+    eraser->addPoint(p2);
+    eraser->endStroke(p3);
+
+    ASSERT_EQ(layerManager->getActiveLayer()->getEraserHistory().size(), 3);
+    layerManager->getActiveLayer()->clearEraserHistory();
+    ASSERT_TRUE(layerManager->getActiveLayer()->getEraserHistory().isEmpty());
+}

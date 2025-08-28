@@ -69,3 +69,8 @@ History<std::vector<std::shared_ptr<IStroke>>> Layer::getEraserHistory() const
 {
     return eraserHistory;
 }
+
+void Layer::clearEraserHistory()
+{
+    eraserHistory.clear();
+}
