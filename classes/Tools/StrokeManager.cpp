@@ -28,7 +28,7 @@ const std::vector<std::shared_ptr<IStroke>>& StrokeManager::getStrokes() const
 
 void StrokeManager::clear()
 {
-	layer_manager->getActiveLayer()->setStrokes({});
+	undoAll();
 }
 
 void StrokeManager::replaceStrokes(std::vector<std::shared_ptr<IStroke>> new_strokes)
@@ -88,4 +88,5 @@ void StrokeManager::undoAll()
 {
 	brushHistory.clear();
 	layer_manager->getActiveLayer()->setStrokes({});
+	layer_manager->getActiveLayer()->clearEraserHistory();
 }

@@ -30,6 +30,7 @@ class Layer
 	void														 undoErase();
 	void														 redoErase();
 	[[nodiscard]] History<std::vector<std::shared_ptr<IStroke>>> getEraserHistory() const;
+	void														 clearEraserHistory();
 
    private:
 	std::vector<std::shared_ptr<IStroke>>		   strokes;
