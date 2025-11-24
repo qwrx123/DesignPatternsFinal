@@ -52,7 +52,7 @@ TEST(FileTestsExport, BitmapCreated)
     exportFile.setFileType(IFiles::type::bmp);
 
     bufferStruct fileStruct = {std::make_unique<char[]>(4 * 6), 4 * 6};
-    imageInfo imageInfo = {.width = 3, .height = 2, .horizontalResolution = 3780, .verticalResolution = 3780, .pixelType = pixelType::PIXEL_TYPE_RGBA};
+    imageInfo imageHeader = {.width = 3, .height = 2, .horizontalResolution = 3780, .verticalResolution = 3780, .pixelFormat = pixelType::PIXEL_TYPE_RGBA};
 
     // Fill the buffer with some test data (e.g., a simple 2x3 pixel image)
     int* buffer = reinterpret_cast<int*>(fileStruct.bufferLocation.get());
@@ -64,7 +64,7 @@ TEST(FileTestsExport, BitmapCreated)
     buffer[5] = 0x808080FF; // Gray pixel
     
     std::filesystem::path path(location + fileName + ".bmp");
-    EXPECT_TRUE(exportFile.exportFile(std::move(fileStruct), imageInfo));
+    EXPECT_TRUE(exportFile.exportFile(std::move(fileStruct), imageHeader));
     EXPECT_TRUE(std::filesystem::exists(path));
 
     std::filesystem::remove(path);
@@ -115,7 +115,7 @@ TEST(FileTestsImport, GetBuffer)
     strcpy(fileStruct.bufferLocation.get(), "TESTDATAHERE");
     
     ASSERT_TRUE(importFile.setBuffer(std::move(fileStruct)));
-    auto [buffer, imageInfo] = importFile.getImportedData();
+    auto [buffer, imageHeader] = importFile.getImportedData();
     
     EXPECT_EQ(buffer.bufferSize, sizeof("TESTDATAHERE"));
     EXPECT_STREQ(buffer.bufferLocation.get(), "TESTDATAHERE");
@@ -153,7 +153,7 @@ TEST(FileTestsImport, GetBufferImage)
 {
     bufferStruct fileStruct = {std::make_unique<char[]>(4 * 6), 4 * 6};
     bufferStruct fileStructActual = {std::make_unique<char[]>(4 * 6), 4 * 6};
-    imageInfo imageInfo = {.width = 3, .height = 2, .horizontalResolution = 3780, .verticalResolution = 3780, .pixelType = pixelType::PIXEL_TYPE_RGBA};
+    imageInfo imageHeader = {.width = 3, .height = 2, .horizontalResolution = 3780, .verticalResolution = 3780, .pixelFormat = pixelType::PIXEL_TYPE_RGBA};
 
     // Fill the buffer with some test data (e.g., a simple 2x3 pixel image)
     int* buffer = reinterpret_cast<int*>(fileStruct.bufferLocation.get());
@@ -173,7 +173,7 @@ TEST(FileTestsImport, GetBufferImage)
 
     Import importFile = Import();
     importFile.setBuffer(std::move(fileStruct));
-    importFile.setImageInfo(imageInfo);
+    importFile.setImageInfo(imageHeader);
 
     auto [importedBuffer, importedImageInfo] = importFile.getImportedData();
     EXPECT_EQ(importedBuffer.bufferSize, 4 * 6);
@@ -181,7 +181,7 @@ TEST(FileTestsImport, GetBufferImage)
     EXPECT_EQ(importedImageInfo.height, 2);
     EXPECT_EQ(importedImageInfo.horizontalResolution, 3780);
     EXPECT_EQ(importedImageInfo.verticalResolution, 3780);
-    EXPECT_EQ(importedImageInfo.pixelType, pixelType::PIXEL_TYPE_RGBA);
+    EXPECT_EQ(importedImageInfo.pixelFormat, pixelType::PIXEL_TYPE_RGBA);
 
     char* importedData = importedBuffer.bufferLocation.get();
     char* bufferActualData = fileStructActual.bufferLocation.get();
@@ -202,7 +202,7 @@ TEST(FileTestsImport, ReadBmpFile)
 
     bufferStruct fileStruct = {std::make_unique<char[]>(4 * 6), 4 * 6};
     bufferStruct fileStructActual = {std::make_unique<char[]>(4 * 6), 4 * 6};
-    imageInfo imageInfo = {.width = 3, .height = 2, .horizontalResolution = 3780, .verticalResolution = 3780, .pixelType = pixelType::PIXEL_TYPE_RGBA};
+    imageInfo imageHeader = {.width = 3, .height = 2, .horizontalResolution = 3780, .verticalResolution = 3780, .pixelFormat = pixelType::PIXEL_TYPE_RGBA};
 
     char* bufferActual = fileStructActual.bufferLocation.get();
 
@@ -217,7 +217,7 @@ TEST(FileTestsImport, ReadBmpFile)
 
     memcpy(fileStructActual.bufferLocation.get(), fileStruct.bufferLocation.get(), fileStruct.bufferSize);
     
-    EXPECT_TRUE(exportFile.exportFile(std::move(fileStruct), imageInfo));
+    EXPECT_TRUE(exportFile.exportFile(std::move(fileStruct), imageHeader));
     
     Import importFile = Import();
     importFile.setFileLocation(location);
@@ -248,12 +248,12 @@ protected:
     Image image;
     bufferStruct fileStruct;
     bufferStruct originalData;
-    imageInfo imageInfo;
+    imageInfo imageHeader;
     void SetUp() override
     {
         image = Image();
         fileStruct = {std::make_unique<char[]>(4 * 6), 4 * 6};
-        imageInfo = {.width = 3, .height = 2, .horizontalResolution = 3780, .verticalResolution = 3780, .pixelType = pixelType::PIXEL_TYPE_RGBA};
+        imageHeader = {.width = 3, .height = 2, .horizontalResolution = 3780, .verticalResolution = 3780, .pixelFormat = pixelType::PIXEL_TYPE_RGBA};
     
         int* buffer = reinterpret_cast<int*>(fileStruct.bufferLocation.get());
         buffer[0] = 0xFF0000FF;
@@ -270,14 +270,14 @@ protected:
 
 TEST_F(FileTestsImage, getPixelData)
 {
-    ASSERT_TRUE(image.importImage(fileStruct, imageInfo));
+    ASSERT_TRUE(image.importImage(fileStruct, imageHeader));
     
     const char* pixelData = image.getPixelData();
     
-	size_t scanLineSize = imageInfo.width * 4;
+	size_t scanLineSize = imageHeader.width * 4;
 	size_t iteration	= 0;
 
-	for (const char* scanLine = pixelData + ((imageInfo.height - 1) * scanLineSize);
+	for (const char* scanLine = pixelData + ((imageHeader.height - 1) * scanLineSize);
 		 scanLine >= pixelData;
 		 scanLine -= scanLineSize)
     {
@@ -291,17 +291,17 @@ TEST_F(FileTestsImage, getPixelData)
 
 TEST_F(FileTestsImage, getDimensions)
 {
-    ASSERT_TRUE(image.importImage(fileStruct, imageInfo));
+    ASSERT_TRUE(image.importImage(fileStruct, imageHeader));
     
     auto dimensions = image.getDimensions();
     
-    EXPECT_EQ(dimensions.first, imageInfo.width);
-    EXPECT_EQ(dimensions.second, imageInfo.height);
+    EXPECT_EQ(dimensions.first, imageHeader.width);
+    EXPECT_EQ(dimensions.second, imageHeader.height);
 }
 
 TEST_F(FileTestsImage, getCoordinates)
 {
-    ASSERT_TRUE(image.importImage(fileStruct, imageInfo));
+    ASSERT_TRUE(image.importImage(fileStruct, imageHeader));
     
     auto coordinates = image.getCoordinates();
     
@@ -311,7 +311,7 @@ TEST_F(FileTestsImage, getCoordinates)
 
 TEST_F(FileTestsImage, setCoordinates)
 {
-    ASSERT_TRUE(image.importImage(fileStruct, imageInfo));
+    ASSERT_TRUE(image.importImage(fileStruct, imageHeader));
     
     size_t newX = 10;
     size_t newY = 20;
@@ -326,7 +326,7 @@ TEST_F(FileTestsImage, setCoordinates)
 
 TEST_F(FileTestsImage, setResolution)
 {
-    ASSERT_TRUE(image.importImage(fileStruct, imageInfo));
+    ASSERT_TRUE(image.importImage(fileStruct, imageHeader));
 
     size_t Horizontal = 2000;
     size_t Vertical = 2000;
@@ -344,20 +344,20 @@ TEST_F(FileTestsImage, setResolution)
 
 TEST_F(FileTestsImage, importImage)
 {
-    EXPECT_TRUE(image.importImage(fileStruct, imageInfo));
+    EXPECT_TRUE(image.importImage(fileStruct, imageHeader));
     
     auto dimensions = image.getDimensions();
-    EXPECT_EQ(dimensions.first, imageInfo.width);
-    EXPECT_EQ(dimensions.second, imageInfo.height);
+    EXPECT_EQ(dimensions.first, imageHeader.width);
+    EXPECT_EQ(dimensions.second, imageHeader.height);
     
     bufferStruct emptyBuffer = {nullptr, 0};
-    struct imageInfo emptyImageInfo = {};
-    EXPECT_FALSE(image.importImage(emptyBuffer, emptyImageInfo));
+    struct imageInfo emptyimageHeader = {};
+    EXPECT_FALSE(image.importImage(emptyBuffer, emptyimageHeader));
 }
 
 TEST_F(FileTestsImage, copyConstructor)
 {
-    ASSERT_TRUE(image.importImage(fileStruct, imageInfo));
+    ASSERT_TRUE(image.importImage(fileStruct, imageHeader));
     
     Image imageCopy(image);
 
@@ -382,7 +382,7 @@ TEST_F(FileTestsImage, copyConstructor)
 
 TEST_F(FileTestsImage, assignmentOperator)
 {
-    ASSERT_TRUE(image.importImage(fileStruct, imageInfo));
+    ASSERT_TRUE(image.importImage(fileStruct, imageHeader));
     
     Image imageAssigned;
     imageAssigned = image;
@@ -413,13 +413,13 @@ TEST_F(FileTestsImage, assignmentOperator)
 
 TEST_F(FileTestsImage, setResolutionEdgeCases)
 {
-    ASSERT_TRUE(image.importImage(fileStruct, imageInfo));
+    ASSERT_TRUE(image.importImage(fileStruct, imageHeader));
     
     EXPECT_FALSE(image.setResolution(0, 100));
     EXPECT_FALSE(image.setResolution(100, 0));
     EXPECT_FALSE(image.setResolution(0, 0));
     
-    EXPECT_TRUE(image.setResolution(imageInfo.horizontalResolution, imageInfo.verticalResolution));
+    EXPECT_TRUE(image.setResolution(imageHeader.horizontalResolution, imageHeader.verticalResolution));
     auto originalDimensions = image.getDimensions();
     
     auto unchangedDimensions = image.getDimensions();
@@ -429,12 +429,12 @@ TEST_F(FileTestsImage, setResolutionEdgeCases)
 
 TEST_F(FileTestsImage, setResolutionScaling)
 {
-    ASSERT_TRUE(image.importImage(fileStruct, imageInfo));
+    ASSERT_TRUE(image.importImage(fileStruct, imageHeader));
     
     auto originalDimensions = image.getDimensions();
     
-    size_t doubledHorizontal = imageInfo.horizontalResolution * 2;
-    size_t doubledVertical = imageInfo.verticalResolution * 2;
+    size_t doubledHorizontal = imageHeader.horizontalResolution * 2;
+    size_t doubledVertical = imageHeader.verticalResolution * 2;
     
     ASSERT_TRUE(image.setResolution(doubledHorizontal, doubledVertical));
     

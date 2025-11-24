@@ -28,7 +28,7 @@ class Image : public IImage
 	size_t					  bufferSize  = 0;
 	size_t					  width		  = 0;
 	size_t					  height	  = 0;
-	pixelType				  pixelType	  = pixelType::PIXEL_TYPE_UNKNOWN;
+	pixelType				  pixelFormat = pixelType::PIXEL_TYPE_UNKNOWN;
 	std::pair<size_t, size_t> coordinates = {0, 0};
 	std::pair<size_t, size_t> dimensions  = {0, 0};
 	std::pair<size_t, size_t> resolution  = {0, 0};

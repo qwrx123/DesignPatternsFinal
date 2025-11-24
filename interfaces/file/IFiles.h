@@ -32,7 +32,7 @@ struct imageInfo
 	size_t	  height			   = 0;
 	size_t	  horizontalResolution = 0;
 	size_t	  verticalResolution   = 0;
-	pixelType pixelType			   = pixelType::PIXEL_TYPE_UNKNOWN;
+	pixelType pixelFormat		   = pixelType::PIXEL_TYPE_UNKNOWN;
 };
 
 #include <stdint.h>

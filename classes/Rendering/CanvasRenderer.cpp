@@ -410,7 +410,7 @@ bool CanvasRenderer::exportBitmap(std::string fileName, std::string fileLocation
 	std::pair<float, float> dpi	   = getWindowDPI();
 	imageInfo.horizontalResolution = static_cast<size_t>(dpi.first * inchToM);
 	imageInfo.verticalResolution   = static_cast<size_t>(dpi.second * inchToM);
-	imageInfo.pixelType			   = pixelType::PIXEL_TYPE_RGBA;
+	imageInfo.pixelFormat		   = pixelType::PIXEL_TYPE_RGBA;
 
 	Export exportFile;
 	if (fileLocation.empty())

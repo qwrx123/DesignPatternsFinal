@@ -358,7 +358,7 @@ bool Import::readBmpV5PixelData(const char* buffer, size_t buffer_size)
 	importedImageInfo.height			   = V5Header->bV5Height;
 	importedImageInfo.horizontalResolution = V5Header->bV5XPelsPerMeter;
 	importedImageInfo.verticalResolution   = V5Header->bV5YPelsPerMeter;
-	importedImageInfo.pixelType			   = pixelType::PIXEL_TYPE_RGBA;
+	importedImageInfo.pixelFormat		   = pixelType::PIXEL_TYPE_RGBA;
 
 	// NOLINTEND(cppcoreguidelines-pro-type-reinterpret-cast)
 	// NOLINTEND(cppcoreguidelines-pro-bounds-pointer-arithmetic)

@@ -117,4 +117,58 @@ std::string FileLocation::getExecutableLocation()
 	return executablePath;
 }
 
+#elif __APPLE__
+
+#include <mach-o/dyld.h>
+#include <limits.h>
+#include <unistd.h>
+#include <sys/stat.h>
+#include <cstdlib>
+
+
+std::string FileLocation::getDownloadLocation()
+{
+	const char* home = std::getenv("HOME");
+	if (!home)
+	{
+		return {};
+	}
+	std::string folderLocation = std::string(home) + "/Downloads/";
+	struct stat st{};
+	if (stat(folderLocation.c_str(), &st) != 0 || !S_ISDIR(st.st_mode))
+	{
+		return {};
+	}
+	return folderLocation;
+}
+
+
+std::string FileLocation::getExecutableLocation()
+{
+	char	 rawPath[PATH_MAX] = {0};
+	uint32_t size			   = sizeof(rawPath);
+
+	if (_NSGetExecutablePath(rawPath, &size) != 0)
+	{
+		return {};
+	}
+
+	char		resolved[PATH_MAX] = {0};
+	std::string full;
+	if (realpath(rawPath, resolved))
+	{
+		full = resolved;
+	}
+	else
+	{
+		full = rawPath;
+	}
+	auto pos = full.find_last_of('/');
+	if (pos != std::string::npos)
+	{
+		full.erase(pos + 1);
+	}
+	return full;
+}
+
 #endif

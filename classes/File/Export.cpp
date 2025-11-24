@@ -86,8 +86,8 @@ bool Export::exportBmpFile(bufferStruct pixels, imageInfo imageInfo)
 	{
 		return false;
 	}
-	if (imageInfo.pixelType == pixelType::PIXEL_TYPE_UNKNOWN ||
-		imageInfo.pixelType != pixelType::PIXEL_TYPE_RGBA)
+	if (imageInfo.pixelFormat == pixelType::PIXEL_TYPE_UNKNOWN ||
+		imageInfo.pixelFormat != pixelType::PIXEL_TYPE_RGBA)
 	{
 		return false;
 	}

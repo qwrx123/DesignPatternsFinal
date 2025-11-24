@@ -9,7 +9,7 @@ Image::Image(const Image& other)
 	  coordinates(other.coordinates),
 	  width(other.width),
 	  height(other.height),
-	  pixelType(other.pixelType),
+	  pixelFormat(other.pixelFormat),
 	  bufferSize(other.bufferSize)
 {
 	// NOLINTNEXTLINE(cppcoreguidelines-avoid-c-arrays,modernize-avoid-c-arrays)
@@ -32,7 +32,7 @@ Image& Image::operator=(const Image& other)
 	coordinates = other.coordinates;
 	width		= other.width;
 	height		= other.height;
-	pixelType	= other.pixelType;
+	pixelFormat = other.pixelFormat;
 	bufferSize	= other.bufferSize;
 
 	// NOLINTNEXTLINE(cppcoreguidelines-avoid-c-arrays,modernize-avoid-c-arrays)
@@ -53,7 +53,7 @@ bool Image::importImage(const bufferStruct& buffer, const imageInfo& image)
 		return false;
 	}
 
-	if (image.pixelType == pixelType::PIXEL_TYPE_UNKNOWN || image.width == 0 || image.height == 0)
+	if (image.pixelFormat == pixelType::PIXEL_TYPE_UNKNOWN || image.width == 0 || image.height == 0)
 	{
 		return false;
 	}
@@ -75,7 +75,7 @@ bool Image::importImage(const bufferStruct& buffer, const imageInfo& image)
 	width		= image.width;
 	height		= image.height;
 	bufferSize	= buffer.bufferSize;
-	pixelType	= image.pixelType;
+	pixelFormat = image.pixelFormat;
 	coordinates = {0, 0};
 	dimensions	= {width, height};
 	resolution	= {image.horizontalResolution, image.verticalResolution};
